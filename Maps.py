@@ -67,8 +67,10 @@ class Maps(PluginInterface):
 						for mapDict in self.__currentMaps]
 		
 		cursor = self.__getCursor()
-		cursor.execute(
-					"INSERT INTO `maps` (`Uid`, `Name`, `Author`, `Environment`) VALUES (%s, %s, %s, %s)",
-					dbInsertMaps) 
+		cursor.execute("""
+			INSERT INTO `maps` 
+			(`Uid`, `Name`, `Author`, `Environment`) 
+			VALUES (%s, %s, %s, %s);""",
+			dbInsertMaps) 
 		cursor.close()
 		self.__connection.commit()
