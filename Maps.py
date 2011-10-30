@@ -50,7 +50,7 @@ class Maps(PluginInterface):
 		self.__connection.commit()
 		self.__getMapListFromServer()
 		
-		self.callMethod(('Acl', 'addRight'), 'Maps.addFromMX')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_add'), 
 						'Add a map from mania-exchange')
 		
