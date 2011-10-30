@@ -132,9 +132,9 @@ class Maps(PluginInterface):
 		#add the map to the mx path
 		return self.addMap(self.__mxPath + str(mxId) + '.Map.Gbx', content)
 	
-	def chat_add(self, args):
+	def chat_add(self, login, params):
 		"""
 		\brief Chat command callback to add a map from mx
-		\param args the arguments from the chat
+		\param args The arguments from the chat
 		"""
 		print(args)
