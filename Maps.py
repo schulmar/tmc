@@ -42,20 +42,33 @@ class Maps(PluginInterface):
 		);
 		""");
 		cursor.close()
-		self.connection.commit()
+		self.__connection.commit()
 		self.__getMapListFromServer()
+		
+		
 		
 	def __getCursor(self):
 		"""
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
-		return self.connection.cursor(MySQLdb.cursors.DictCursor)
+		return self.__connection.cursor(MySQLdb.cursors.DictCursor)
 	
 	def __getMapListFromServer(self):
 		"""
-		\brief Retrieve the servers list of maps
+		\brief Retrieve the servers list of maps and save into local storage
 		"""
 		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 10000, 0)
-		print(self.__currentMaps)
 		
+		dbInsertMaps = [(mapDict['UId'], 
+						mapDict['Name'], 
+						mapDict['Author'], 
+						mapDict['Environment']) 
+						for mapDict in self.__currentMaps]
+		
+		cursor = self.__getCursor()
+		cursor.execute(
+					"INSERT INTO `maps` (`Uid`, `Name`, `Author`, `Environment`) VALUES (%s, %s, %s, %s)",
+					dbInsertMaps) 
+		cursor.close()
+		self.__connection.commit()
