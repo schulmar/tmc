@@ -126,6 +126,7 @@ class Maps(PluginInterface):
 		info = f.read()
 		f.close()
 		info = json.loads(info)
+		print(info)
 		#create mx path when not already existing
 		if not os.path.isdir(self.__getMapPath() + self.__mxPath):
 			os.mkdir(self.__getMapPath() + self.__mxPath)
@@ -137,4 +138,9 @@ class Maps(PluginInterface):
 		\brief Chat command callback to add a map from mx
 		\param args The arguments from the chat
 		"""
-		print(login, params)
+		try:
+			mxId = int(params)
+		except ValueError:
+			return
+		
+		self.addFromMX(mxId)
