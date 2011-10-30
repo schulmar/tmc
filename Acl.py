@@ -1,8 +1,23 @@
 from PluginInterface import *
 import MySQLdb
 
+"""
+@file Acl.py
+@brief Access control list plugin
+
+This plugin provides ACL functionality to any other plugin
+"""
+
 class Acl(PluginInterface):
+	"""
+	@brief The actual plugin-class.
+	"""
 	def __init__(self, pipes, args):
+		"""
+		@brief The constructor calls PluginInterface constructor
+		@param pipes The communication pipes to the manager
+		@param args Other arguments, up to now a dict where the key SuperAdmins contains a list of all superadmin names
+		"""
 		self.rights = {}
 		self.users = {}
 		self.groups = {}
@@ -13,6 +28,10 @@ class Acl(PluginInterface):
 		super(Acl, self).__init__(pipes)
 
 	def initialize(self, args):
+		"""
+		@brief Create database tables and load users, groups and rights
+		@param args contains the same args as in constructor
+		"""
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
 		cursor.execute(
@@ -67,11 +86,18 @@ class Acl(PluginInterface):
 		self.connection.commit()
 		self.__loadRights()
 		self.__loadUsers()
+		self.__loadGroups()
 
 	def shutDown(self):
+		"""
+		@brief Closes the MySQL connection on shutdown
+		"""
 		self.connection.close()
 
 	def __loadRights(self):
+		"""
+		@brief Loads the rights table from database
+		"""
 		cursor = self.__getCursor()
 		cursor.execute('SELECT * FROM `rights`')
 		result = cursor.fetchall()
@@ -81,6 +107,9 @@ class Acl(PluginInterface):
 		cursor.close()
 
 	def __loadUsers(self):
+		"""
+		@brief Loads all usernames and their ids from database
+		"""
 		cursor = self.__getCursor()
 		cursor.execute('SELECT `id`,`name` FROM `users`') 
 		usersResult = cursor.fetchall()
@@ -91,6 +120,9 @@ class Acl(PluginInterface):
 		cursor.close()
 
 	def __loadGroups(self):
+		"""
+		@brief Loads all groups and their ids from database
+		"""
 		cursor = self.__getCursor()
 		cursor.execute('SELECT `id`,`name` FROM `groups`')
 		result = cursor.fetchall()
@@ -99,9 +131,18 @@ class Acl(PluginInterface):
 		cursor.close()
 
 	def __getCursor(self):
+		"""
+		@brief A helper function that returns a dict cursor to the MySQLdb
+		@return The dict cursor
+		"""
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def getIdFromUserName(self, userName):
+		"""
+		@brief Transforms a userName to its id
+		@param userName the name of the user
+		@return the id on success or None if the userName was not found 
+		"""
 		try:
 			return self.users[userName]
 		except KeyError:
@@ -109,6 +150,11 @@ class Acl(PluginInterface):
 			return None
 
 	def getIdFromGroupName(self, groupName):
+		"""
+		@brief Transforms a groupName to its id
+		@param groupName The name of the group 
+		@return the groupId on success or None if groupName was not found
+		"""
 		try:
 			return self.groups[groupName]
 		except KeyError:
@@ -116,6 +162,11 @@ class Acl(PluginInterface):
 			return None
 		
 	def getIdFromRightName(self, rightName):
+		"""
+		@brief Transforms a rightName to its id
+		@param rightName The name of the righft
+		@return the rightId on success or None if rightName was not found
+		"""
 		try:
 			return self.rights[rightName]
 		except KeyError:
