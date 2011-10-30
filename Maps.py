@@ -159,7 +159,8 @@ class Maps(PluginInterface):
 	def chat_list(self, login, params):
 		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['GoldTime']) for mapDict in self.__currentMaps]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
-					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 20, (35, 25, 10))
+					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 20, (35, 25, 10),
+					('Mapname', 'Authorname', 'GoldTime'))
 	
 	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
 		self.__currentMap = CurMapIndex
