@@ -1,5 +1,9 @@
 from PluginInterface import *
 import MySQLdb
+import os
+import urllib
+import json
+
 
 """
 \file Maps.py
@@ -19,6 +23,7 @@ class Maps(PluginInterface):
 		\param args Additional userdefined args 
 		"""
 		self.__currentMaps = []
+		self.__mxPath = 'mania-exchange/'
 		super(Maps, self).__init__(pipes)
 
 	def initialize(self, args):
@@ -45,6 +50,9 @@ class Maps(PluginInterface):
 		self.__connection.commit()
 		self.__getMapListFromServer()
 		
+		self.callMethod(('Acl', 'addRight'), 'Maps.addFromMX')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_add'), 
+						'Add a map from mania-exchange')
 		
 		
 	def __getCursor(self):
@@ -74,3 +82,59 @@ class Maps(PluginInterface):
 			dbInsertMaps) 
 		cursor.close()
 		self.__connection.commit()
+		
+	def __getMapPath(self):
+		path = self.callFunction(('TmConnector', 'GetMapsDirectory'))
+		
+		if not path[-1] == os.pathsep:
+			path += os.pathsep
+			
+		return path
+		
+	def addMap(self, fileName, Data):
+		"""
+		\brief Create a new track with the given name and Data in the servers maps directory
+		\param fileName The track name, can be expanded by relative paths (the directories must exist)
+		\param Data The contents of the track file
+		"""
+		mapPath = self.__getMapPath()
+		mapPath += fileName
+		if not os.path.isfile(mapPath):
+			mapFile = open(mapPath, "w")
+			mapFile.write(Data)
+			mapFile.close()
+			#add the map to try if it is valid
+			if self.callFunction(('TmConnector', 'AddMap'), fileName):
+				#remove map to let the caller decide where and if to add it
+				self.callMethod(('TmConnector', 'RemoveMap'), fileName)
+				return True
+			else:
+				return False
+		else:
+			return False
+			
+	def addFromMX(self, mxId):
+		"""
+		\brief Add a new track from Maniaexchange
+		\param mxId The id of the track on mania-exchange.com
+		\return True if the track was added, False if error occured
+		"""	
+		f = urllib.urlopen('http://tm.mania-exchange.com/tracks/download/' + str(mxId))
+		content = f.read()
+		f.close() 
+		f = urllib.urlopen('http://tm.mania-exchange.com//api/tracks/get_track_info/id/' + str(mxId) + '?format=json')
+		info = f.read()
+		f.close()
+		info = json.loads(info)
+		#create mx path when not already existing
+		if not os.path.isdir(self.__getMapPath() + self.__mxPath):
+			os.mkdir(self.__getMapPath() + self.__mxPath)
+		#add the map to the mx path
+		return self.addMap(self.__mxPath + str(mxId) + '.Map.Gbx', content)
+	
+	def chat_add(self, args):
+		"""
+		\brief Chat command callback to add a map from mx
+		\param args the arguments from the chat
+		"""
+		print(args)
