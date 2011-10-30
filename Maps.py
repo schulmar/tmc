@@ -33,7 +33,7 @@ class Maps(PluginInterface):
 		cursor.execute("""
 		CREATE TABLE IF NOT EXISTS `maps` (
 		`Id` mediumint(9) NOT NULL auto_increment, 
-		`Uid` varchar(27) KEY NOT NULL default '', 
+		`Uid` varchar(27) NOT NULL default '', 
 		`Name` varchar(100) NOT NULL default '',
 		`Author` varchar(30) NOT NULL default '',
 		`Environment` varchar(10) NOT NULL default '',
