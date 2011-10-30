@@ -76,7 +76,7 @@ class Maps(PluginInterface):
 		
 		cursor = self.__getCursor()
 		cursor.executemany("""
-			INSERT INTO `maps` 
+			INSERT IGNORE INTO `maps` 
 			(`Uid`, `Name`, `Author`, `Environment`) 
 			VALUES (%s, %s, %s, %s);""",
 			dbInsertMaps) 
