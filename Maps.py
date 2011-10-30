@@ -23,6 +23,8 @@ class Maps(PluginInterface):
 		\param args Additional userdefined args 
 		"""
 		self.__currentMaps = []
+		self.__currentMap = 0
+		self.__nextMap = 0
 		self.__mxPath = 'mania-exchange/'
 		super(Maps, self).__init__(pipes)
 
@@ -53,7 +55,9 @@ class Maps(PluginInterface):
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX', 'Add maps from mania-exchange')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_add'), 
 						'Add a map from mania-exchange')
-		
+		self.callMethod(('TmChat', 'registerChatCommand'), 'list', ('Maps', 'chat_list'), 
+						'List all maps that are currently on the server')
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		
 	def __getCursor(self):
 		"""
@@ -151,3 +155,14 @@ class Maps(PluginInterface):
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You do not have the right to add tracks from mania-exchange', login)
+			
+	def chat_list(self, login, params):
+		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['Coppers']) for mapDict in self.__currentMaps]
+		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
+					login, 'Maps.Maplist', 'Maplist', (50, 40), (-25, 20), rows, 20, (25, 15, 10))
+	
+	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
+		self.__currentMap = CurMapIndex
+		self.__nextMap = NextMapIndex
+		if isListModified:
+			self.__getMapListFromServer()
