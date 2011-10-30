@@ -117,7 +117,7 @@ class Maps(PluginInterface):
 		"""
 		\brief Add a new track from Maniaexchange
 		\param mxId The id of the track on mania-exchange.com
-		\return True if the track was added, False if error occured
+		\return Trackname if the track was added and None if it was not possible
 		"""	
 		f = urllib.urlopen('http://tm.mania-exchange.com/tracks/download/' + str(mxId))
 		content = f.read()
@@ -126,13 +126,14 @@ class Maps(PluginInterface):
 		info = f.read()
 		f.close()
 		info = json.loads(info)
-		print(info)
-		print(self.__getMapPath(), self.__mxPath)
 		#create mx path when not already existing
 		if not os.path.isdir(self.__getMapPath() + self.__mxPath):
 			os.mkdir(self.__getMapPath() + self.__mxPath)
+		#assemble filename
+		fileName = info['Name'] + '.' + str(mxId) + '.Map.Gbx'
 		#add the map to the mx path
-		return self.addMap(self.__mxPath + str(mxId) + '.Map.Gbx', content)
+		self.addMap(self.__mxPath + fileName, content)
+		return fileName
 	
 	def chat_add(self, login, params):
 		"""
@@ -142,6 +143,11 @@ class Maps(PluginInterface):
 		try:
 			mxId = int(params)
 		except ValueError:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'MX Ids are integers!', login)
 			return
-		
-		self.addFromMX(mxId)
+		if self.callFunction(('Acl', 'userHasRight'), 'Maps.addFromMX'):
+			fileName = self.addFromMX(mxId)
+			self.callMethod(('TmConnector', 'AddMap'), self.__mxPath + fileName)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You do not have the right to add tracks from mania-exchange', login)
