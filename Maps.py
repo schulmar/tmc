@@ -43,6 +43,7 @@ class Maps(PluginInterface):
 		""");
 		cursor.close()
 		self.connection.commit()
+		self.__getMapListFromServer()
 		
 	def __getCursor(self):
 		"""
