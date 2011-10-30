@@ -157,7 +157,7 @@ class Maps(PluginInterface):
 						'You do not have the right to add tracks from mania-exchange', login)
 			
 	def chat_list(self, login, params):
-		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['Coppers']) for mapDict in self.__currentMaps]
+		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['GoldTime']) for mapDict in self.__currentMaps]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (50, 40), (-25, 20), rows, 20, (25, 15, 10))
 	
