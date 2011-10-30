@@ -56,6 +56,6 @@ class Maps(PluginInterface):
 		"""
 		\brief Retrieve the servers list of maps
 		"""
-		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 0, 10000)
+		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 10000, 0)
 		print(self.__currentMaps)
 		
