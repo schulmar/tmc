@@ -180,8 +180,24 @@ class Acl(PluginInterface):
 		\param rightName The right in question
 		\return True if the user has the right, false if the users has not or does not exist or the right does not exist 
 		"""
+			
 		userId = self.getIdFromUserName(userName)
+		
+		if userId == None:
+			return False
+		
+		for a in self.SuperAdmins:
+			try:
+				if userId == self.users[a]:
+					return True
+			except KeyError:
+				pass
+			
 		rightId = self.getIdFromRightName(rightName)
+		
+		if rightId == None:
+			return False
+		
 		cursor = self.__getCursor()
 		cursor.execute('SELECT `id` FROM usersToRights WHERE `userId`=%s and `rightId`=%s', (int(userId), int(rightId)))
 
@@ -192,13 +208,6 @@ class Acl(PluginInterface):
 		for g in groupList:
 			if self.groupHasRight(g):
 				return True
-
-		for a in self.SuperAdmins:
-			try:
-				if userId == self.users[a]:
-					return True
-			except KeyError:
-				pass
 
 		return False
 
