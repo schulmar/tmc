@@ -78,18 +78,16 @@ class WindowManager(PluginInterface):
 			x = 0
 			for i in xrange(len(columnWidths)):
 				lbl = Label()
-				lbl['Text'] = str(headLine[i])
+				lbl['text'] = str(headLine[i])
 				lbl['posn'] = str(x) + ' 0'
 				x += columnWidths[i]
 				headLineML.append(lbl)
 				
 		lines = []
-		h = 0
 		for r in rows:
 			#insert headline on each new page
-			if headLine != None and h % rowsPerPage == 0:
+			if headLine != None and len(lines) % rowsPerPage == 0:
 				lines.append(headLineML)
-				h += 1
 			line = []
 			i = 0
 			x = 0
@@ -99,7 +97,6 @@ class WindowManager(PluginInterface):
 				x += c
 				i += 1
 			lines.append(line)
-			h += 1
 		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
 
 	def displayTableStringsWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths, headLine = None):
