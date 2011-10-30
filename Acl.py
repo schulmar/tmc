@@ -174,6 +174,12 @@ class Acl(PluginInterface):
 			return None
 
 	def userHasRight(self, userName, rightName):
+		"""
+		\brief Has the user the right?
+		\param userName The user in question
+		\param rightName The right in question
+		\return True if the user has the right, false if the users has not or does not exist or the right does not exist 
+		"""
 		userId = self.getIdFromUserName(userName)
 		rightId = self.getIdFromRightName(rightName)
 		cursor = self.__getCursor()
@@ -197,9 +203,18 @@ class Acl(PluginInterface):
 		return False
 
 	def userExists(self, userName):
+		"""
+		\brief Is the user in the system?
+		\param userName The user in question
+		\return True or False
+		"""
 		return (userName in self.users)
 
 	def userAdd(self, userName):
+		"""
+		\brief add a new user to the system
+		\param userName The name of the new user
+		"""
 		if not self.userExists(userName):
 			cursor = self.__getCursor()
 			cursor.execute('INSERT INTO `users` (`name`) VALUES (%s)', (userName,))
@@ -208,6 +223,12 @@ class Acl(PluginInterface):
 			self.__loadUsers()
 	
 	def userAddGroup(self, userName, groupName):
+		"""
+		\brief add a user to a group
+		\param userName The user in question
+		\param groupName The group to which the user should be added
+		\return True if user is in group, False if user or group do not exist
+		"""
 		userId = self.getIdFromUserName(userName)
 		groupId = self.getIdFromGroupName(groupName)
 
@@ -222,6 +243,12 @@ class Acl(PluginInterface):
 		return True
 
 	def userRemoveGroup(self, userName, groupName):
+		"""
+		\brief Remove user from a group
+		\param userName The name of the user in question
+		\param groupName The group from which the user should be removed
+		\return True if user is not any longer in the group, false if group or user do not exist
+		"""
 		userId = self.getIdFromUserName(userName)
 		groupId = self.getIdFromGroupName(groupName)
 
@@ -234,6 +261,12 @@ class Acl(PluginInterface):
 		return True
 
 	def userAddRight(self, userName, rightName):
+		"""
+		\brief Grant a right to the user
+		\param userName The name of the user in question
+		\param rightName The name of the right which to grant
+		\return True on success, False if the right or user are unknown
+		"""
 		userId = self.getIdFromUserName(userName)
 		rightId = self.getIdFromRightName(rightName)
 
@@ -251,6 +284,15 @@ class Acl(PluginInterface):
 		return True
 
 	def userRemoveRight(self, userName, rightName):
+		"""
+		\brief Revoke right from user
+		\param userName The name of the user in question
+		\param rightName The right to revoke
+		\return True on success, False if the right or user are unknown
+		
+		Note that this revokes only the right directly from the user.
+		If the user is in a group that has this right, hasRight will still return True
+		"""
 		cursor = self.__getCursor()
 		userId = self.getIdFromUserName(userName)
 		rightId = self.getIdFromRightName(rightName)
@@ -265,6 +307,11 @@ class Acl(PluginInterface):
 		return True
 
 	def userGetGroups(self, userName):
+		"""
+		\brief Get the list of groups the user is in
+		\param userName The name of the user in question
+		\return The list of groups (empty if user unknown)
+		"""
 		userId = self.getIdFromUserName(userName)
 
 		if userId == None:
@@ -278,6 +325,11 @@ class Acl(PluginInterface):
 		return [i['name'] for i in groupList]
 
 	def userGetLevel(self, userName):
+		"""
+		\brief Get the highest level of the groups the user is in
+		\param userName The user in question
+		\return The level or None if no level could be determined
+		"""
 		groups = self.userGetGroups(username)
 		
 		if userName in self.SuperAdmins:
@@ -295,9 +347,21 @@ class Acl(PluginInterface):
 
 
 	def groupExists(self, groupName):
+		"""
+		\brief Return wether a group with this name exists
+		\param groupName The name of the group
+		\return True or False
+		"""
 		return groupName in self.groups
 
 	def groupAdd(self, groupName, level = 0, description = ''):
+		"""
+		\brief Add a new group(Name) to the system
+		\param groupName The name of the new group
+		\param level The level of the new group
+		\param description A description of the group 
+		\return True if the group was created, False if it already existed
+		"""
 		if not self.groupExists(groupName):
 			cursor = self.__getCursor()
 			cursor.execute('INSERT INTO `groups` (`name`, `level`) VALUES (%s, %s, %s)', (str(groupName), int(level), str(description)))
@@ -309,6 +373,11 @@ class Acl(PluginInterface):
 			return False
 
 	def groupRemove(self, groupName):
+		"""
+		\brief Remove a group from the system
+		\param groupName The name of the group to remove
+		\return True when the group was deleted
+		"""
 		groupId = self.getIdFromGroupName(groupName)
 		cursor = self.__getCursor()
 		cursor.execute('DELETE FROM `groups` WHERE `id`=%s', (int(groupId),))
@@ -320,6 +389,12 @@ class Acl(PluginInterface):
 		return True
 
 	def groupHasRight(self, groupName, rightName):
+		"""
+		\brief Has the group the right
+		\param groupName The name of the group to check
+		\param rightName The name of the right to check
+		\return True or False
+		"""
 		groupId = self.getIdFromGroupName(groupName)
 		rightId = self.getIdFromRightName(rightName)
 
@@ -334,6 +409,12 @@ class Acl(PluginInterface):
 		return False
 
 	def groupSetLevel(self, groupName, level):
+		"""
+		\brief Set the level of a group
+		\param groupName The name of the group 
+		\param level The new level of the group
+		\return True on success, False when the groupName was not found 
+		"""
 		groupId = self.getIdFromGroupName(groupName)
 		
 		if groupId == None:
@@ -347,6 +428,11 @@ class Acl(PluginInterface):
 		return True
 
 	def groupGetLevel(self, groupName):
+		"""
+		\brief Get the level of the group
+		\param groupName The name of the group in question
+		\return The level or None if the group was not found
+		"""
 		groupId = self.getIdFromGroupName(groupName)
 
 		if groupId == None:
@@ -363,6 +449,10 @@ class Acl(PluginInterface):
 			return int(row['level'])
 
 	def groupsGetHighestLevel(self):
+		"""
+		\brief Get the highest level of all groups in the system
+		\return The level or None if no groups are defined 
+		"""
 		cursor = self.__getCursor()
 		cursor.execute('SELECT `level` FROM `groups` ORDER BY `level` DESC LIMIT 1')
 		g = cursor.fetchone()
@@ -373,6 +463,12 @@ class Acl(PluginInterface):
 		return g['level']
 
 	def groupAddRight(self, groupName, rightName):
+		"""
+		\brief Grant a right to the group
+		\param groupName The name of the group
+		\param rightName The name of the right to grant
+		\return True on success, False if the right or group does not exist
+		"""
 		cursor = self.__getCursor()
 		groupId = self.getIdFromGroupName(groupName)
 		rightId = self.getIdFromRightName(rightName)
@@ -385,6 +481,12 @@ class Acl(PluginInterface):
 		return True
 		
 	def groupRemoveRight(self, groupName, rightName):
+		"""
+		\brief Revoke a right from the group
+		\param groupName The name of the group
+		\param rightName The name of the right to revoke
+		\return True on success, False if group or right were not found		
+		"""
 		cursor = self.__getCursor()
 		groupId = self.getIdFromGroupName(groupName)
 		rightId = self.getIdFromRightName(rightName)
@@ -398,9 +500,19 @@ class Acl(PluginInterface):
 		return True
 
 	def rightExists(self, rightName):
+		"""
+		\brief Is a right of this name defined in the system
+		\return True or False
+		"""
 		return (rightName in self.rights)
 
 	def rightAdd(self, rightName, description):
+		"""
+		\brief Add a new right to the system
+		\param rightName The name of the new right
+		\param description A description what this right means
+		\return True if the right was added, False if it already exists
+		"""
 		if not self.rightExists(rightName):
 			cursor = self.__getCursor()
 			cursor.execute('SELECT `id` FROM `rights` WHERE `name`=%s', (str(rightName),))
@@ -416,6 +528,11 @@ class Acl(PluginInterface):
 		
 		
 	def removeRight(self, rightName):
+		"""
+		\brief Remove a right from the system
+		\param rightName The name of the right to remove
+		\return True on success
+		"""
 		rightId = self.getIdFromRightName(rightName)
 		cursor = self.__getCursor()
 		cursor.execute('DELETE FROM `rights` WHERE `id`=%s', (int(rightId),))
