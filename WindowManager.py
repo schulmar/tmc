@@ -91,7 +91,7 @@ class WindowManager(PluginInterface):
 			i = 0
 			for c in columnWidths:
 				lbl = Label()
-				lbl['text'] = str(r)
+				lbl['text'] = str(r[i])
 				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
 				line.append(lbl)
 				i += 1
