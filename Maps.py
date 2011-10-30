@@ -53,10 +53,13 @@ class Maps(PluginInterface):
 		self.__getMapListFromServer()
 		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX', 'Add maps from mania-exchange')
-		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_add'), 
+		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_addmx'), 
 						'Add a map from mania-exchange')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'list', ('Maps', 'chat_list'), 
 						'List all maps that are currently on the server')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'removethis', ('Maps', 'chat_removethis'), 
+						'Remove the current map from the server (does not delete file)')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.removeThis', 'Remove (does not delete file) the current map from server')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		
 	def __getCursor(self):
@@ -95,6 +98,16 @@ class Maps(PluginInterface):
 			
 		return path
 		
+	def	getCurrentMap(self):
+		"""
+		\brief Get the dict of the map that is currently running
+		\return The map dict or None if an error occured
+		"""
+		try:
+			return self.__currentMaps[self.__currentMap]
+		except KeyError:
+			return None
+	
 	def addMap(self, fileName, Data):
 		"""
 		\brief Create a new track with the given name and Data in the servers maps directory
@@ -139,7 +152,7 @@ class Maps(PluginInterface):
 		self.addMap(self.__mxPath + fileName, content)
 		return fileName
 	
-	def chat_add(self, login, params):
+	def chat_addmx(self, login, params):
 		"""
 		\brief Chat command callback to add a map from mx
 		\param args The arguments from the chat
@@ -163,7 +176,34 @@ class Maps(PluginInterface):
 					('Mapname', 'Authorname', 'GoldTime'))
 	
 	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
+		"""
+		\brief Callback when the maplist was modified
+		\param CurMapIndex The index of the current map in the maplist
+		\param NextMapIndex The index of the next map in the maplist
+		\param isListModified Denotes if the list was modified or if only the curmap/nextmap indices changed
+		"""
 		self.__currentMap = CurMapIndex
 		self.__nextMap = NextMapIndex
 		if isListModified:
 			self.__getMapListFromServer()
+			
+	def chat_removethis(self, login, params):
+		"""
+		\brief Chat callback to remove the current map from server
+		\param login The login of the player
+		\param params Additional parameters that were given by the player
+		\return True when the track is no longer in map list, False if could not remove
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.removeThis'):
+			if self.callFunction(('TmConnector', 'RemoveMap'), self.getCurrentMap()['FileName']):
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Current map removed (did not delete file)!', login)
+				return True
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Could not remove current map, try again later!', login)
+				return False
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You do not have the right to remove the current map from the server!', login)
+			return False
