@@ -137,4 +137,4 @@ class Maps(PluginInterface):
 		\brief Chat command callback to add a map from mx
 		\param args The arguments from the chat
 		"""
-		print(args)
+		print(login, params)
