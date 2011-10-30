@@ -16,16 +16,17 @@ class Maps(PluginInterface):
 	"""
 	\brief The Maps plugin class derived from PluginInterface
 	"""
+	__currentMaps = []#List of the maps that currently run on the server
+	__currentMap = 0#The index of the current map in the list
+	__nextMap = 0#The index of the next map in the list
+	__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
+	__connection = None#The database connection
 	def __init__(self, pipes, args):
 		"""
 		\brief Construct the class
 		\param pipes The pipes to the PluginManager process
 		\param args Additional userdefined args 
 		"""
-		self.__currentMaps = []
-		self.__currentMap = 0
-		self.__nextMap = 0
-		self.__mxPath = 'mania-exchange/'
 		super(Maps, self).__init__(pipes)
 
 	def initialize(self, args):
@@ -34,7 +35,7 @@ class Maps(PluginInterface):
 		\params args The user parameters for the plugin
 		
 		Setup the database connection create tables if necessary...
-		"""
+		""" 
 		self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.__getCursor()
 		cursor.execute("""
@@ -55,11 +56,18 @@ class Maps(PluginInterface):
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX', 'Add maps from mania-exchange')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_addmx'), 
 						'Add a map from mania-exchange')
+		
 		self.callMethod(('TmChat', 'registerChatCommand'), 'list', ('Maps', 'chat_list'), 
 						'List all maps that are currently on the server')
+		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.removeThis', 'Remove (does not delete file) the current map from server')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'removethis', ('Maps', 'chat_removethis'), 
 						'Remove the current map from the server (does not delete file)')
-		self.callMethod(('Acl', 'rightAdd'), 'Maps.removeThis', 'Remove (does not delete file) the current map from server')
+		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.skip', 'Skip the current track')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'skip', ('Maps', 'chat_skip'),
+					'Skip the current map')
+		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		
 	def __getCursor(self):
@@ -91,6 +99,9 @@ class Maps(PluginInterface):
 		self.__connection.commit()
 		
 	def __getMapPath(self):
+		"""
+		\brief Get the path under which the servers maps are stored
+		"""
 		path = self.callFunction(('TmConnector', 'GetMapsDirectory'))
 			
 		if not path[-1] == os.path.sep:
@@ -170,6 +181,13 @@ class Maps(PluginInterface):
 						'You do not have the right to add tracks from mania-exchange', login)
 			
 	def chat_list(self, login, params):
+		"""
+		\brief Chat callback for the map list
+		\param login The login of the caller
+		\param params Additional parameters given by the caller
+		
+		Displays a list of all tracks to the calling player
+		"""
 		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['GoldTime']) for mapDict in self.__currentMaps]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (35, 25, 10),
@@ -197,7 +215,7 @@ class Maps(PluginInterface):
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.removeThis'):
 			if self.callFunction(('TmConnector', 'RemoveMap'), self.getCurrentMap()['FileName']):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Current map(' + self.getCurrentMap()['Name'] + ') removed (did not delete file)!', login)
+						'Current map (' + self.getCurrentMap()['Name'] + ') removed (did not delete file)!', login)
 				return True
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
@@ -207,3 +225,40 @@ class Maps(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You do not have the right to remove the current map from the server!', login)
 			return False
+		
+	def chat_matchsettings(self, login, params):
+		"""
+		\brief Handle matchsettings 
+		\param login The calling login
+		\param params Additional params on what to do
+		
+		write - Write the current matchsettings to file
+		read - Read the current matchsettings from file
+		display - Show the current matchsettings 
+		"""
+		if params == 'write':
+			pass
+		elif params == 'read':
+			pass
+		elif params == 'display':
+			pass
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Unknown command \'matchsettings' + params + '\'', login)
+			
+	def chat_skip(self, login, params):
+		"""
+		\brief Skip current map
+		\param login The calling login
+		\param params Additional parameters
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.skip'):
+			if self.callFunction(('TmConnector', 'NextMap')):
+				self.callMethod(('TmConnector', 'ChatSendServerMessage'),
+							' skipped map.')
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Could not skip map, try again later!', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You are not allowed to skip maps', login)
