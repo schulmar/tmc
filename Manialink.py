@@ -1,7 +1,10 @@
 from xml.sax.saxutils import escape
 
 """
-\file The file contains basic manialink classes
+\file Manialink.py
+\brief The file contains basic manialink classes
+
+Some convienience classes to build a valid Manialink XML tree.
 """
 
 class XmlElement(object):

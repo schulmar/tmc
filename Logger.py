@@ -2,7 +2,8 @@ from PluginInterface import *
 import os
 
 """
-\file Contains the logger plugin
+\file Logger.py
+\brief Contains the logger plugin
 
 This plugin provides an interface for logging.
 It can be replaced by any other plugin that provides the same interface,

@@ -3,7 +3,8 @@ from Manialink import *
 import random
 
 """
-\file Contains the ManialinkManager plugin
+\file ManialinkManager.py
+\brief Contains the ManialinkManager plugin
 
 This plugin provides management facilities for manialinks
 to abstract from the manialink scheme.

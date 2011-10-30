@@ -330,7 +330,7 @@ class Acl(PluginInterface):
 		\param userName The user in question
 		\return The level or None if no level could be determined
 		"""
-		groups = self.userGetGroups(username)
+		groups = self.userGetGroups(userName)
 		
 		if userName in self.SuperAdmins:
 			level = self.groupsGetHighestLevel()
