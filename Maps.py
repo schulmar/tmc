@@ -197,7 +197,7 @@ class Maps(PluginInterface):
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.removeThis'):
 			if self.callFunction(('TmConnector', 'RemoveMap'), self.getCurrentMap()['FileName']):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Current map removed (did not delete file)!', login)
+						'Current map(' + self.getCurrentMap()['Name'] + ') removed (did not delete file)!', login)
 				return True
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
