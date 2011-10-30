@@ -62,17 +62,34 @@ class WindowManager(PluginInterface):
 			if rowNumber == 0:
 				pages.append([])
 			frame = Frame()
-			frame['sizen'] = '2 %d' % (96//rowsPerPage, )
+			frame['sizen'] = '2 %d' % (size[1] // rowsPerPage, )
 			frame['posn'] = '0 -%d' % (size[1] * rowNumber/rowsPerPage, )
-			for e in rows[i]:
+			for e in row:
 				frame.addChild(e)
 			pages[pageNumber].append(frame)
 			i += 1
 		self.displayPagedWindow(login, name, title, size, pos, pages)
 
-	def displayTableWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths):
+	def displayTableWindow(self, login, name, title, size, pos, rows, rowsPerPage, 
+						columnWidths, headLine = None):
+		if headLine != None:
+			rowsPerPage += 1
+			headLineML = Frame()
+			x = 0
+			for i in xrange(len(columnWidths)):
+				lbl = Label()
+				lbl['Text'] = str(headLine[i])
+				lbl['posn'] = str(x) + ' 0'
+				x += columnWidths[i]
+				headLineML.addChild(lbl)
+				
 		lines = []
+		h = 0
 		for r in rows:
+			#insert headline on each new page
+			if headLine != None and h % rowsPerPage == 0:
+				lines.append(headLineML)
+				h += 1
 			line = []
 			i = 0
 			x = 0
@@ -82,9 +99,10 @@ class WindowManager(PluginInterface):
 				x += c
 				i += 1
 			lines.append(line)
-		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
+			h += 1
+		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage, headLine)
 
-	def displayTableStringsWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths):
+	def displayTableStringsWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths, headLine = None):
 		lines = []
 		for r in rows:
 			line = []
@@ -96,7 +114,7 @@ class WindowManager(PluginInterface):
 				line.append(lbl)
 				i += 1
 			lines.append(line)
-		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths)
+		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths, headLine)
 
 		
 
