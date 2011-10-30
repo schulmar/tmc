@@ -145,7 +145,7 @@ class Maps(PluginInterface):
 		except ValueError:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'MX Ids are integers!', login)
 			return
-		if self.callFunction(('Acl', 'userHasRight'), 'Maps.addFromMX'):
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.addFromMX'):
 			fileName = self.addFromMX(mxId)
 			self.callMethod(('TmConnector', 'AddMap'), self.__mxPath + fileName)
 		else:
