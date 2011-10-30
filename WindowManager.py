@@ -78,9 +78,9 @@ class WindowManager(PluginInterface):
 			x = 0
 			for c in columnWidths:
 				r[i]['posn'] = str(x) + ' 0'
+				line.append(r[i])
 				x += c
 				i += 1
-				line.append(r[i])
 			lines.append(line)
 		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
 
