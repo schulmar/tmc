@@ -100,7 +100,7 @@ class WindowManager(PluginInterface):
 				i += 1
 			lines.append(line)
 			h += 1
-		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage, headLine)
+		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
 
 	def displayTableStringsWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths, headLine = None):
 		lines = []
@@ -114,7 +114,7 @@ class WindowManager(PluginInterface):
 				line.append(lbl)
 				i += 1
 			lines.append(line)
-		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths)
+		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths, headLine)
 
 		
 
