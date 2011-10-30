@@ -67,7 +67,7 @@ class Maps(PluginInterface):
 						for mapDict in self.__currentMaps]
 		
 		cursor = self.__getCursor()
-		cursor.execute("""
+		cursor.executemany("""
 			INSERT INTO `maps` 
 			(`Uid`, `Name`, `Author`, `Environment`) 
 			VALUES (%s, %s, %s, %s);""",
