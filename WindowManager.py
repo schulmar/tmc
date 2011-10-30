@@ -74,14 +74,14 @@ class WindowManager(PluginInterface):
 						columnWidths, headLine = None):
 		if headLine != None:
 			rowsPerPage += 1
-			headLineML = Frame()
+			headLineML = []
 			x = 0
 			for i in xrange(len(columnWidths)):
 				lbl = Label()
 				lbl['Text'] = str(headLine[i])
 				lbl['posn'] = str(x) + ' 0'
 				x += columnWidths[i]
-				headLineML.addChild(lbl)
+				headLineML.append(lbl)
 				
 		lines = []
 		h = 0
