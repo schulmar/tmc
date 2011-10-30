@@ -86,8 +86,8 @@ class Maps(PluginInterface):
 	def __getMapPath(self):
 		path = self.callFunction(('TmConnector', 'GetMapsDirectory'))
 			
-		if not path[-1] == os.pathsep:
-			path += os.pathsep
+		if not path[-1] == os.path.sep:
+			path += os.path.sep
 			
 		return path
 		
