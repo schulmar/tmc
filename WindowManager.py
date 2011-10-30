@@ -96,7 +96,7 @@ class WindowManager(PluginInterface):
 				line.append(lbl)
 				i += 1
 			lines.append(line)
-		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
+		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths)
 
 		
 
