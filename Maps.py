@@ -63,7 +63,7 @@ class Maps(PluginInterface):
 		dbInsertMaps = [(mapDict['UId'], 
 						mapDict['Name'], 
 						mapDict['Author'], 
-						mapDict['Environment']) 
+						mapDict['Environnement']) 
 						for mapDict in self.__currentMaps]
 		
 		cursor = self.__getCursor()
