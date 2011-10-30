@@ -85,9 +85,6 @@ class Maps(PluginInterface):
 		
 	def __getMapPath(self):
 		path = self.callFunction(('TmConnector', 'GetMapsDirectory'))
-		print(path)
-		if path[-1] == ':':
-			path = path[:-1]
 			
 		if not path[-1] == os.pathsep:
 			path += os.pathsep
@@ -130,6 +127,7 @@ class Maps(PluginInterface):
 		f.close()
 		info = json.loads(info)
 		print(info)
+		print(self.__getMapPath(), self.__mxPath)
 		#create mx path when not already existing
 		if not os.path.isdir(self.__getMapPath() + self.__mxPath):
 			os.mkdir(self.__getMapPath() + self.__mxPath)
