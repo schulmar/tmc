@@ -93,7 +93,7 @@ class WindowManager(PluginInterface):
 				lbl = Label()
 				lbl['text'] = str(r)
 				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
-				line[i] = lbl
+				line.append(lbl)
 				i += 1
 			lines.append(line)
 		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
