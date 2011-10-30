@@ -60,10 +60,10 @@ class Maps(PluginInterface):
 		"""
 		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 10000, 0)
 		
-		dbInsertMaps = [(mapDict['UId'], 
-						mapDict['Name'], 
-						mapDict['Author'], 
-						mapDict['Environnement']) 
+		dbInsertMaps = [(str(mapDict['UId']), 
+						str(mapDict['Name']), 
+						str(mapDict['Author']), 
+						str(mapDict['Environnement']))
 						for mapDict in self.__currentMaps]
 		
 		cursor = self.__getCursor()
