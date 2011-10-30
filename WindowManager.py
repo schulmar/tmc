@@ -89,14 +89,12 @@ class WindowManager(PluginInterface):
 		for r in rows:
 			line = []
 			i = 0
-			x = 0
 			for c in columnWidths:
-				frame = Frame()
-				frame['posn'] = str(x) + ' 0'
-				frame.addChild(r[i])
-				x += c
+				lbl = Label()
+				lbl['text'] = str(r)
+				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
+				line[i] = lbl
 				i += 1
-				line.append(frame)
 			lines.append(line)
 		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
 
