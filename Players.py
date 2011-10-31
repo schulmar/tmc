@@ -104,8 +104,8 @@ class Players(PluginInterface):
 		if args == None or args == 'list':
 			rows = [(value['NickName'], key) for (key, value) in self.playerList.items()]
 			self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
-						login, 'Players.playerList', 'List of players that are currently on the server', 
-						(30, 60), (-15, 30), rows, 15, (20, 10), ('Nickname', 'Login'))
+						login, 'Players.playerList', 'List of players who are currently on the server', 
+						(40, 60), (-20, 30), rows, 15, (25, 15), ('Nickname', 'Login'))
 			
 
 	def getPlayerNickname(self, playerName):
