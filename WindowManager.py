@@ -264,9 +264,10 @@ class PagedWindow(Window):
 		self.currentPage = page
 			
 	def getManialink(self):
-		print(self.pages, self.currentPage)
-		if len(self.pages) > self.currentPage:
+		try:
 			self.setChildren(self.pages[self.currentPage])
+		except IndexError:
+			pass
 			
 		ml = super(PagedWindow, self).getManialink()
 

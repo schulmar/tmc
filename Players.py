@@ -10,7 +10,8 @@ class Players(PluginInterface):
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		self.__checkTables()
 		self.__loadCurrentPlayers()
-		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'onPlayerConnect') 
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'onPlayerConnect')
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerDisonnect', 'onPlayerDisconnect') 
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'EndMap', 'onEndMap')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'players', ('Players', 'chat_players'), 'Commands concerning players. Type /players help to see available commands')
 
@@ -38,7 +39,14 @@ class Players(PluginInterface):
 			self.callFunction(('Acl', 'userAdd'), player['Login'])
 			self.onPlayerConnect(player['Login'], False)
 
-	def onPlayerConnect(self, login, IsSpectator):	
+	def onPlayerConnect(self, login, IsSpectator):
+		"""
+		\brief Callback function for PlayerConnect-event
+		\param login The login of the connecting player
+		\param IsSpectator Is the player connecting as spectator?
+		
+		This function should update the list of players that are currently online
+		"""	
 		self.callFunction(('Acl', 'userAdd'), login)
 		info = self.callFunction(('TmConnector', 'GetDetailedPlayerInfo'), login)
 		cursor = self.__getCursor()
@@ -53,7 +61,21 @@ class Players(PluginInterface):
 		message += '$1E1 Country$z: ' + str(info['Path'].split('|')[1])
 		message += '$1E1 Ladder$z: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
 		self.callMethod(('TmConnector', 'ChatSendServerMessage'), message)
-		self.__gatherPlayerInformation
+		self.__gatherPlayerInformation(login)
+		
+	def onPlayerDisconnect(self, login):
+		"""
+		\brief Callback function for PlayerDisconnect-event
+		\param login The login of the disconnecting player
+		
+		This function should update the internal structure 
+		to free the resources held by the player entry
+		"""
+		try:
+			del self.playerList[login]
+		except KeyError:
+			self.log('Error could not remove player "' + login + '" from current playerlist '
+					+ str(self.playerList.keys()))
 
 	def __gatherPlayerInformation(self, playerName):
 		self.playerList[playerName] = {}
