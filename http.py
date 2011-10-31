@@ -1,7 +1,9 @@
 import BaseHTTPServer
 import urlparse
 from PluginInterface import *
-import md5
+import random
+import string
+import time
 
 """
 \file http.py
@@ -10,11 +12,7 @@ import md5
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_POST(self):
-		print(self)
-		print(self.headers)
 		print(urlparse.parse_qs(self.path.split('?')[-1]))
-		print(self.command)
-		print(self.client_address)
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		self.end_headers()
@@ -25,6 +23,8 @@ class HttpUploads(PluginInterface):
 	\brief A class for uploads using the http protocol
 	"""
 	__httpd = None#the server instance
+	__usedTokens = {}#a dict that maps tokens to their callback
+	__expiration_time = 100#the time a token stays valid in seconds
 	
 	def __init__(self, pipes, args):
 		"""
@@ -45,5 +45,29 @@ class HttpUploads(PluginInterface):
 		self.__httpd.__plugin = self
 		self.__httpd.serve_forever()
 		
-	def getUploadToken(self, callback):
-		token = md5.new
+	def getUploadToken(self, callback, *args):
+		"""
+		\brief Generates a valid token for 
+		"""
+		def getToken(N):
+			return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))
+		#search a free token
+		i = 5
+		token = getToken(i)
+		while token in self.__usedTokens:
+			i += 1
+			token = getToken(i)
+		#safe the callback for the token and its age
+		self.__usedTokens[token] = (callback, args, time.time() + self.__expiration_time)
+		#return the token to the caller
+		return token
+	
+	def dataRecieved(self, token, entries, data):
+		"""
+		\brief Calling the callback when data for the token were recieved
+		\param token The token that was used
+		\param entries All GET parameters
+		\param data The raw POST data 
+		"""
+		if token in self.__usedTokens and self.__usedTokens[token][2] >= time.time():
+			pass
