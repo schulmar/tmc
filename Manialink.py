@@ -49,7 +49,10 @@ class XmlElement(object):
 		\brief Set the content of this element
 		\param content The content string
 		"""
-		self.content = unicode(content, "utf-8")
+		if not isinstance(content, str):
+			self.content = str(content)
+		else:
+			self.content = content
 
 	def unsetContent(self):
 		"""
@@ -64,23 +67,23 @@ class XmlElement(object):
 		The string contains of <name attribs="values"...>Content Children.getXML()</name>
 		or <name attribs="values".../>
 		"""
-		xml = u'<' + unicode(self.name, 'utf-8')
+		xml = '<' + str(self.name)
 
 		for key,value in self.attribs.items():
 			if value != None:
-				xml += u' ' + str(key) + u'="' + escape(unicode(value, 'utf-8')) + u'"'
+				xml = xml + ' ' + str(key) + '="' + escape(str(value)) + '"'
 
 		if len(self.children) == 0 and self.content == None:
-			return  xml + u'/>'
+			return  xml + '/>'
 
 		else:
-			xml += u'>'
+			xml = xml + '>'
 			if self.content != None:
-				xml += escape(unicode(self.content, 'utf-8'))
+				xml = xml + escape(str(self.content))
 			for child in self.children:
-				xml += child.getXML()
+				xml = xml + child.getXML()
 
-			return xml + u'</' + str(self.name) + u'>'
+			return xml + '</' + str(self.name) + '>'
 	
 	def __getitem__(self, index):
 		"""
