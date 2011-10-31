@@ -165,7 +165,7 @@ class PluginManager(object):
 
 	def unsubscribeEvent(self, caller, pluginName, eventName, callbackMethod):
 		plugin = self.plugins[pluginName]
-		item = (callbackPlugin, callbackMethod)
+		item = (caller, callbackMethod)
 		if item in plugin.listeners[eventName]:
 			plugin.listeners[eventName].remove(item)
 

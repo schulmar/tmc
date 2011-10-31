@@ -1,6 +1,5 @@
 from PluginInterface import *
 import MySQLdb
-import time
 
 class Players(PluginInterface):
 	def __init__(self, pipes, args):
@@ -26,7 +25,7 @@ class Players(PluginInterface):
 		if not 'nick' in columns:
 			self.log('Adding column `nick` to table `users`')
 			cursor.execute('ALTER TABLE `users` ADD `nick` text')
-		if not 'lastOnline' in columns:
+		if not 'UpdatedAt' in columns:
 			self.log('Adding column `UpdatedAt` to table `users`')
 			cursor.execute('ALTER TABLE `users` ADD `UpdatedAt` datetime')
 		self.log('... database integrity check completed')
