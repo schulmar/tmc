@@ -106,8 +106,8 @@ class WindowManager(PluginInterface):
 			i = 0
 			for c in columnWidths:
 				lbl = Label()
-				if isinstance(r[i], str): 
-					lbl['text'] = r[i]
+				if isinstance(r[i], unicode): 
+					lbl['text'] = r[i].encode('utf-8')
 				else:
 					lbl['text'] = str(r[i])
 				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
