@@ -265,7 +265,7 @@ class PagedWindow(Window):
 			
 	def getManialink(self):
 		print(self.pages, self.currentPage)
-		if self.pages.has_key(self.currentPage):
+		if len(self.pages) > self.currentPage:
 			self.setChildren(self.pages[self.currentPage])
 			
 		ml = super(PagedWindow, self).getManialink()
