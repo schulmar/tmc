@@ -36,7 +36,6 @@ class Players(PluginInterface):
 	def __loadCurrentPlayers(self):
 		result = self.callFunction(('TmConnector', 'GetPlayerList'), 1000, 0)
 		for player in result:
-			self.callFunction(('Acl', 'userAdd'), player['Login'])
 			self.onPlayerConnect(player['Login'], False)
 
 	def onPlayerConnect(self, login, IsSpectator):
@@ -58,7 +57,7 @@ class Players(PluginInterface):
 			message = groups[0] + ': '
 
 		message += info['NickName']
-		message += '$1E1 Country$z: ' + str(info['Path'].split('|')[1])
+		message += '$1E1 Nation$z: ' + str(info['Path'].split('|')[1])
 		message += '$1E1 Ladder$z: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
 		self.callMethod(('TmConnector', 'ChatSendServerMessage'), message)
 		self.__gatherPlayerInformation(login)
@@ -80,6 +79,7 @@ class Players(PluginInterface):
 	def __gatherPlayerInformation(self, playerName):
 		self.playerList[playerName] = {}
 		info = self.callFunction(('TmConnector', 'getDetailedPlayerInfo'), playerName)
+		print(info)
 		self.playerList[playerName] = info
 
 
