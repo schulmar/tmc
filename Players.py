@@ -77,6 +77,10 @@ class Players(PluginInterface):
 					+ str(self.playerList.keys()))
 
 	def __gatherPlayerInformation(self, playerName):
+		"""
+		\brief Fetches all player information from server and stores them locally
+		\param playerName the login of the player whose information will be fetched
+		"""
 		self.playerList[playerName] = {}
 		info = self.callFunction(('TmConnector', 'GetDetailedPlayerInfo'), playerName)
 		self.playerList[playerName] = info
@@ -101,7 +105,7 @@ class Players(PluginInterface):
 			rows = [(value['NickName'], key) for (key, value) in self.playerList.items()]
 			self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 						login, 'Players.playerList', 'List of players that are currently on the server', 
-						(30, 60), (-15, 15), rows, 15, (20, 10), ('Nickname', 'Login'))
+						(30, 60), (-15, 30), rows, 15, (20, 10), ('Nickname', 'Login'))
 			
 
 	def getPlayerNickname(self, playerName):
