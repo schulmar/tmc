@@ -47,7 +47,8 @@ class Players(PluginInterface):
 		This function should update the list of players that are currently online
 		"""	
 		self.callFunction(('Acl', 'userAdd'), login)
-		info = self.callFunction(('TmConnector', 'GetDetailedPlayerInfo'), login)
+		self.__gatherPlayerInformation(login)
+		info = self.playerList[login]
 		cursor = self.__getCursor()
 		cursor.execute('UPDATE `users` SET `nick`=%s WHERE `name`=%s', (info['NickName'], login) )
 		groups = self.callFunction(('Acl', 'userGetGroups'), login)
@@ -60,7 +61,6 @@ class Players(PluginInterface):
 		message += '$1E1 Nation$z: ' + str(info['Path'].split('|')[1])
 		message += '$1E1 Ladder$z: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
 		self.callMethod(('TmConnector', 'ChatSendServerMessage'), message)
-		self.__gatherPlayerInformation(login)
 		
 	def onPlayerDisconnect(self, login):
 		"""
