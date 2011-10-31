@@ -256,7 +256,8 @@ class Maps(PluginInterface):
 			if self.callFunction(('TmConnector', 'NextMap')):
 				"""\todo Insert player nick here"""
 				self.callMethod(('TmConnector', 'ChatSendServerMessage'),
-							' skipped map.')
+							self.callFunction(('Players', 'getPlayerNickname'), login)
+							+ ' skipped map.')
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Could not skip map, try again later!', login)
