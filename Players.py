@@ -78,7 +78,7 @@ class Players(PluginInterface):
 
 	def __gatherPlayerInformation(self, playerName):
 		self.playerList[playerName] = {}
-		info = self.callFunction(('TmConnector', 'getDetailedPlayerInfo'), playerName)
+		info = self.callFunction(('TmConnector', 'GetDetailedPlayerInfo'), playerName)
 		print(info)
 		self.playerList[playerName] = info
 
