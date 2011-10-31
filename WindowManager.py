@@ -201,7 +201,7 @@ class Window(object):
 		title['text'] = self.title
 		title['posn'] = '4 0 2'
 		title['valign'] = 'center'
-		title['sizen'] = '10 2'
+		title['sizen'] = str(self.width - (4 + 4)) + ' 2'
 		f.addChild(title)
 
 		#the titlebar background
