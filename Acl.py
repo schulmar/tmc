@@ -38,7 +38,8 @@ class Acl(PluginInterface):
 		"""CREATE TABLE IF NOT EXISTS `users`(
 			`id` int NOT NULL auto_increment,
 			`name` text,
-			PRIMARY KEY (`id`)
+			PRIMARY KEY (`id`),
+			UNIQUE KEY `name` (`name`)
 		);
 		""")
 		cursor.execute(

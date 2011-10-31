@@ -27,8 +27,8 @@ class Players(PluginInterface):
 			self.log('Adding column `nick` to table `users`')
 			cursor.execute('ALTER TABLE `users` ADD `nick` text')
 		if not 'lastOnline' in columns:
-			self.log('Adding column `lastOnline` to table `users`')
-			cursor.execute('ALTER TABLE `users` ADD `lastOnline` int')
+			self.log('Adding column `UpdatedAt` to table `users`')
+			cursor.execute('ALTER TABLE `users` ADD `UpdatedAt` datetime')
 		self.log('... database integrity check completed')
 		cursor.close()
 		self.connection.commit()
@@ -65,16 +65,38 @@ class Players(PluginInterface):
 	def onEndMap(self, Rankings, Map, WasWarmUp, MatchContinuesOnNextMap, restartMap):
 		if (not WasWarmUp):
 			cursor = self.__getCursor()
-			print(Rankings)
 			for rank in Rankings:
 				if rank['BestTime'] != -1:
-					cursor.execute('UPDATE `users` SET `lastOnline`=%s WHERE `name`=%s', (int(time.time()), rank['Login']))
+					cursor.execute('UPDATE `users` SET `updatedAt`=NOW() WHERE `name`=%s', (rank['Login'], ))
 
 	def chat_players(self, login, args):
+		"""
+		\brief Commandos regarding all players
+		\param login The callers login
+		\param args Additional parameters to identify the operation
+		
+		None/List - list all players that are currently online
+		"""
 		if args == None or args == 'list':
-			pass
+			rows = [(value['NickName'], key) for (key, value) in self.playerList.items()]
+			self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
+						login, 'Players.playerList', 'List of players that are currently on the server', 
+						(30, 60), (-15, 15), rows, 15, (20, 10), ('Nickname', 'Login'))
 			
 
 	def getPlayerNickname(self, playerName):
+		"""
+		\brief Get the nickname of the given playerlogin
+		\param playerName The login of the player
+		\return The nickname, if the player is known or None if not
+		"""
 		if playerName in self.playerList:
-			info = self.playerList[playerName]['NickName']
+			return self.playerList[playerName]['NickName']
+		else:
+			cursor = self.__getCursor()
+			cursor.execute("SELECT `nick` FROM `users` WHERE name=%s", (playerName,))
+			row = cursor.fetchone()
+			if row != None:
+				return row['nick']
+			else:
+				return None

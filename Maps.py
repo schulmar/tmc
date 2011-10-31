@@ -254,6 +254,7 @@ class Maps(PluginInterface):
 		"""
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.skip'):
 			if self.callFunction(('TmConnector', 'NextMap')):
+				"""\todo Insert player nick here"""
 				self.callMethod(('TmConnector', 'ChatSendServerMessage'),
 							' skipped map.')
 			else:
