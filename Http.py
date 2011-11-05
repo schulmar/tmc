@@ -38,7 +38,7 @@ class Http(PluginInterface):
 		\param pipes The pipes to the PluginManager process
 		\arrs Additional plugin start arguments
 		"""
-		super(HttpUploads, self).__init__(pipes)
+		super(Http, self).__init__(pipes)
 		
 	def initialize(self, args):
 		"""
