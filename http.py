@@ -16,13 +16,18 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		self.end_headers()
-		self.wfile.write('<?xml version="1.0" encoding="utf-8" ?><manialink><label text="Thank you"/></manialink>')
+		entries = urlparse.parse_qs(self.path.split('?')[-1])
+		token = entries['token']
+		data = self.rfile.Read()
+		manialink = self.server.__plugin.dataRecieved(token, entries, data)
+		self.wfile.write(manialink)
 
 class HttpUploads(PluginInterface):
 	"""
 	\brief A class for uploads using the http protocol
 	"""
 	__httpd = None#the server instance
+	__address = None#the server address
 	__usedTokens = {}#a dict that maps tokens to their callback
 	__expiration_time = 100#the time a token stays valid in seconds
 	
@@ -41,13 +46,21 @@ class HttpUploads(PluginInterface):
 		
 		The server needs: address : (ip, port)
 		"""
+		self.__address = args['address']
 		self.__httpd = BaseHTTPServer.HTTPServer(args['address'], Handler)
 		self.__httpd.__plugin = self
 		self.__httpd.serve_forever()
 		
 	def getUploadToken(self, callback, *args):
 		"""
-		\brief Generates a valid token for 
+		\brief Generates a valid token for direct http uploads
+		\param callback the function to call when the token is used
+		\param args Additional parameters to pass to the function
+		\return (the token, the address of the upload server)
+		
+		The callback has following signature:
+		(entries, data, *args)
+		Where args are the userdefined args passed to this function
 		"""
 		def getToken(N):
 			return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))
@@ -60,7 +73,7 @@ class HttpUploads(PluginInterface):
 		#safe the callback for the token and its age
 		self.__usedTokens[token] = (callback, args, time.time() + self.__expiration_time)
 		#return the token to the caller
-		return token
+		return (token, self.__address)
 	
 	def dataRecieved(self, token, entries, data):
 		"""
@@ -70,4 +83,10 @@ class HttpUploads(PluginInterface):
 		\param data The raw POST data 
 		"""
 		if token in self.__usedTokens and self.__usedTokens[token][2] >= time.time():
-			pass
+			tokenDictEntry = self.__usedTokens[token] 
+			return self.callFunction(tokenDictEntry[0], entries, data, *tokenDictEntry[1])
+		else:
+			return '''<?xml version="1.0" encoding="utf-8" ?>
+			<manialink>
+				<label text="$f12$bError$b$000: The token you used is not valid" />
+			</manialink>'''

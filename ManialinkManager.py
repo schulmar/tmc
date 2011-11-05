@@ -240,7 +240,7 @@ class Display:
 				if self.ActionIdRange < 1:
 					self.ActionIdRange = 1
 		except KeyError:
-			self.callMethod(('Logger', 'log'), 'Could not remove action Id' + str(mlid) + 'because it is not managed')
+			self.callMethod(('Logger', 'log'), 'Could not remove action Id' + str(aid) + 'because it is not managed')
 
 	def __getActionButtons(self, manialinkElement):
 		"""
@@ -250,10 +250,10 @@ class Display:
 		The root element and all its children are scanned for "clickable" elements,
 		that define callbacks and therefore need actionids.
 		"""
-		list = []
+		actionButtons = []
 		if isinstance(manialinkElement, Quad) and manialinkElement.callback != None:
-			list.append(manialinkElement)
+			actionButtons.append(manialinkElement)
 		if len(manialinkElement.children) > 0:
 			for e in manialinkElement.children:
-				list.extend(self.__getActionButtons(e))
-		return list
+				actionButtons.extend(self.__getActionButtons(e))
+		return actionButtons
