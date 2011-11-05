@@ -4,7 +4,7 @@ from PluginInterface import *
 import random
 import string
 import time
-import urllib2
+import urllib
 
 """
 \file http.py
@@ -53,7 +53,7 @@ class Http(PluginInterface):
 			self.__address = args['address']
 		except KeyError:
 			#try to get the ip from the internet if the address was not given
-			self.__address = urllib2.urlopen("http://whatismyip.org/").read()
+			self.__address = urllib.urlopen("http://whatismyip.org/").read()
 			
 		self.__httpd = BaseHTTPServer.HTTPServer((self.__address, args['port']), Handler)
 		self.__httpd.__plugin = self
