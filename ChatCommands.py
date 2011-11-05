@@ -1,5 +1,6 @@
 from PluginInterface import *
 from Manialink import *
+import os
 
 """
 \file ChatCommands.py
@@ -166,4 +167,41 @@ class ChatCommands(PluginInterface):
 		return False
 
 	def chat_test(self, login, args):
-		pass
+		frame = Frame()
+		
+		label = Label()
+		label['text'] = 'Choose a file for upload'
+		frame.addChild(label)
+		
+		quad = Quad()
+		quad['sizen'] = '10 2'
+		ml = self.callFunction(('Http', 'getUploadToken'), ('ChatCommands', 'chat_test_upload'), login)
+		quad['manialink'] = 'POST(http://' + str(ml[0][0]) + ':' + str(ml[0][1]) \
+							+ '?token=' + str(ml[0]) + '&file=inputTrackFile,inputTrackFile)' 
+		frame.addChild(quad)
+		
+		entry = FileEntry()
+		entry['posn'] = "0 4"
+		entry['sizen'] = "10 2"
+		frame.addChild(entry)
+		
+		return frame
+		
+	def chat_test_upload(self, entries, data, login):
+		trackPath = self.callFunction(('TmConnector', 'GetMapsDirectory'))
+		directUploadPath = trackPath + os.path.pathsep + 'direct_upload'
+		if not os.path.isdir(directUploadPath):
+			os.mkdir(directUploadPath)
+		
+		directUploadUserPath = directUploadPath + os.path.pathsep + login
+		if not os.path.isdir(directUploadUserPath):
+			os.mkdir(directUploadUserPath)
+			
+		fileName = os.path.split(entries['file'])[1]
+		filePath = directUploadUserPath + os.path.pathsep + fileName 
+			
+		f = file(filePath)
+		f.write(data)
+		f.close()
+		
+		self.callFunction(('TmConnector', 'InsertMap'), 'direct_upload/' + fileName)

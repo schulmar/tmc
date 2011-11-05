@@ -55,7 +55,8 @@ class Http(PluginInterface):
 			#try to get the ip from the internet if the address was not given
 			self.__address = urllib.urlopen("http://whatismyip.org/").read()
 			
-		self.__httpd = BaseHTTPServer.HTTPServer((self.__address, args['port']), Handler)
+		self.__address = (self.__address, args['port'])
+		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
 		self.__httpd.__plugin = self
 		self.__httpd.serve_forever()
 		
@@ -64,11 +65,13 @@ class Http(PluginInterface):
 		\brief Generates a valid token for direct http uploads
 		\param callback the function to call when the token is used
 		\param args Additional parameters to pass to the function
-		\return (the token, the address of the upload server)
+		\return (the token, the (address, ip)-tuple of the upload server)
 		
 		The callback has following signature:
 		(entries, data, *args)
 		Where args are the userdefined args passed to this function
+		To get this working the calling form must use the GET variable "token"
+		with the passed value
 		"""
 		def getToken(N):
 			return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))
