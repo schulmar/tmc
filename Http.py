@@ -23,7 +23,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		manialink = self.server.__plugin.dataRecieved(token, entries, data)
 		self.wfile.write(manialink)
 
-class HttpUploads(PluginInterface):
+class Http(PluginInterface):
 	"""
 	\brief A class for uploads using the http protocol
 	"""
