@@ -166,4 +166,4 @@ class ChatCommands(PluginInterface):
 		return False
 
 	def chat_test(self, login, args):
-		
+		pass
