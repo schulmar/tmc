@@ -4,6 +4,7 @@ from PluginInterface import *
 import random
 import string
 import time
+import urllib2
 
 """
 \file http.py
@@ -44,10 +45,17 @@ class HttpUploads(PluginInterface):
 		\brief Start up the http server
 		\args Contains the connection data in a dictionary
 		
-		The server needs: address : (ip, port)
+		The server needs: address : ip or domain name (leave empty for autodetection)
+						 port : the port (necessary)
 		"""
-		self.__address = args['address']
-		self.__httpd = BaseHTTPServer.HTTPServer(args['address'], Handler)
+		try:
+			#read the address if given
+			self.__address = args['address']
+		except KeyError:
+			#try to get the ip from the internet if the address was not given
+			self.__address = urllib2.urlopen("http://whatismyip.com/automation/n09230945.asp").read()
+			
+		self.__httpd = BaseHTTPServer.HTTPServer((self.__address, args['port']), Handler)
 		self.__httpd.__plugin = self
 		self.__httpd.serve_forever()
 		
