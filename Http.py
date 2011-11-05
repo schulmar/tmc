@@ -53,9 +53,7 @@ class Http(PluginInterface):
 			self.__address = args['address']
 		except KeyError:
 			#try to get the ip from the internet if the address was not given
-			self.__address = urllib2.urlopen("http://checkip.dyndns.com/").read()
-			#I know it is not very robust but simple :)
-			self.__address = self.__address[20:]
+			self.__address = urllib2.urlopen("http://whatismyip.org/").read()
 			
 		self.__httpd = BaseHTTPServer.HTTPServer((self.__address, args['port']), Handler)
 		self.__httpd.__plugin = self
