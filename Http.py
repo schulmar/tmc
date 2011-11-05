@@ -73,8 +73,7 @@ class Http(PluginInterface):
 		To get this working the calling form must use the GET variable "token"
 		with the passed value
 		"""
-		def getToken(N):
-			return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(N))
+		getToken = lambda N: ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(N))
 		#search a free token
 		i = 5
 		token = getToken(i)
