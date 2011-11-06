@@ -13,14 +13,16 @@ import urllib2
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_POST(self):
-		print(urlparse.parse_qs(self.path.split('?')[-1]))
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		self.end_headers()
 		entries = urlparse.parse_qs(self.path.split('?')[-1])
+		for k in entries:
+			if len(entries[k]) == 1:
+				entries[k] = entries[k][0]
 		token = entries['token']
-		data = self.rfile.read()
-		manialink = self.server.__plugin.dataRecieved(token, entries, data)
+		data = self.rfile.read(int(self.headers.getheader('content-length')))
+		manialink = self.server.plugin.dataRecieved(token, entries, data)
 		self.wfile.write(manialink)
 
 class Http(PluginInterface):
