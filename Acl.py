@@ -169,7 +169,7 @@ class Acl(PluginInterface):
 		\return the rightId on success or None if rightName was not found
 		"""
 		try:
-			return self.rights[rightName]
+			return self.rights[rightName][0]
 		except KeyError:
 			self.callMethod(('Logger', 'log'), 'Acl error: right ' + rightName + ' unknown in request from ' + str(self.questioner))
 			return None
@@ -205,7 +205,7 @@ class Acl(PluginInterface):
 		if cursor.fetchone() != None:
 			return True
 		
-		groupList = self.getGroupsOfUser(userId)
+		groupList = self.userGetGroups(userId)
 		for g in groupList:
 			if self.groupHasRight(g):
 				return True
