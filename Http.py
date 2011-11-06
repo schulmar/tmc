@@ -19,7 +19,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.end_headers()
 		entries = urlparse.parse_qs(self.path.split('?')[-1])
 		token = entries['token']
-		data = self.rfile.Read()
+		data = self.rfile.read()
 		manialink = self.server.__plugin.dataRecieved(token, entries, data)
 		self.wfile.write(manialink)
 
