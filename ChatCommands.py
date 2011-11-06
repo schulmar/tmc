@@ -200,7 +200,7 @@ class ChatCommands(PluginInterface):
 		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'), frame, 'testUpload', login)
 		
 	def chat_test_upload(self, entries, data, login):
-		trackPath = self.callFunction(('TmConnector', 'GetMapsDirectory'))
+		trackPath = os.path.basename(self.callFunction(('TmConnector', 'GetMapsDirectory')))
 		directUploadPath = trackPath + os.path.sep + 'direct_upload'
 		if not os.path.isdir(directUploadPath):
 			os.mkdir(directUploadPath)
