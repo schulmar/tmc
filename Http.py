@@ -29,6 +29,7 @@ class Http(PluginInterface):
 	"""
 	__httpd = None#the server instance
 	__address = None#the server address
+	__thread = None#the thread in which the http server will run
 	__usedTokens = {}#a dict that maps tokens to their callback
 	__expiration_time = 100#the time a token stays valid in seconds
 	
@@ -59,7 +60,8 @@ class Http(PluginInterface):
 		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
 		self.__httpd.__plugin = self
 		self.__thread = threading.Thread(target = self.__httpd.serve_forever())
-		self.__thread.run()
+		self.__thread.daemon = True
+		self.__thread.start()
 		
 	def getUploadToken(self, callback, *args):
 		"""
