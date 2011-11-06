@@ -215,7 +215,7 @@ class ChatCommands(PluginInterface):
 			return """
 					<?xml version="1.0" encoding="utf-8" ?>
 					<manialink>
-						<label text="$f11$bError$b$fff: A file with this name already exists in your upload directory" />
+						<label text="$f11$oError$o$fff: A file with this name already exists in your upload directory" />
 					</manialink>
 					"""
 			
@@ -234,6 +234,6 @@ class ChatCommands(PluginInterface):
 			return """
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
-					<label text="$f12$bError$b$fff: Could insert the file, is this a trackfile?" />
+					<label text="$f12$oError$o$fff: Could insert the file, is this a trackfile?" />
 				</manialink>
 			"""
