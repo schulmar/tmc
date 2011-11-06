@@ -223,7 +223,8 @@ class ChatCommands(PluginInterface):
 		f.write(data)
 		f.close()
 		
-		if self.callFunction(('TmConnector', 'InsertMap'), 'direct_upload/' + fileName):
+		if self.callFunction(('TmConnector', 'InsertMap'), 
+					'direct_upload' + os.path.sep + 	login + os.path.sep + fileName):
 			return """
 					<?xml version="1.0" encoding="utf-8" ?>
 					<manialink>
@@ -231,9 +232,10 @@ class ChatCommands(PluginInterface):
 					</manialink>
 					"""
 		else:
+			os.remove(fileName)
 			return """
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
-					<label text="$f12$oError$o$fff: Could insert the file, is this a trackfile?" />
+					<label text="$f12$oError$o$fff: Could not insert the file, is this a trackfile?" />
 				</manialink>
 			"""
