@@ -58,7 +58,7 @@ class Http(PluginInterface):
 		self.__address = (self.__address, args['port'])
 		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
 		self.__httpd.__plugin = self
-		self.__thread = threading.thread(target = self.__httpd.serve_forever())
+		self.__thread = threading.Thread(target = self.__httpd.serve_forever())
 		self.__thread.run()
 		
 	def getUploadToken(self, callback, *args):
