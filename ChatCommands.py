@@ -200,7 +200,7 @@ class ChatCommands(PluginInterface):
 		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'), frame, 'testUpload', login)
 		
 	def chat_test_upload(self, entries, data, login):
-		trackPath = os.path.basename(self.callFunction(('TmConnector', 'GetMapsDirectory')))
+		trackPath = os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
 		directUploadPath = trackPath + os.path.sep + 'direct_upload'
 		if not os.path.isdir(directUploadPath):
 			os.mkdir(directUploadPath)
@@ -211,7 +211,15 @@ class ChatCommands(PluginInterface):
 		fileName = os.path.split(entries['file'])[1]
 		filePath = directUploadUserPath + os.path.sep + fileName 
 			
-		f = file(filePath)
+		if os.path.isfile(filePath):
+			return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="$f11$bError$b$fff: A file with this name already exists in your upload directory" />
+					</manialink>
+					"""
+			
+		f = open(filePath, "w")
 		f.write(data)
 		f.close()
 		
