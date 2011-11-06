@@ -4,7 +4,7 @@ from PluginInterface import *
 import random
 import string
 import time
-import urllib
+import urllib2
 
 """
 \file http.py
@@ -53,8 +53,10 @@ class Http(PluginInterface):
 			#read the address if given
 			self.__address = args['address']
 		except KeyError:
+			self.log("Determining the public ip, as none was given by the user")
 			#try to get the ip from the internet if the address was not given
-			self.__address = urllib.urlopen("http://whatismyip.org/").read()
+			self.__address = urllib2.urlopen("http://whatismyip.org/").read()
+			self.log("Public ip is " + str(self.__address))
 			
 		self.__address = (self.__address, args['port'])
 		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
