@@ -167,6 +167,13 @@ class ChatCommands(PluginInterface):
 		return False
 
 	def chat_test(self, login, args):
+		"""
+		\brief A test function for arbitrary funictionality
+		\param login The login of the calling player
+		\param args Additional command line params
+		
+		Currently displays an upload form		
+		"""
 		frame = Frame()
 		
 		label = Label()
@@ -185,7 +192,7 @@ class ChatCommands(PluginInterface):
 		entry = FileEntry()
 		entry['posn'] = "0 4"
 		entry['sizen'] = "10 2"
-		entry['name'] = "file"
+		entry['name'] = "inputTrackFile"
 		entry['folder'] = "./"
 		entry['default'] = "Pick Track"
 		frame.addChild(entry)
@@ -209,4 +216,17 @@ class ChatCommands(PluginInterface):
 		f.write(data)
 		f.close()
 		
-		self.callFunction(('TmConnector', 'InsertMap'), 'direct_upload/' + fileName)
+		if self.callFunction(('TmConnector', 'InsertMap'), 'direct_upload/' + fileName):
+			return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="Thank you for uploading this track!"/>
+					</manialink>
+					"""
+		else:
+			return """
+				<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="$f12$bError$b$fff: Could insert the file, is this a trackfile?" />
+				</manialink>
+			"""
