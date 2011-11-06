@@ -62,7 +62,7 @@ class Http(PluginInterface):
 			
 		self.__address = (self.__address, args['port'])
 		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
-		self.__httpd.__plugin = self
+		self.__httpd.plugin = self
 		self.__thread = threading.Thread(target = self.__httpd.serve_forever)
 		self.__thread.daemon = True
 		self.__thread.start()
