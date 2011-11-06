@@ -41,9 +41,9 @@ class ManialinkManager(PluginInterface):
 		\param login The login of the calling player
 		\param args The arguments that come from the chat input
 		"""
-		if args[1] == 'clear':
+		if args == 'clear':
 			self.callMethod(('TmConnector', 'SendHideManialinkPageToLogin'), login)
-			self.displays[args[0]] = Display()
+			self.displays[login] = Display()
 			self.callMethod(('Logger', 'log'), str(login) + ' cleared his/her ManialinkManager')
 
 	def ManialinkAnswer(self, PlayerUid, Login, Answer, Entries):
