@@ -147,7 +147,7 @@ class Acl(PluginInterface):
 		try:
 			return self.users[userName]
 		except KeyError:
-			self.callMethod(('Logger', 'log'), 'Acl error: user ' + userName + ' unknown in request from ' + str(self.questioner))
+			self.callMethod(('Logger', 'log'), 'Acl error: user ' + str(userName) + ' unknown in request from ' + str(self.questioner))
 			return None
 
 	def getIdFromGroupName(self, groupName):
@@ -205,7 +205,7 @@ class Acl(PluginInterface):
 		if cursor.fetchone() != None:
 			return True
 		
-		groupList = self.userGetGroups(userId)
+		groupList = self.userGetGroups(userName)
 		for g in groupList:
 			if self.groupHasRight(g):
 				return True
