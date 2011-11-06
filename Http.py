@@ -104,7 +104,14 @@ class Http(PluginInterface):
 			del self.__usedTokens[token]
 			return xml
 		else:
-			return '''<?xml version="1.0" encoding="utf-8" ?>
-			<manialink>
-				<label text="$f12$bError$b$000: The token you used is not valid" />
-			</manialink>'''
+			if token in self.__usedTokens:
+				del self.__usedTokens[token]
+				return '''<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="$f12$bError$b$000: The token you used has expired" />
+				</manialink>'''
+			else:
+				return '''<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="$f12$bError$b$000: The token you used is not valid" />
+				</manialink>'''
