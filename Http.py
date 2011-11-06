@@ -99,7 +99,10 @@ class Http(PluginInterface):
 		"""
 		if token in self.__usedTokens and self.__usedTokens[token][2] >= time.time():
 			tokenDictEntry = self.__usedTokens[token] 
-			return self.callFunction(tokenDictEntry[0], entries, data, *tokenDictEntry[1])
+			xml = self.callFunction(tokenDictEntry[0], entries, data, *tokenDictEntry[1])
+			#remove token from dict as it was used
+			del self.__usedTokens[token]
+			return xml
 		else:
 			return '''<?xml version="1.0" encoding="utf-8" ?>
 			<manialink>
