@@ -201,16 +201,15 @@ class ChatCommands(PluginInterface):
 		
 	def chat_test_upload(self, entries, data, login):
 		trackPath = self.callFunction(('TmConnector', 'GetMapsDirectory'))
-		directUploadPath = trackPath + os.path.pathsep + 'direct_upload'
+		directUploadPath = trackPath + os.path.sep + 'direct_upload'
 		if not os.path.isdir(directUploadPath):
 			os.mkdir(directUploadPath)
 		
-		directUploadUserPath = directUploadPath + os.path.pathsep + login
+		directUploadUserPath = directUploadPath + os.path.sep + login
 		if not os.path.isdir(directUploadUserPath):
 			os.mkdir(directUploadUserPath)
-			
 		fileName = os.path.split(entries['file'])[1]
-		filePath = directUploadUserPath + os.path.pathsep + fileName 
+		filePath = directUploadUserPath + os.path.sep + fileName 
 			
 		f = file(filePath)
 		f.write(data)
