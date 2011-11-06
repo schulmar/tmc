@@ -170,19 +170,24 @@ class ChatCommands(PluginInterface):
 		frame = Frame()
 		
 		label = Label()
-		label['text'] = 'Choose a file for upload'
+		label['text'] = 'Submit'
 		frame.addChild(label)
 		
 		quad = Quad()
 		quad['sizen'] = '10 2'
+		quad['style'] = 'Bgs1'
+		quad['substyle'] = 'PlayerCard'
 		ml = self.callFunction(('Http', 'getUploadToken'), ('ChatCommands', 'chat_test_upload'), login)
-		quad['manialink'] = 'POST(http://' + str(ml[0][0]) + ':' + str(ml[0][1]) \
+		quad['manialink'] = 'POST(http://' + str(ml[1][0]) + ':' + str(ml[1][1]) \
 							+ '?token=' + str(ml[0]) + '&file=inputTrackFile,inputTrackFile)' 
 		frame.addChild(quad)
 		
 		entry = FileEntry()
 		entry['posn'] = "0 4"
 		entry['sizen'] = "10 2"
+		entry['name'] = "file"
+		entry['folder'] = "./"
+		entry['default'] = "Pick Track"
 		frame.addChild(entry)
 		
 		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'), frame, 'testUpload', login)
