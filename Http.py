@@ -80,7 +80,7 @@ class Http(PluginInterface):
 		"""
 		getToken = lambda N: ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(N))
 		#search a free token
-		i = 5
+		i = 1
 		token = getToken(i)
 		while token in self.__usedTokens:
 			i += 1
