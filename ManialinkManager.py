@@ -35,15 +35,16 @@ class ManialinkManager(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'mlmanager', ('ManialinkManager', 'chat_mlmanager'))
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerManialinkPageAnswer', 'ManialinkAnswer')
 
-	def chat_mlmanager(self, args):
+	def chat_mlmanager(self, login, args):
 		"""
 		\brief The chat callback
+		\param login The login of the calling player
 		\param args The arguments that come from the chat input
 		"""
 		if args[1] == 'clear':
-			self.callMethod(('TmConnector', 'SendHideManialinkPageToLogin'), args[0])
+			self.callMethod(('TmConnector', 'SendHideManialinkPageToLogin'), login)
 			self.displays[args[0]] = Display()
-			self.callMethod(('Logger', 'log'), str(args[0]) + ' cleared his/her ManialinkManager')
+			self.callMethod(('Logger', 'log'), str(login) + ' cleared his/her ManialinkManager')
 
 	def ManialinkAnswer(self, PlayerUid, Login, Answer, Entries):
 		"""
