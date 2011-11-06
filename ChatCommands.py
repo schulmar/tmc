@@ -185,7 +185,7 @@ class ChatCommands(PluginInterface):
 		entry['sizen'] = "10 2"
 		frame.addChild(entry)
 		
-		self.callMethod(('ManialinkManager', 'displayManialink'), frame, 'testUpload', login)
+		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'), frame, 'testUpload', login)
 		
 	def chat_test_upload(self, entries, data, login):
 		trackPath = self.callFunction(('TmConnector', 'GetMapsDirectory'))
