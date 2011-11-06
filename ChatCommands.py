@@ -232,7 +232,7 @@ class ChatCommands(PluginInterface):
 					</manialink>
 					"""
 		else:
-			os.remove(fileName)
+			os.remove(filePath)
 			return """
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
