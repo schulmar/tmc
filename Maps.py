@@ -243,14 +243,18 @@ class Maps(PluginInterface):
 		load - Load the current matchsettings from file
 		display - Show the current matchsettings 
 		"""
-		params = param.split()
+		if isinstance(param, str):
+			params = param.split()
+		else:
+			params = []
+			
 		subcommands = {'help'		: 'Display the help ("... help <command>" for details).',
 						'save'		: 'Save the matchsettings file from current settings.',
 						'load'		: 'Load current settings from matchsettings file.',
 						'set'		: 'Set the matchsettings filename.',
 						#'display'	: 'Display the current matchsettings.'
 						}
-		if params[0] == help:
+		if len(params) == 0 or params[0] == help:
 			if len(params) > 1:
 				try:
 					text = subcommands[params[1]]
