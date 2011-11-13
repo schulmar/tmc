@@ -205,10 +205,14 @@ class Maps(PluginInterface):
 		
 		Displays a list of all tracks to the calling player
 		"""
-		rows  = [(mapDict['Name'], mapDict['Author'], mapDict['GoldTime']) for mapDict in self.__currentMaps]
+		rows  = [(i + 1,
+				self.__currentMaps[i]['Name'], 
+				self.__currentMaps[i]['Author'], 
+				self.__currentMaps[i]['GoldTime']) 
+				for i in xrange(self.__currentMaps)]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (35, 25, 10),
-					('Mapname', 'Authorname', 'GoldTime'))
+					('Id', 'Mapname', 'Authorname', 'GoldTime'))
 	
 	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
 		"""
@@ -347,3 +351,11 @@ class Maps(PluginInterface):
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You are not allowed to skip maps', login)
+			
+	def chat_jukebox(self, login, params):
+		"""
+		\brief Jukebox management
+		\param login The login of the calling player
+		\param params Additional params given by the player
+		"""
+		
