@@ -91,12 +91,12 @@ class ChatCommands(PluginInterface):
 		if args[0] == 'help':
 			if len(args) == 1:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-							'Subcommands of /player: ' + ', '.join([i[0] for i in commands]), login)
+							'Subcommands of /player: ' + ', '.join(commands.keys()), login)
 			else:
 				try:
 					desc = commands[args[1]]
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								str(desc), login)
+								'/player ' + args[1] + ': ' + str(desc), login)
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Unknown /player subcommand "' + args[1] + '"', login)
