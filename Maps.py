@@ -22,6 +22,9 @@ class Maps(PluginInterface):
 	__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
 	__connection = None#The database connection
 	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
+	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
+	
+	
 	def __init__(self, pipes, args):
 		"""
 		\brief Construct the class

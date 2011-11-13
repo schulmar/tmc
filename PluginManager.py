@@ -78,7 +78,7 @@ class PluginManager(object):
 				request = plugin.pipes[1].recv()
 
 				if isinstance(request, Event):
-					print('Processing Event ' + str(request.name))
+					#print('Processing Event ' + str(request.name))
 					if request.name in plugin.listeners:
 						for listener in plugin.listeners[request.name]:
 							listener[0].req_lock.acquire()
@@ -90,7 +90,7 @@ class PluginManager(object):
 
 				elif isinstance(request, Method):
 					if request.name[0] == None:
-						print('Processing Method ' + str(request.name[1] + str(request.getArgs())))
+						#print('Processing Method ' + str(request.name[1] + str(request.getArgs())))
 						method = getattr(self, request.name[1])
 						method(plugin, *request.getArgs())
 					else:
@@ -106,8 +106,7 @@ class PluginManager(object):
 
 				elif isinstance(request, Function):
 					if request.name[0] == None:
-						print('Processing Function ' + \
-										str(request.name[1]) + str(request.getArgs()))
+						#print('Processing Function ' + str(request.name[1]) + str(request.getArgs()))
 						function = getattr(self, request.name[1])
 						plugin.pipes[1].send(Result(request, function(plugin, *request.getArgs())))
 					elif request.name[0] in self.plugins:

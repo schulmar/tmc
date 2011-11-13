@@ -34,7 +34,7 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('player', 'chat_player', 'Manage one player, type /player help for more information')
 		rightAdd('ChatCommands.playerAddGroup', 'Add players to groups (that are below the calling players own highest level)')
 		rightAdd('ChatCommands.playerRemoveGroup', 'Remove players from groups (that are below the calling players own highest level)')
-		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
+		#registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
 
 	def chat_echo(self, login, args):
 		"""
@@ -174,6 +174,7 @@ class ChatCommands(PluginInterface):
 		
 		Currently displays an upload form		
 		"""
+		return None
 		frame = Frame()
 		
 		label = Label()
