@@ -471,6 +471,7 @@ class Maps(PluginInterface):
 			if len(self.__jukebox) == 0:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'The jukebox is empty', login)
+				return False
 			rows = []
 			for i in xrange(len(self.__jukebox)):
 				t = self.__jukebox[i]
