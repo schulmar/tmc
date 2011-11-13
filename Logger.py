@@ -1,5 +1,6 @@
 from PluginInterface import *
 import os
+import time
 
 """
 \file Logger.py
@@ -44,7 +45,8 @@ class Logger(PluginInterface):
 		Depending on the loglevel messages can be ignored.
 		"""
 		if level >= self.loglevel:
-			self.file.write(str(args) + os.linesep)
+			timeStamp = time.strftime('%d.%m. %H:%M:%S')
+			self.file.write(timeStamp + ' ' + str(args) + os.linesep)
 			self.file.flush()
 		else:
 			print('Logger: ignored message of level ' + str(level) + ' because current loglevel is '\
