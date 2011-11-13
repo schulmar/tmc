@@ -375,6 +375,14 @@ class Maps(PluginInterface):
 						'You are not allowed to skip maps', login)
 			
 	def onMapBegin(self, Map, isWarmUp, isMatchContinuation):
+		"""
+		\brief Callback on begin of map
+		\param Map A struct containing information about the current map
+		\param isWarmup Is this warmupMode?
+		\param isMatchContinuation Is this a continuation of the map?
+		
+		Used to remove tracks from jukebox when they are played
+		"""
 		if (len(self.__jukebox) > 0 and 
 			self.__jukebox[0][0]['fileName'] == Map['fileName']):
 			self.__jukebox.pop(0) 
