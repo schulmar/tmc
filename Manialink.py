@@ -190,8 +190,10 @@ class Label(XmlElement):
 		
 		"""
 		self.name = 'label'
+		self.callback = None
+		self.callback_args = None
 		super(Label, self).__init__(displayable + alignable + linkable + formatable + \
-			['text', 'autonewline'])
+			['text', 'autonewline', 'action'])
 		self['text'] = text
 	
 class Format(XmlElement):
