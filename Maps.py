@@ -265,7 +265,7 @@ class Maps(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login,
 							'matchsettings ' + params[1] + ': ' + text)
 			else:
-				self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'), login,
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login,
 							'matchsettings sub commands: ' + ', '.join(subcommands.keys()))
 		elif params[0] == 'save':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.saveMatchSettings'):
@@ -304,7 +304,7 @@ class Maps(PluginInterface):
 				
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Unknown command \'matchsettings' + param + '\'', login)
+						'Unknown command \'matchsettings ' + param + '\'', login)
 			
 	def chat_skip(self, login, params):
 		"""
