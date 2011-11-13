@@ -252,7 +252,8 @@ class Display:
 		that define callbacks and therefore need actionids.
 		"""
 		actionButtons = []
-		if isinstance(manialinkElement, Quad) and manialinkElement.callback != None:
+		if ((isinstance(manialinkElement, Quad) or isinstance(manialinkElement, Label)) 
+			and manialinkElement.callback != None):
 			actionButtons.append(manialinkElement)
 		if len(manialinkElement.children) > 0:
 			for e in manialinkElement.children:
