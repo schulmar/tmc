@@ -185,7 +185,7 @@ class Label(XmlElement):
 	A label allows textoutput. A label has no background!
 	No children allowed!
 	"""
-	def __init__(self, text = '', callback = None, callbackArgs = None):
+	def __init__(self, text = '', callback = None, callbackArgs = ()):
 		"""
 		
 		"""
