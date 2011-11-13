@@ -33,7 +33,7 @@ class Acl(PluginInterface):
 		\param args contains the same args as in constructor
 		"""
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
-		cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
+		cursor = self.connection.cursor()
 		cursor.execute("SHOW TABLES")
 		tables = [i[0] for i in cursor.fetchall()]
 		if not 'users' in tables:
