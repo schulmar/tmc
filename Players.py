@@ -50,7 +50,7 @@ class Players(PluginInterface):
 		self.__gatherPlayerInformation(login)
 		info = self.playerList[login]
 		cursor = self.__getCursor()
-		cursor.execute('UPDATE `users` SET `nick`=%s, `lastUpdated`=NOW() WHERE `name`=%s', (info['NickName'], login) )
+		cursor.execute('UPDATE `users` SET `nick`=%s, `UpdatedAt`=NOW() WHERE `name`=%s', (info['NickName'], login) )
 		groups = self.callFunction(('Acl', 'userGetGroups'), login)
 		if len(groups) == 0:
 			message = '$zNew Player: '
