@@ -21,6 +21,7 @@ class Maps(PluginInterface):
 	__nextMap = 0#The index of the next map in the list
 	__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
 	__connection = None#The database connection
+	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
 	def __init__(self, pipes, args):
 		"""
 		\brief Construct the class
@@ -60,13 +61,19 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'list', ('Maps', 'chat_list'), 
 						'List all maps that are currently on the server')
 		
-		self.callMethod(('Acl', 'rightAdd'), 'Maps.removeThis', 'Remove (does not delete file) the current map from server')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.removeThis', 
+					'Remove (does not delete file) the current map from server')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'removethis', ('Maps', 'chat_removethis'), 
 						'Remove the current map from the server (does not delete file)')
 		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.skip', 'Skip the current track')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'skip', ('Maps', 'chat_skip'),
 					'Skip the current map')
+		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.saveMatchSettings', 'Save matchsettings to file.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.loadMatchSettings', 'Load matchsettings from file.')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'matchsettings', 
+					('Maps', 'chat_matchsettings'), 'Manage the matchsettings of the server.')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		
@@ -226,25 +233,74 @@ class Maps(PluginInterface):
 						'You do not have the right to remove the current map from the server!', login)
 			return False
 		
-	def chat_matchsettings(self, login, params):
+	def chat_matchsettings(self, login, param):
 		"""
 		\brief Handle matchsettings 
 		\param login The calling login
-		\param params Additional params on what to do
+		\param param Additional param on what to do
 		
-		write - Write the current matchsettings to file
-		read - Read the current matchsettings from file
+		save - Save the current matchsettings to file
+		load - Load the current matchsettings from file
 		display - Show the current matchsettings 
 		"""
-		if params == 'write':
-			pass
-		elif params == 'read':
-			pass
-		elif params == 'display':
-			pass
+		params = param.split()
+		subcommands = {'help'		: 'Display the help ("... help <command>" for details).',
+						'save'		: 'Save the matchsettings file from current settings.',
+						'load'		: 'Load current settings from matchsettings file.',
+						'set'		: 'Set the matchsettings filename.',
+						#'display'	: 'Display the current matchsettings.'
+						}
+		if params[0] == help:
+			if len(params) > 1:
+				try:
+					text = subcommands[params[1]]
+				except KeyError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login, 
+								'Unknown command "'+ params[1] +'"')
+					return None
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login,
+							'matchsettings ' + params[1] + ': ' + text)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'), login,
+							'matchsettings sub commands: ' + ', '.join(subcommands.keys()))
+		elif params[0] == 'save':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.saveMatchSettings'):
+				self.callMethod(('TmConnector', 'SaveMatchSettings'), self.__matchSettingsFileName)
+				self.log('Matchsettings saved to file ' + self.__matchSettingsFileName + ' by ' + login)
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Saved matchsettings to ' +	self.__matchSettingsFileName)
+			else:
+				self.log(login + ' had insufficient rights to save matchsettings')
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You have insufficient rights to save matchsettings to file!', login)
+		elif params[0] == 'load':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.loadMatchSettings'):
+				self.callMethod(('TmConnector', 'LoadMatchSettings'), self.__matchSettingsFileName)
+				self.log('Matchsettings loaded from file ' + self.__matchSettingsFileName + ' by ' + login)
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Loaded matchsettings from ' + self.__matchSettingsFileName)
+			else:
+				self.log(login + ' had insufficient rights to save matchsettings')
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You have insufficient rights to load matchsettings from file!', login)
+		#elif params[0] == 'display':
+		#	pass
+		elif params[0] == 'set':
+			if len(params) > 1:
+				if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.setMatchSettingsFileName'):
+					self.__matchSettingsFileName = params[1]
+					self.log(login + ' changed match settings file name to ' 
+							+ self.__matchSettingsFileName)
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login,
+								'Changed matchsettings file name to ' + self.__matchSettingsFileName)
+				else:
+					self.log(login + ' has insufficient rights to change match settings file name!')
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), login,
+								'You have insufficient rights to change the match settings file name!')
+				
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Unknown command \'matchsettings' + params + '\'', login)
+						'Unknown command \'matchsettings' + param + '\'', login)
 			
 	def chat_skip(self, login, params):
 		"""
