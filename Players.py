@@ -115,7 +115,7 @@ class Players(PluginInterface):
 		\return The nickname, if the player is known or None if not
 		"""
 		if playerName in self.playerList:
-			return self.playerList[playerName]['NickName']
+			return self.playerList[playerName]['NickName'].encode('utf-8')
 		else:
 			cursor = self.__getCursor()
 			cursor.execute("SELECT `nick` FROM `users` WHERE name=%s", (playerName,))
