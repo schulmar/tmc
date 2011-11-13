@@ -57,8 +57,13 @@ class Http(PluginInterface):
 		except KeyError:
 			self.log("Determining the public ip, as none was given by the user")
 			#try to get the ip from the internet if the address was not given
-			self.__address = urllib2.urlopen("http://whatismyip.org/").read()
-			self.log("Public ip is " + str(self.__address))
+			try:
+				self.__address = urllib2.urlopen("http://whatismyip.org/").read()
+				self.log("Public ip is " + str(self.__address))
+			except:
+				self.__address = None
+				self.log("Error: Could not determine public ip")
+				print("Error: Could not determine public ip")
 			
 		self.__address = (self.__address, args['port'])
 		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
