@@ -229,7 +229,9 @@ class Maps(PluginInterface):
 					('Id', 'Mapname', 'Authorname', 'GoldTime'))
 	
 	def listCallback(self, entries, login, mapId):
-		if not self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
+			self.chat_list(login, None)
+		else:
 			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'Maps.Maplist')
 						
 		self.chat_jukebox(login, 'add ' + str(mapId))
