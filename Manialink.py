@@ -185,13 +185,14 @@ class Label(XmlElement):
 	A label allows textoutput. A label has no background!
 	No children allowed!
 	"""
-	def __init__(self):
+	def __init__(self, text = ''):
 		"""
 		
 		"""
 		self.name = 'label'
 		super(Label, self).__init__(displayable + alignable + linkable + formatable + \
 			['text', 'autonewline'])
+		self['text'] = text
 	
 class Format(XmlElement):
 	"""
