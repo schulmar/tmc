@@ -374,7 +374,7 @@ class Maps(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You are not allowed to skip maps', login)
 			
-	def onMapBegin(self, Map, isWarmUp, isMatchContinuation):
+	def onBeginMap(self, Map, isWarmUp, isMatchContinuation):
 		"""
 		\brief Callback on begin of map
 		\param Map A struct containing information about the current map
