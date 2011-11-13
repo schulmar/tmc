@@ -72,6 +72,10 @@ class Maps(PluginInterface):
 		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.saveMatchSettings', 'Save matchsettings to file.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.loadMatchSettings', 'Load matchsettings from file.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.setMatchSettingsFileName', 
+					'Set the current matchsettings file name.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.getMatchSettingsFileName', 
+					'Get the current matchsettings file name.')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'matchsettings', 
 					('Maps', 'chat_matchsettings'), 'Manage the matchsettings of the server.')
 		
@@ -252,6 +256,7 @@ class Maps(PluginInterface):
 						'save'		: 'Save the matchsettings file from current settings.',
 						'load'		: 'Load current settings from matchsettings file.',
 						'set'		: 'Set the matchsettings filename.',
+						'get'		: 'Get the matchsettings filename.'
 						#'display'	: 'Display the current matchsettings.'
 						}
 		if len(params) == 0 or params[0] == 'help':
@@ -269,7 +274,8 @@ class Maps(PluginInterface):
 							'matchsettings sub commands: ' + ', '.join(subcommands.keys()), login)
 		elif params[0] == 'save':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.saveMatchSettings'):
-				self.callMethod(('TmConnector', 'SaveMatchSettings'), self.__matchSettingsFileName)
+				self.callMethod(('TmConnector', 'SaveMatchSettings'), 
+							'MatchSettings' + os.path.sep + self.__matchSettingsFileName)
 				self.log('Matchsettings saved to file ' + self.__matchSettingsFileName + ' by ' + login)
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'Saved matchsettings to ' +	self.__matchSettingsFileName, login)
@@ -279,7 +285,8 @@ class Maps(PluginInterface):
 						'You have insufficient rights to save matchsettings to file!', login)
 		elif params[0] == 'load':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.loadMatchSettings'):
-				self.callMethod(('TmConnector', 'LoadMatchSettings'), self.__matchSettingsFileName)
+				self.callMethod(('TmConnector', 'LoadMatchSettings'), 
+							'MatchSettings' + os.path.sep + self.__matchSettingsFileName)
 				self.log('Matchsettings loaded from file ' + self.__matchSettingsFileName + ' by ' + login)
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'Loaded matchsettings from ' + self.__matchSettingsFileName, login)
@@ -303,7 +310,15 @@ class Maps(PluginInterface):
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'You have insufficient rights to change the match settings file name!',
 								login)
-				
+		elif params[0] == 'get':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.getMatchSettingsFileName'):
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Matchsettings filename is: ' + self.__matchSettingsFileName, 
+								login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'You have insufficient rights to view the matchsettings filename!', 
+								login)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'Unknown command \'matchsettings ' + param + '\'', login)
