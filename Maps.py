@@ -205,10 +205,15 @@ class Maps(PluginInterface):
 		
 		Displays a list of all tracks to the calling player
 		"""
+		def timeToString(time):
+			milli = time % 1000
+			sec = (time // 1000) % 60
+			min = (time // 60000)
+			return str(min) + ':' + str(sec) + ':' + str(milli)
 		rows  = [(i + 1,
 				self.__currentMaps[i]['Name'], 
 				self.__currentMaps[i]['Author'], 
-				self.__currentMaps[i]['GoldTime']) 
+				timeToString(self.__currentMaps[i]['GoldTime'])) 
 				for i in xrange(len(self.__currentMaps))]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (5, 30, 25, 10),
