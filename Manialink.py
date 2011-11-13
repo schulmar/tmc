@@ -39,7 +39,7 @@ class XmlElement(object):
 		\param value The value of the attribute
 		"""
 		if attr in self.attribs:
-			if isinstance(value, str)
+			if isinstance(value, str):
 				self.attribs[attr] = value
 			else:
 				self.attribs[attr] = str(value)
