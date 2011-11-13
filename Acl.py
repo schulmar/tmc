@@ -35,7 +35,7 @@ class Acl(PluginInterface):
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
 		cursor.execute("SHOW TABLES")
-		tables = [i[0] for i in cursor.fetchAll()]
+		tables = [i[0] for i in cursor.fetchall()]
 		if not 'users' in tables:
 			cursor.execute(
 			"""CREATE TABLE IF NOT EXISTS `users`(
