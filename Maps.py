@@ -384,7 +384,7 @@ class Maps(PluginInterface):
 		Used to remove tracks from jukebox when they are played
 		"""
 		if (len(self.__jukebox) > 0 and 
-			self.__jukebox[0][0]['fileName'] == Map['fileName']):
+			self.__jukebox[0][0]['FileName'] == Map['FileName']):
 			self.__jukebox.pop(0) 
 			
 	def chat_jukebox(self, login, params):
