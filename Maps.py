@@ -96,6 +96,7 @@ class Maps(PluginInterface):
 					'Jukebox trackmanagement. Type /jukebox help for more information')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
+		self.callMethod((None, 'SubscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
 		
 	def __getCursor(self):
 		"""
@@ -373,6 +374,11 @@ class Maps(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You are not allowed to skip maps', login)
 			
+	def onMapBegin(self, Map, isWarmUp, isMatchContinuation):
+		if (len(self.__jukebox) > 0 and 
+			self.__jukebox[0][0]['fileName'] == Map['fileName']):
+			self.__jukebox.pop(0) 
+			
 	def chat_jukebox(self, login, params):
 		"""
 		\brief Jukebox management
@@ -399,7 +405,7 @@ class Maps(PluginInterface):
 				
 				if len(filter(lambda x: (x[0]['FileName'] == newJukeboxEntry['FileName']), self.__jukebox)) > 0:
 					self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
-									'This newJukeboxEntry is already in jukebox, wait until it is being played!',
+									'This map is already in jukebox, wait until it is being played!',
 									login)
 					return False
 				
