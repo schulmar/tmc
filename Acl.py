@@ -34,55 +34,63 @@ class Acl(PluginInterface):
 		"""
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.connection.cursor(MySQLdb.cursors.DictCursor)
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `users`(
-			`id` int NOT NULL auto_increment,
-			`name` varchar(50),
-			PRIMARY KEY (`id`),
-			UNIQUE KEY `name` (`name`)
-		);
-		""")
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `groups`(
-			`id` int NOT NULL auto_increment,
-			`name` text,
-			`level` int,
-			`description` text,
-			PRIMARY KEY (`id`)
-		);
-		""")
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `rights`(
-			`id` int NOT NULL auto_increment,
-			`name` text NOT NULL,
-			`description` text NOT NULL,
-			PRIMARY KEY (`id`)
-		);
-		""")
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `usersToGroups`(
-			`id` int NOT NULL auto_increment,
-			`groupId` int NOT NULL,
-			`userId` int NOT NULL,
-			PRIMARY KEY (`id`)
-		);
-		""")
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `groupsToRights`(
-			`id` int NOT NULL auto_increment,
-			`groupId` int NOT NULL,
-			`rightId` int NOT NULL,
-			PRIMARY KEY (`id`)
-		);
-		""")
-		cursor.execute(
-		"""CREATE TABLE IF NOT EXISTS `usersToRights`(
-			`id` int NOT NULL auto_increment,
-			`userId` int NOT NULL,
-			`rightId` int NOT NULL,
-			PRIMARY KEY (`id`)
-		);
-		""")
+		cursor.execute("SHOW TABLES")
+		tables = [i[0] for i in cursor.fetchAll()]
+		if not 'users' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `users`(
+				`id` int NOT NULL auto_increment,
+				`name` varchar(50),
+				PRIMARY KEY (`id`),
+				UNIQUE KEY `name` (`name`)
+			);
+			""")
+		if not 'groups' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `groups`(
+				`id` int NOT NULL auto_increment,
+				`name` text,
+				`level` int,
+				`description` text,
+				PRIMARY KEY (`id`)
+			);
+			""")
+		if not 'rights' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `rights`(
+				`id` int NOT NULL auto_increment,
+				`name` text NOT NULL,
+				`description` text NOT NULL,
+				PRIMARY KEY (`id`)
+			);
+			""")
+		if not 'usersToGroups' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `usersToGroups`(
+				`id` int NOT NULL auto_increment,
+				`groupId` int NOT NULL,
+				`userId` int NOT NULL,
+				PRIMARY KEY (`id`)
+			);
+			""")
+		if not 'groupsToRights' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `groupsToRights`(
+				`id` int NOT NULL auto_increment,
+				`groupId` int NOT NULL,
+				`rightId` int NOT NULL,
+				PRIMARY KEY (`id`)
+			);
+			""")
+		if not 'usersToRights' in tables:
+			cursor.execute(
+			"""CREATE TABLE IF NOT EXISTS `usersToRights`(
+				`id` int NOT NULL auto_increment,
+				`userId` int NOT NULL,
+				`rightId` int NOT NULL,
+				PRIMARY KEY (`id`)
+			);
+			""")
 		cursor.close()
 		self.connection.commit()
 		self.__loadRights()
