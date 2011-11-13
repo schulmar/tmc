@@ -211,7 +211,7 @@ class Maps(PluginInterface):
 				self.__currentMaps[i]['GoldTime']) 
 				for i in xrange(len(self.__currentMaps))]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
-					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (35, 25, 10),
+					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (5, 30, 25, 10),
 					('Id', 'Mapname', 'Authorname', 'GoldTime'))
 	
 	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
