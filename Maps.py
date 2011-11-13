@@ -96,7 +96,7 @@ class Maps(PluginInterface):
 					'Jukebox trackmanagement. Type /jukebox help for more information')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
-		self.callMethod((None, 'SubscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
 		
 	def __getCursor(self):
 		"""
