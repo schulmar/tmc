@@ -245,8 +245,9 @@ class Display:
 
 	def __getActionButtons(self, manialinkElement):
 		"""
-		\brief Return a list of all actionButtons
+		\brief Return a list of all elements that have an action callback set
 		\param manialinkElement The root element to scan
+		\return The list of elements with action callback
 		
 		The root element and all its children are scanned for "clickable" elements,
 		that define callbacks and therefore need actionids.

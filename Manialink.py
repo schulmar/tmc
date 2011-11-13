@@ -102,7 +102,10 @@ class XmlElement(object):
 		\param item the new value of key 
 		"""
 		if key in self.attribs:
-			self.attribs[key] = item
+			if isinstance(item, str):
+				self.attribs[key] = item
+			else:
+				self.attribs[key] = str(item)
 			return True
 		else:
 			return False
@@ -163,7 +166,7 @@ class Quad(XmlElement):
 		"""
 		\brief Set a callback for clicking on this quad
 		\param callback The callback destination
-		\args Preset parameters that should be applied to the callback
+		\param args Preset parameters that should be applied to the callback
 		"""
 		self.callback = callback
 		self.callback_args = args
@@ -188,7 +191,7 @@ class Label(XmlElement):
 	A label allows textoutput. A label has no background!
 	No children allowed!
 	"""
-	def __init__(self, text = '', callback = None, callbackArgs = ()):
+	def __init__(self, text = None, callback = None, callbackArgs = ()):
 		"""
 		
 		"""
@@ -201,9 +204,9 @@ class Label(XmlElement):
 		
 	def setCallback(self, callback, *args):
 		"""
-		\brief Set a callback for clicking on this quad
+		\brief Set a callback for clicking on this label
 		\param callback The callback destination
-		\args Preset parameters that should be applied to the callback
+		\param args Preset parameters that should be applied to the callback
 		"""
 		self.callback = callback
 		self.callback_args = args
