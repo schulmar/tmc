@@ -384,9 +384,9 @@ class Maps(PluginInterface):
 		if isinstance(params, str):
 			params = params.split()
 		else:
-			params = []
+			params = ['display']
 		
-		if len(params) == 0 or params[0] == 'help':
+		if params[0] == 'help':
 			pass
 		if len(params) > 1 and params[0] == 'add':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAdd'):
@@ -462,8 +462,8 @@ class Maps(PluginInterface):
 								)
 							)
 			self.callMethod(('WindowManager', 'displayTableWindow'),
-					login, 'Maps.Jukebox', 'Jukebox', (30, 30), (-15, 15), rows, 10, (5, 25),
-					('Id', 'Player'))
+					login, 'Maps.Jukebox', 'Jukebox', (40, 40), (-20, 20), rows, 10, (25, 15),
+					('Map Name', 'Player'))
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Unknown command \'/jukebox ' + ' '.join(params) + '\'', login)
