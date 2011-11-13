@@ -472,3 +472,8 @@ class Maps(PluginInterface):
 					[i[0]['FileName'] for i in self.__jukebox])
 	
 	def jukeboxCallback(self, entries, login, trackId):
+		self.chat_jukebox(login, 'drop ' + str(trackId))
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
+			self.chat_jukebox(login, 'display')
+		else:
+			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'Maps.Jukebox')
