@@ -217,8 +217,8 @@ class Maps(PluginInterface):
 			sec = (time  % 60000) / 1000.0
 			minutes = (time // 60000)
 			return "{}:{:2.3f}".format(minutes, sec)
-		rows  = [(Label(str(i + 1), ('Maps', 'listCallback'), (i + 1, )),
-				Label(self.__currentMaps[i]['Name'], ('Maps', 'listCallback'), (i + 1, )), 
+		rows  = [(Label(str(i + 1), ('Maps', 'listCallback'), (i, )),
+				Label(self.__currentMaps[i]['Name'], ('Maps', 'listCallback'), (i, )), 
 				Label(self.__currentMaps[i]['Author']), 
 				Label(timeToString(self.__currentMaps[i]['GoldTime']))) 
 				for i in xrange(len(self.__currentMaps))]
