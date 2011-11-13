@@ -435,7 +435,7 @@ class Maps(PluginInterface):
 					
 					
 			if jukeboxEntry[1] == login:
-				if self.callFunction(('Acl', 'userhasRight'), login, 'Maps.jukeboxDrop'):
+				if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxDrop'):
 					self.__jukebox.pop(self.__jukebox.index(jukeboxEntry))
 					self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
 								self.callFunction(('Players', 'getPlayerNickname'), login) + 
