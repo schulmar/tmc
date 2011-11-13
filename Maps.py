@@ -3,7 +3,7 @@ import MySQLdb
 import os
 import urllib
 import json
-
+from Manialink import *
 
 """
 \file Maps.py
@@ -84,6 +84,14 @@ class Maps(PluginInterface):
 					'Get the current matchsettings file name.')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'matchsettings', 
 					('Maps', 'chat_matchsettings'), 'Manage the matchsettings of the server.')
+		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.jukeboxAdd', 'Add a map to the jukebox')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.jukeboxAddMultiple', 'Add multiple maps to the jukebox')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.jukeboxDrop', 'Drop your juked map from the jukebox')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.jukeboxDropOthers', 
+					'Drop other\'s juked maps from jukebox')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'jukebox', ('Maps', 'chat_jukebox'),
+					'Jukebox trackmanagement. Type /jukebox help for more information')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		
@@ -206,17 +214,23 @@ class Maps(PluginInterface):
 		Displays a list of all tracks to the calling player
 		"""
 		def timeToString(time):
-			sec = (time  % 60000) / 1000
-			min = (time // 60000)
-			return "{}:{:2.3}".format(min, sec)
-		rows  = [(i + 1,
-				self.__currentMaps[i]['Name'], 
-				self.__currentMaps[i]['Author'], 
-				timeToString(self.__currentMaps[i]['GoldTime'])) 
+			sec = (time  % 60000) / 1000.0
+			minutes = (time // 60000)
+			return "{}:{:2.3f}".format(minutes, sec)
+		rows  = [(Label(str(i + 1), ('Maps', 'listCallback'), (i + 1)),
+				Label(self.__currentMaps[i]['Name']), 
+				Label(self.__currentMaps[i]['Author']), 
+				Label(timeToString(self.__currentMaps[i]['GoldTime']))) 
 				for i in xrange(len(self.__currentMaps))]
-		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
+		self.callMethod(('WindowManager', 'displayTableWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (5, 30, 25, 10),
 					('Id', 'Mapname', 'Authorname', 'GoldTime'))
+	
+	def listCallback(self, entries, login, mapId):
+		if not self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
+			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'Maps.Maplist')
+						
+		self.chat_jukebox(login, 'add ' + str(mapId))
 	
 	def onMapListModified(self, CurMapIndex, NextMapIndex, isListModified):
 		"""
@@ -361,5 +375,85 @@ class Maps(PluginInterface):
 		\brief Jukebox management
 		\param login The login of the calling player
 		\param params Additional params given by the player
-		"""
 		
+		add <id> - add a map to the jukebox
+		drop <id> - drop a map from jukebox
+		"""
+		if isinstance(params, str):
+			params = params.split()
+		else:
+			params = []
+		
+		if len(params) == 0 or params[0] == 'help':
+			pass
+		if len(params) > 1 and params[0] == 'add':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAdd'):
+				try:
+					track = self.__currentMaps[int(params[1])]
+				except KeyError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Could not find the track with id ' + str(params[1]), login)
+				
+				if len(filter(lambda x: (x[0] == track['FileName']), self.__jukebox)) > 0:
+					self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
+									'This track is already in jukebox, wait until it is being played!',
+									login)
+					return False
+				
+				if (len(filter(lambda x: (login == x[1]),self.__jukebox)) > 0 and 
+					not self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple')):
+						self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'''You already have a track in jukebox, wait until it has been played or
+								drop it to add this one.''', login)
+						return False
+				self.__jukebox.append((track['FileName'], login))
+				self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
+							self.callFunction(('Players', 'getPlayerNickname'), login)
+							+ ' $zJukeboxed map ' + track['Name'])
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'You have insufficient rights to add maps to the jukebox!', login)
+		elif params[0] == 'drop':
+			if len(params) > 1:
+				index = int(params[1])
+			else:
+				myTracks = filter(lambda x: (login == x[1]), self.__jukebox)
+				if len(myTracks) == 0:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'You do not have any tracks in jukebox!', login)
+				else:
+					index = self.__jukebox.index(myTracks[0])
+					
+			try:
+					track = self.__jukebox[index]
+			except KeyError:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Invalid jukebox id "' + params[1] + '"', login)
+				return False		
+					
+			info = self.callFunction(('TmConnector', 'GetMapInfo'), track[0])
+					
+			if track[1] == login:
+				if self.callFunction(('Acl', 'userhasRight'), login, 'Maps.jukeboxDrop'):
+					self.__jukebox.pop(self.__jukebox.index(track))
+					self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
+								self.callFunction(('Players', 'getPlayerNickname'), login) + 
+								' $z removed map ' + info['Name'] + ' $zfrom jukebox.')
+				else:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You have insufficient rights to drop your track from jukebox!', login)
+			else:	
+				if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxDropOthers'):
+					self.__jukebox.pop(self.__jukebox.index(track))
+					self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
+								self.callFunction(('Players', 'getPlayerNickname'), login) + 
+								' $z removed map ' + info['Name'] + ' $zfrom jukebox.')
+				else:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You have insufficient rights to drop other\'s track from jukebox!', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Unknown command \'/jukebox ' + ' '.join(params) + '\'', login)
+			
+		self.callMethod(('TmConnector', 'ChooseNextMapList'), [i[0] for i in self.__jukebox])
+			
