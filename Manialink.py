@@ -185,16 +185,25 @@ class Label(XmlElement):
 	A label allows textoutput. A label has no background!
 	No children allowed!
 	"""
-	def __init__(self, text = ''):
+	def __init__(self, text = '', callback = None, callbackArgs = None):
 		"""
 		
 		"""
 		self.name = 'label'
-		self.callback = None
-		self.callback_args = None
+		self.callback = callback
+		self.callback_args = callbackArgs
 		super(Label, self).__init__(displayable + alignable + linkable + formatable + \
 			['text', 'autonewline', 'action'])
 		self['text'] = text
+		
+	def setCallback(self, callback, *args):
+		"""
+		\brief Set a callback for clicking on this quad
+		\param callback The callback destination
+		\args Preset parameters that should be applied to the callback
+		"""
+		self.callback = callback
+		self.callback_args = args
 	
 class Format(XmlElement):
 	"""
