@@ -45,7 +45,7 @@ class Logger(PluginInterface):
 		Depending on the loglevel messages can be ignored.
 		"""
 		if level >= self.loglevel:
-			timeStamp = time.strftime('%d.%m. %H:%M:%S')
+			timeStamp = time.strftime('%b %d %H:%M:%S')
 			self.file.write(timeStamp + ' ' + str(args) + os.linesep)
 			self.file.flush()
 		else:
