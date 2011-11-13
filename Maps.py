@@ -209,7 +209,7 @@ class Maps(PluginInterface):
 				self.__currentMaps[i]['Name'], 
 				self.__currentMaps[i]['Author'], 
 				self.__currentMaps[i]['GoldTime']) 
-				for i in xrange(self.__currentMaps)]
+				for i in xrange(len(self.__currentMaps))]
 		self.callMethod(('WindowManager', 'displayTableStringsWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (35, 25, 10),
 					('Id', 'Mapname', 'Authorname', 'GoldTime'))
