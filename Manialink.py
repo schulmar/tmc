@@ -39,7 +39,10 @@ class XmlElement(object):
 		\param value The value of the attribute
 		"""
 		if attr in self.attribs:
-			self.attribs[attr] = value
+			if isinstance(value, str)
+				self.attribs[attr] = value
+			else:
+				self.attribs[attr] = str(value)
 			return True
 		else:
 			return False
@@ -71,7 +74,7 @@ class XmlElement(object):
 
 		for key,value in self.attribs.items():
 			if value != None:
-				xml = xml + ' ' + str(key) + '="' + escape(str(value)) + '"'
+				xml = xml + ' ' + str(key) + '="' + escape(value) + '"'
 
 		if len(self.children) == 0 and self.content == None:
 			return  xml + '/>'
@@ -79,7 +82,7 @@ class XmlElement(object):
 		else:
 			xml = xml + '>'
 			if self.content != None:
-				xml = xml + escape(str(self.content))
+				xml = xml + escape(self.content)
 			for child in self.children:
 				xml = xml + child.getXML()
 
