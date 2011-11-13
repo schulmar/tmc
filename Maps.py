@@ -41,18 +41,21 @@ class Maps(PluginInterface):
 		Setup the database connection create tables if necessary...
 		""" 
 		self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
-		cursor = self.__getCursor()
-		cursor.execute("""
-		CREATE TABLE IF NOT EXISTS `maps` (
-		`Id` mediumint(9) NOT NULL auto_increment, 
-		`Uid` varchar(27) NOT NULL default '', 
-		`Name` varchar(100) NOT NULL default '',
-		`Author` varchar(30) NOT NULL default '',
-		`Environment` varchar(10) NOT NULL default '',
-		PRIMARY KEY (`Id`),
-		UNIQUE KEY `Uid` (`Uid`)
-		);
-		""");
+		cursor = self.__connection.cursor()
+		cursor.execute("SHOW TABLES")
+		tables = [i[0] for i in cursor.fetchall()]
+		if not 'maps' in tables:
+			cursor.execute("""
+				CREATE TABLE IF NOT EXISTS `maps` (
+				`Id` mediumint(9) NOT NULL auto_increment, 
+				`Uid` varchar(27) NOT NULL default '', 
+				`Name` varchar(100) NOT NULL default '',
+				`Author` varchar(30) NOT NULL default '',
+				`Environment` varchar(10) NOT NULL default '',
+				PRIMARY KEY (`Id`),
+				UNIQUE KEY `Uid` (`Uid`)
+				);
+			""");
 		cursor.close()
 		self.__connection.commit()
 		self.__getMapListFromServer()
