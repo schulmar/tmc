@@ -206,10 +206,9 @@ class Maps(PluginInterface):
 		Displays a list of all tracks to the calling player
 		"""
 		def timeToString(time):
-			milli = time % 1000
-			sec = (time // 1000) % 60
+			sec = (time  % 60000) / 1000
 			min = (time // 60000)
-			return str(min) + ':' + str(sec) + ':' + str(milli)
+			return "{}:{:2.3}".format(min, sec)
 		rows  = [(i + 1,
 				self.__currentMaps[i]['Name'], 
 				self.__currentMaps[i]['Author'], 
