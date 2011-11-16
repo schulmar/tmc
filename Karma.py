@@ -83,13 +83,13 @@ class Karma(PluginInterface):
                     UNIQUE KEY `Name` (`Name`)
                 );
             """)
-            cursor.close()
-            self.__connection.commit()
-            self.__loadTypes()
-            
-            #enable voting/comments on comments
-            self.addType('Karma.comment')
-            self.__commentTypeId = self.__types['Karma.comment']
+        cursor.close()
+        self.__connection.commit()
+        self.__loadTypes()
+        
+        #enable voting/comments on comments
+        self.addType('Karma.comment')
+        self.__commentTypeId = self.__types['Karma.comment']
             
     def __getCursor(self):
         """
