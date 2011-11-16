@@ -496,6 +496,8 @@ class Maps(PluginInterface):
 			if len(self.__jukebox) == 0:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'The jukebox is empty', login)
+				#hide jukebox when empty
+				self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'Maps.Jukebox')
 				return False
 			rows = []
 			for i in xrange(len(self.__jukebox)):
