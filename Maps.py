@@ -602,37 +602,54 @@ class Maps(PluginInterface):
 		#hide the upload form as the token is now expired
 		self.callMethod(('ManialinkManager', 'hideManialinkToLogin'), 'Maps.directMapUpload', login)
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.directMapUpload'):
-			#encode the data in base64 format
-			data = base64.b64encode(data)
-			#assemble the filepath
-			path = ('direct_upload' + os.path.sep + login + os.path.sep 
-					+ os.path.basename(entries['map']))
-			#actually write the file
-			if self.callFunction(('TmConnector', 'WriteFile'), path, data):
-				if self.callFunction(('TmConnector', 'AddMap'), path):
-					info = self.callFunction(('TmConnector', 'GetMapInfo'), path)
-					return """
-					<?xml version="1.0" encoding="utf-8" ?>
-					<manialink>
-						<label text="Thank you for uploading this track!"/>
-					</manialink>
-					"""
-					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								'$zAdded map ' + info['Name'] + ' $zto list!', login)
-				else:
-					return """
-					<?xml version="1.0" encoding="utf-8" ?>
-					<manialink>
-						<label text="Could not add map to list. Is this a map file?"/>
-					</manialink>
-					"""
-			else:
+			#get the map folder path
+			mapPath = os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
+			#get the filename
+			fileName = os.path.basename(entries['map'])
+			#assemble the relative path for the users map files
+			relPath = self.__directUploadPath + os.path.sep + login + os.path.sep
+			#create dir if not already existent
+			if os.path.isdir(mapPath + relPath):
+				os.mkdir(mapPath + relPath)
+			#test if this file already exists
+			if os.path.isfile(mapPath + relPath + fileName):
 				return """
 					<?xml version="1.0" encoding="utf-8" ?>
 					<manialink>
-						<label text="Could not write file, try again later."/>
+						<label text="$f11$oError$o$fff: This file already exists!"/>
 					</manialink>
 					"""
+			#try to write the file
+			try:
+				mapFile = open(mapPath + relPath + fileName, "w")
+				mapFile.write(data)
+				mapFile.close()
+			except:
+				return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="$f11$oError$o$fff: Could not write file. Try again later!"/>
+					</manialink>
+					"""
+					
+			if self.callFunction(('TmConnector', 'AddMap'), relPath + fileName):
+				info = self.callFunction(('TmConnector', 'GetMapInfo'), relPath + fileName)
+				return """
+				<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="Thank you for uploading this track!"/>
+				</manialink>
+				"""
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'$zAdded map ' + info['Name'] + ' $zto list!', login)
+			else:
+				os.remove(mapPath + relPath + fileName)
+				return """
+				<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="Could not add map to list. Is this a map file?"/>
+				</manialink>
+				"""
 		else:
 			self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'You have insufficient rights to directly upload maps to this server!', 
