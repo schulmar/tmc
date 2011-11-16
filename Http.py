@@ -5,6 +5,7 @@ import random
 import string
 import time
 import urllib2
+import math
 
 """
 \file http.py
@@ -87,7 +88,7 @@ class Http(PluginInterface):
 		"""
 		getToken = lambda N: ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(N))
 		#search a free token
-		i = 1
+		i = int(5 + math.log(1 + len(self.__usedTokens)))
 		token = getToken(i)
 		while token in self.__usedTokens:
 			i += 1
