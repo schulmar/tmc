@@ -35,8 +35,8 @@ class WindowManager(PluginInterface):
 			self.displays[login] = {}
 		self.displays[login][name] = window
 
-	def displayWindow(self, login, name, title, size, pos, content = []):
-		window = Window(name, title)
+	def displayWindow(self, login, name, title, size, pos, content = [], closeButton = True):
+		window = Window(name, title, closeButton)
 		window.setSize(*size)
 		window.setPos(*pos)
 		for i in content:
@@ -135,7 +135,7 @@ class WindowManager(PluginInterface):
 			self.log('error: ' + str(login) + ' has no windows to change page')
 
 class Window(object):
-	def __init__(self, name, title):
+	def __init__(self, name, title, closeButton = True):
 		self.name = name
 		self.title = title
 		self.children = []
@@ -143,6 +143,7 @@ class Window(object):
 		self.setPos(0, 0, 0)
 		self.setStyle('Bgs1','BgDialogBlur')
 		self.setIcon('Icons64x64_1', 'TrackInfo')
+		self.closeButton = closeButton
 
 	def setSize(self, width = None, height = None):
 		if width != None:
@@ -214,26 +215,27 @@ class Window(object):
 		f.addChild(titlebg)
 
 
-		#the close button quad
-		close = Quad()
-		close['style'] = 'Icons64x64_1'
-		close['substyle'] = 'Close'
-		close['halign'] = 'center'
-		close['valign'] = 'center'
-		close['sizen'] = '4 4'
-		close['posn'] = str(self.width - 3) + ' 0 2'
-		close.setCallback(('WindowManager', 'closeWindow'), self.name)
-		f.addChild(close)
-
-		#background of the closebutton
-		closebg = Quad()
-		closebg['halign'] = 'center'
-		closebg['valign'] = 'center'
-		closebg['sizen'] = '3 3'
-		closebg['posn'] = str(self.width - 3) + ' 0 1' 
-		closebg['style'] = 'Bgs1'
-		closebg['substyle'] = 'BgCard1'
-		f.addChild(closebg)
+		if self.closeButton:
+			#the close button quad
+			close = Quad()
+			close['style'] = 'Icons64x64_1'
+			close['substyle'] = 'Close'
+			close['halign'] = 'center'
+			close['valign'] = 'center'
+			close['sizen'] = '4 4'
+			close['posn'] = str(self.width - 3) + ' 0 2'
+			close.setCallback(('WindowManager', 'closeWindow'), self.name)
+			f.addChild(close)
+	
+			#background of the closebutton
+			closebg = Quad()
+			closebg['halign'] = 'center'
+			closebg['valign'] = 'center'
+			closebg['sizen'] = '3 3'
+			closebg['posn'] = str(self.width - 3) + ' 0 1' 
+			closebg['style'] = 'Bgs1'
+			closebg['substyle'] = 'BgCard1'
+			f.addChild(closebg)
 
 		#window background
 		background = Quad()
