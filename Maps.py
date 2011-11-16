@@ -713,7 +713,7 @@ class Maps(PluginInterface):
 				negativePercent = 0
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Current Karma {}: $1f1++{}({}%) $f11-- {}({}%)'.format(
-							karma, positiveCount, positivePercent, negativeCount, negativePercent)
+							int(karma), positiveCount, positivePercent, negativeCount, negativePercent)
 						,login)
 		elif params[0] == 'vote':
 			try:
