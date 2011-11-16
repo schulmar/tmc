@@ -23,7 +23,7 @@ class Maps(PluginInterface):
 	__connection = None#The database connection
 	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
 	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
-	__userlists = {}#a dictionary that contains the index mapping of the tracks per user
+	__playerDict = {}#a dictionary that contains the index mapping of the tracks per user
 	
 	
 	def __init__(self, pipes, args):
@@ -98,6 +98,7 @@ class Maps(PluginInterface):
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerDisconnect', 'onPlayerDisconnect')
 		
 	def __getCursor(self):
 		"""
@@ -227,7 +228,7 @@ class Maps(PluginInterface):
 				timeToString(self.__currentMaps[i]['GoldTime'])) 
 				for i in xrange(len(self.__currentMaps))]
 		#save the list for this user
-		self.__userlists[login] = dict([(i[0], self.__currentMaps[i[0]]['FileName']) for i in rows])
+		self.__playerDict[login] = dict([(i[0], self.__currentMaps[i[0]]['FileName']) for i in rows])
 		rows  = [(Label(str(i[0] + 1), ('Maps', 'listCallback'), (i[0], )),
 				Label(i[1], ('Maps', 'listCallback'), (i[0], )), 
 				Label(i[2]), 
@@ -414,7 +415,7 @@ class Maps(PluginInterface):
 		if len(params) > 1 and params[0] == 'add':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAdd'):
 				try:
-					newJukeboxEntry = self.__userlists[login][int(params[1])]
+					newJukeboxEntry = self.__playerDict[login][int(params[1])]
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Could not find the newJukeboxEntry with id ' + str(params[1]), login)
@@ -504,8 +505,27 @@ class Maps(PluginInterface):
 					[i[0]['FileName'] for i in self.__jukebox])
 	
 	def jukeboxCallback(self, entries, login, trackId):
+		"""
+		\brief Called when user clicks element in list command
+		\param entries The entries of the manialink (should be empty)
+		\param login The login of the calling player 
+		\param trackId The id of the track in the users list of tracks  
+		"""
 		self.chat_jukebox(login, 'drop ' + str(trackId))
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
 			self.chat_jukebox(login, 'display')
 		else:
 			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'Maps.Jukebox')
+			
+	def onPlayerDisconnect(self, login):
+		"""
+		\brief Called on disconnection of users
+		\param login The login of the disconnecting user
+		
+		Used to free the memory that this users data occupied
+		"""
+		try:
+			del self.__playerDict[login]
+		except KeyError:
+			#only raised when this player never used the jukebox
+			pass
