@@ -228,7 +228,7 @@ class Maps(PluginInterface):
 				timeToString(self.__currentMaps[i]['GoldTime'])) 
 				for i in xrange(len(self.__currentMaps))]
 		#save the list for this user
-		self.__playerDict[login] = dict([(i[0], self.__currentMaps[i[0]]['FileName']) for i in rows])
+		self.__playerDict[login] = dict([(i[0], self.__currentMaps[i[0] - 1]['FileName']) for i in rows])
 		rows  = [(Label(str(i[0]), ('Maps', 'listCallback'), (i[0], )),
 				Label(i[1], ('Maps', 'listCallback'), (i[0], )), 
 				Label(i[2]), 
