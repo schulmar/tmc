@@ -124,6 +124,7 @@ class Maps(PluginInterface):
 					'Like /karma vote 83')
 		self.callMethod(('TmChat', 'registerChatCommand'), '+++', ('Maps', 'chat_triple_plus'),
 					'Like /karma vote 100')
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerChat', 'onPlayerChat')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
@@ -782,3 +783,18 @@ class Maps(PluginInterface):
 		
 	def chat_triple_plus(self, login, params):
 		self.chat_karma(login, 'vote 100')	
+		
+	def onPlayerChat(self, PlayerUid, Login, Text, IsRegisteredCmd):
+		Text = Text.strip()
+		functions = {'---' : self.chat_triple_minus,
+					'--' : self.chat_double_minus,
+					'-' : self.chat_minus,
+					'+-' : self.chat_plus_minus,
+					'-+' : self.chat_plus_minus,
+					'+' : self.chat_plus,
+					'++' : self.chat_double_plus,
+					'+++' : self.chat_triple_plus}
+		try:
+			functions[Text](Login, None)
+		except KeyError:
+			pass
