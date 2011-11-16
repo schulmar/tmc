@@ -603,7 +603,8 @@ class Maps(PluginInterface):
 		self.callMethod(('ManialinkManager', 'hideManialinkToLogin'), 'Maps.directMapUpload', login)
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.directMapUpload'):
 			#get the map folder path
-			mapPath = os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
+			mapPath = (os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
+						+ os.path.sep)
 			#get the filename
 			fileName = os.path.basename(entries['map'])
 			#assemble the relative path for the users map files
