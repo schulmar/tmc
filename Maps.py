@@ -97,6 +97,8 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'jukebox', ('Maps', 'chat_jukebox'),
 					'Jukebox trackmanagement. Type /jukebox help for more information')
 		
+		self.callMethod(('TmChat', 'registerChatCommand'), 'upload', ('Maps', 'chat_upload'), 
+					'Upload a map file to the server from within the game.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload', 
 					'Directly upload maps via HTTP to the server.')
 		
@@ -553,6 +555,12 @@ class Maps(PluginInterface):
 		\param login The login of the calling player
 		\param param Additional params, should be ignored
 		"""
+		if not self.callFunction(('Acl', 'userHasRight'), login, 'Maps.directMapUpload'):
+			self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You have insufficient rights to directly upload maps to this server!', 
+							login)
+			return False
+		
 		frame = Frame()
 		
 		#the label of the submit button
