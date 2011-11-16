@@ -207,7 +207,7 @@ class Karma(PluginInterface):
         FROM `karma_votes`
         WHERE 
         `FKey` = %s AND
-        `KType` = %s
+        `FType` = %s
         """, (objectId, objectTypeId))
         try:
             return cursor.fetchone()['karma']
