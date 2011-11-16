@@ -610,7 +610,7 @@ class Maps(PluginInterface):
 			#assemble the relative path for the users map files
 			relPath = self.__directUploadPath + os.path.sep + login + os.path.sep
 			#create dir if not already existent
-			if os.path.isdir(mapPath + relPath):
+			if not os.path.isdir(mapPath + relPath):
 				os.mkdir(mapPath + relPath)
 			#test if this file already exists
 			if os.path.isfile(mapPath + relPath + fileName):
