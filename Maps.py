@@ -565,30 +565,32 @@ class Maps(PluginInterface):
 		
 		#the label of the submit button
 		label = Label()
-		label['text'] = 'Submit'
+		label['posn'] = '19 -1'
+		label['text'] = 'Upload!'
 		frame.addChild(label)
 		#the submit butten background
 		quad = Quad()
-		quad['sizen'] = '10 2'
+		quad['posn'] = '18 0'
+		quad['sizen'] = '9 4'
 		quad['style'] = 'Bgs1'
 		quad['substyle'] = 'PlayerCard'
 		ml = self.callFunction(('Http', 'getUploadToken'), ('Maps', 'directMapUpload'), login)
 		quad['manialink'] = 'POST(http://' + str(ml[1][0]) + ':' + str(ml[1][1]) \
-							+ '?token=' + str(ml[0]) + '&map=inputTrackFile,inputTrackFile)' 
+		                                        + '?token=' + str(ml[0]) + '&map=inputTrackFile,inputTrackFile)'
 		frame.addChild(quad)
 		
 		#the entry
 		entry = FileEntry()
-		entry['posn'] = "0 4"
-		entry['sizen'] = "10 2"
+		entry['posn'] = "2 -1"
+		entry['sizen'] = "15 3"
 		entry['name'] = "inputTrackFile"
 		entry['folder'] = "."
 		entry['default'] = "Pick Track"
 		frame.addChild(entry)
 		
-		self.callMethod(('WindowManager', 'displayWindow'), 
-					login, 'Maps.directMapUpload', 'Choose map for upload', 
-					(12, 10), (-6, 5), [frame])
+		self.callMethod(('WindowManager', 'displayWindow'),
+		                        login, 'Maps.directMapUpload', 'Choose map for upload',
+		                        (30, 10), (-15, 5), [frame])
 		
 	def directMapUpload(self, entries, data, login):
 		"""
@@ -609,15 +611,35 @@ class Maps(PluginInterface):
 			if self.callFunction(('TmConnector', 'WriteFile'), path, data):
 				if self.callFunction(('TmConnector', 'AddMap'), path):
 					info = self.callFunction(('TmConnector', 'GetMapInfo'), path)
+					return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="Thank you for uploading this track!"/>
+					</manialink>
+					"""
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'$zAdded map ' + info['Name'] + ' $zto list!', login)
 				else:
-					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								'Could not add map, is this a map file?', login)
+					return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="Could not add map to list. Is this a map file?"/>
+					</manialink>
+					"""
 			else:
-				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-					'Could not write file, try again later.', login)
+				return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="Could not write file, try again later."/>
+					</manialink>
+					"""
 		else:
 			self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'You have insufficient rights to directly upload maps to this server!', 
 							login)
+			return """
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="You have insufficient rights to directly upload maps to this server!"/>
+					</manialink>
+					"""
