@@ -411,7 +411,8 @@ class Maps(PluginInterface):
 			params = ['display']
 		
 		if params[0] == 'help':
-			pass
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'This method is a stub, inform the programmer to implement it!', login)
 		if len(params) > 1 and params[0] == 'add':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAdd'):
 				try:
@@ -419,6 +420,11 @@ class Maps(PluginInterface):
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Could not find the newJukeboxEntry with id ' + str(params[1]), login)
+					return False
+				except ValueError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Mapindices have to be integer numbers!', login)
+					return False
 				
 				if len(filter(lambda x: (x[0]['FileName'] == newJukeboxEntry), self.__jukebox)) > 0:
 					self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
@@ -446,7 +452,12 @@ class Maps(PluginInterface):
 								'You have insufficient rights to add maps to the jukebox!', login)
 		elif params[0] == 'drop':
 			if len(params) > 1:
-				index = int(params[1])
+				try:
+					index = int(params[1])
+				except ValueError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Indices have to be integer numbers!', login)
+					return False
 			else:
 				myTracks = filter(lambda x: (login == x[1]), self.__jukebox)
 				if len(myTracks) == 0:
