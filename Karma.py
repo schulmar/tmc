@@ -75,7 +75,7 @@ class Karma(PluginInterface):
             
         if not 'karma_types' in tables:
             cursor.execute(""""
-                CREATE TABLES IF NOT EXISTS `karma_types`
+                CREATE TABLE IF NOT EXISTS `karma_types`
                 (
                     `Id` int NOT NULL auto_increment,
                     `Name` varchar(50) NOT NULL,
