@@ -701,7 +701,7 @@ class Maps(PluginInterface):
 									currentMapId)
 			karma = self.callFunction(('Karma', 'getKarma'), 
 									self.__karmaMapObjectType,
-									self.mapId)
+									currentMapId)
 			positiveCount = len(filter(lambda x: x[0] >= 50,votes))
 			negativeCount = len(filter(lambda x: x[0] < 50,votes))
 			totalCount = positiveCount + negativeCount
