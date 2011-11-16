@@ -202,6 +202,7 @@ class ChatCommands(PluginInterface):
 		
 	def chat_test_upload(self, entries, data, login):
 		self.callMethod(('ManialinkManager', 'hideManialinkToLogin'), 'testUpload', login)
+		return
 		trackPath = os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
 		directUploadPath = trackPath + os.path.sep + 'direct_upload'
 		if not os.path.isdir(directUploadPath):
@@ -226,7 +227,7 @@ class ChatCommands(PluginInterface):
 		f.close()
 		
 		if self.callFunction(('TmConnector', 'InsertMap'), 
-					'direct_upload' + os.path.sep + 	login + os.path.sep + fileName):
+					'direct_upload' + os.path.sep + login + os.path.sep + fileName):
 			return """
 					<?xml version="1.0" encoding="utf-8" ?>
 					<manialink>

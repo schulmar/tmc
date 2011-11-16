@@ -4,6 +4,7 @@ import os
 import urllib
 import json
 from Manialink import *
+import base64
 
 """
 \file Maps.py
@@ -24,7 +25,7 @@ class Maps(PluginInterface):
 	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
 	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
 	__playerDict = {}#a dictionary that contains the index mapping of the tracks per user
-	
+	__directUploadPath = 'direct_upload'#the name of the map folder for direct uploads
 	
 	def __init__(self, pipes, args):
 		"""
@@ -95,6 +96,9 @@ class Maps(PluginInterface):
 					'Display the jukebox')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'jukebox', ('Maps', 'chat_jukebox'),
 					'Jukebox trackmanagement. Type /jukebox help for more information')
+		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload', 
+					'Directly upload maps via HTTP to the server.')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
@@ -542,3 +546,70 @@ class Maps(PluginInterface):
 		except KeyError:
 			#only raised when this player never used the jukebox
 			pass
+		
+	def chat_upload(self, login, param):
+		"""
+		\brief Chat callback for upload command (display upload form)
+		\param login The login of the calling player
+		\param param Additional params, should be ignored
+		"""
+		frame = Frame()
+		
+		#the label of the submit button
+		label = Label()
+		label['text'] = 'Submit'
+		frame.addChild(label)
+		#the submit butten background
+		quad = Quad()
+		quad['sizen'] = '10 2'
+		quad['style'] = 'Bgs1'
+		quad['substyle'] = 'PlayerCard'
+		ml = self.callFunction(('Http', 'getUploadToken'), ('Maps', 'directMapUpload'), login)
+		quad['manialink'] = 'POST(http://' + str(ml[1][0]) + ':' + str(ml[1][1]) \
+							+ '?token=' + str(ml[0]) + '&map=inputTrackFile,inputTrackFile)' 
+		frame.addChild(quad)
+		
+		#the entry
+		entry = FileEntry()
+		entry['posn'] = "0 4"
+		entry['sizen'] = "10 2"
+		entry['name'] = "inputTrackFile"
+		entry['folder'] = "."
+		entry['default'] = "Pick Track"
+		frame.addChild(entry)
+		
+		self.callMethod(('WindowManager', 'displayWindow'), 
+					login, 'Maps.directMapUpload', 'Choose map for upload', 
+					(12, 10), (-6, 5), [frame])
+		
+	def directMapUpload(self, entries, data, login):
+		"""
+		\brief Callback for the direct http upload of tracks
+		\param entries The entries dict of the request (containing the filename)
+		\param data The file data of the file uploaded
+		\param login The login of the uploading user
+		"""
+		#hide the upload form as the token is now expired
+		self.callMethod(('ManialinkManager', 'hideManialinkToLogin'), 'Maps.directMapUpload', login)
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.directMapUpload'):
+			#encode the data in base64 format
+			data = base64.b64encode(data)
+			#assemble the filepath
+			path = ('direct_upload' + os.path.sep + login + os.path.sep 
+					+ os.path.basename(entries['map']))
+			#actually write the file
+			if self.callFunction(('TmConnector', 'WriteFile'), path, data):
+				if self.callFunction(('TmConnector', 'AddMap'), path):
+					info = self.callFunction(('TmConnector', 'GetMapInfo'), path)
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'$zAdded map ' + info['Name'] + ' $zto list!', login)
+				else:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Could not add map, is this a map file?', login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+					'Could not write file, try again later.', login)
+		else:
+			self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You have insufficient rights to directly upload maps to this server!', 
+							login)
