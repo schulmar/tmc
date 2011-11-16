@@ -189,6 +189,30 @@ class Karma(PluginInterface):
             return True
         else:
             return False
+        
+    def getKarma(self, objectType, objectId):
+        """
+        \brief Calculate the karma of the object
+        \param objectType The typename of the object
+        \param objectId The id of the object
+        \return The karma (an integer of [0, 100]) or None in case of error
+        """
+        objectTypeId = self.objectTypeNameToId(objectType)
+        if objectTypeId == None:
+            return None
+        
+        cursor = self.__getCursor()
+        cursor.execute("""
+        SELECT AVG(`Vote`) as `karma`
+        FROM `karma_votes`
+        WHERE 
+        `FKey` = %s AND
+        `KType` = %s
+        """, (objectId, objectTypeId))
+        try:
+            return cursor.fetchone()['karma']
+        except KeyError:
+            return None
     
     def getVotes(self, objectType, objectId):
         """
