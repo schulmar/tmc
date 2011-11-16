@@ -61,12 +61,12 @@ class Http(PluginInterface):
 				self.__address = urllib2.urlopen("http://whatismyip.org/").read()
 				self.log("Public ip is " + str(self.__address))
 			except:
-				self.__address = None
+				self.__address = '127.0.0.1'
 				self.log("Error: Could not determine public ip")
 				print("Error: Could not determine public ip")
 			
 		self.__address = (self.__address, args['port'])
-		self.__httpd = BaseHTTPServer.HTTPServer(self.__address, Handler)
+		self.__httpd = BaseHTTPServer.HTTPServer(('', args['port']), Handler)
 		self.__httpd.plugin = self
 		self.__thread = threading.Thread(target = self.__httpd.serve_forever)
 		self.__thread.daemon = True
