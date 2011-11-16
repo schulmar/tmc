@@ -222,14 +222,14 @@ class Maps(PluginInterface):
 			sec = (time  % 60000) / 1000.0
 			minutes = (time // 60000)
 			return "{}:{:2.3f}".format(minutes, sec)
-		rows = 	[(i, 
+		rows = 	[(i + 1, 
 				self.__currentMaps[i]['Name'],
 				self.__currentMaps[i]['Author'],
 				timeToString(self.__currentMaps[i]['GoldTime'])) 
 				for i in xrange(len(self.__currentMaps))]
 		#save the list for this user
 		self.__playerDict[login] = dict([(i[0], self.__currentMaps[i[0]]['FileName']) for i in rows])
-		rows  = [(Label(str(i[0] + 1), ('Maps', 'listCallback'), (i[0], )),
+		rows  = [(Label(str(i[0]), ('Maps', 'listCallback'), (i[0], )),
 				Label(i[1], ('Maps', 'listCallback'), (i[0], )), 
 				Label(i[2]), 
 				Label(i[3]))
@@ -419,7 +419,7 @@ class Maps(PluginInterface):
 					newJukeboxEntry = self.__playerDict[login][int(params[1])]
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								'Could not find the newJukeboxEntry with id ' + str(params[1]), login)
+								'Could not find the map with id ' + str(params[1]), login)
 					return False
 				except ValueError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
@@ -453,7 +453,7 @@ class Maps(PluginInterface):
 		elif params[0] == 'drop':
 			if len(params) > 1:
 				try:
-					index = int(params[1])
+					index = int(params[1]) - 1
 				except ValueError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Indices have to be integer numbers!', login)
@@ -500,14 +500,14 @@ class Maps(PluginInterface):
 			rows = []
 			for i in xrange(len(self.__jukebox)):
 				t = self.__jukebox[i]
-				rows.append(	(
-									Label(t[0]['Name'], ('Maps', 'jukeboxCallback'), (i,)), 
-									Label(self.callFunction(('Players', 'getPlayerNickname'), t[1]))
-								)
-							)
+				rows.append((
+								Label(i + 1, ('Maps', 'jukeboxCallback'), (i + 1,)),
+								Label(t[0]['Name'], ('Maps', 'jukeboxCallback'), (i + 1,)), 
+								Label(self.callFunction(('Players', 'getPlayerNickname'), t[1]))
+							))
 			self.callMethod(('WindowManager', 'displayTableWindow'),
-					login, 'Maps.Jukebox', 'Jukebox', (40, 40), (-20, 20), rows, 10, (25, 15),
-					('Map Name', 'Player'))
+					login, 'Maps.Jukebox', 'Jukebox', (40, 40), (-20, 20), rows, 10, (5, 20, 15),
+					('Id', 'Map Name', 'Player'))
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Unknown command \'/jukebox ' + ' '.join(params) + '\'', login)
