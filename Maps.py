@@ -26,6 +26,7 @@ class Maps(PluginInterface):
 	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
 	__playerDict = {}#a dictionary that contains the index mapping of the tracks per user
 	__directUploadPath = 'direct_upload'#the name of the map folder for direct uploads
+	__karmaMapObjectType = 'Maps.map'#the objectTypeName of maps for the karma system
 	
 	def __init__(self, pipes, args):
 		"""
@@ -61,6 +62,8 @@ class Maps(PluginInterface):
 		cursor.close()
 		self.__connection.commit()
 		self.__getMapListFromServer()
+		
+		self.callMethod(('Karma', 'addType'), self.__karmaMapObjectType)
 		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX', 'Add maps from mania-exchange')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_addmx'), 
@@ -101,6 +104,9 @@ class Maps(PluginInterface):
 					'Upload a map file to the server from within the game.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload', 
 					'Directly upload maps via HTTP to the server.')
+		
+		self.callMethod(('TmChat', 'registerChatCommand'), 'karma', ('Maps', 'chat_karma'),
+					'Handle the karma of this map.')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
@@ -152,6 +158,20 @@ class Maps(PluginInterface):
 		"""
 		try:
 			return self.__currentMaps[self.__currentMap]
+		except KeyError:
+			return None
+	
+	def getMapIdFromUid(self, uid):
+		"""
+		\brief Map from an uid to a mapId in database
+		\param uid The uid to resolve
+		"""
+		cursor = self.__getCursor()
+		cursor.execute("""
+		SELECT `Id` FROM `maps` WHERE `Uid` = %s
+		""", (uid, ))
+		try:
+			return cursor.fetchone()['Id']
 		except KeyError:
 			return None
 	
@@ -661,3 +681,68 @@ class Maps(PluginInterface):
 						<label text="You have insufficient rights to directly upload maps to this server!"/>
 					</manialink>
 					"""
+	def chat_karma(self, login, params):
+		"""
+		\brief Handle the karma commands for the current map
+		\param login
+		\param params
+		"""
+		#default action is showing the karma
+		if params == None:
+			params = 'show'
+			
+		params = params.split()
+		
+		currentMapId = self.getMapIdFromUid(self.getCurrentMap()['UId'])
+		
+		if params[0] == 'show':
+			votes = self.callFunction(('Karma', 'getVotes'), 
+									self.__karmaMapObjectType, 
+									currentMapId)
+			karma = self.callFunction(('Karma', 'getKarma'), 
+									self.__karmaMapObjectType,
+									self.mapId)
+			positiveCount = len(filter(lambda x: x[0] >= 50,votes))
+			negativeCount = len(filter(lambda x: x[0] < 50,votes))
+			totalCount = positiveCount + negativeCount
+			if totalCount > 0:
+				positivePercent = 100 * positiveCount // totalCount
+				negativePercent = 100 * negativeCount // totalCount
+			else:
+				positivePercent = 0
+				negativePercent = 0
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Current Karma ' + int(karma) + 
+						': $1f1++' + positiveCount + '(' + positivePercent + '%)' + 
+						' $f11--' + negativeCount + '(' + negativePercent + '%)'
+						,login)
+		elif params[0] == 'vote':
+			try:
+				vote = int(params[1])
+			except ValueError:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'/karma vote expects parameter to be integer.' , login)
+				return False
+			except IndexError:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'/karma vote expects an integer within the range 0 - 100 as vote.', 
+						login)
+				return False
+			
+			if vote < 0:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Your vote has to be at least 0, so I clamped it to 0.', login)
+				vote = 0
+			elif vote > 100:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Your vote can at most be 100, so I clamped it to 100.', login)
+				vote = 100
+			
+			self.callMethod(('Karma', 'changeVote'), 
+						self.__karmaMapObjectType, currentMapId, vote, login)
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Accepted your vote of ' + str(vote), login)
+			self.chat_karma(login, 'show')			
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Unknown command /karma ' + ' '.join(params), login)
