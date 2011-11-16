@@ -514,7 +514,7 @@ class Maps(PluginInterface):
 								Label(self.callFunction(('Players', 'getPlayerNickname'), t[1]))
 							))
 			self.callMethod(('WindowManager', 'displayTableWindow'),
-					login, 'Maps.Jukebox', 'Jukebox', (40, 40), (-20, 20), rows, 10, (5, 20, 15),
+					login, 'Maps.Jukebox', 'Jukebox', (80, 40), (-40, 20), rows, 10, (5, 45, 30),
 					('Id', 'Map Name', 'Player'))
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
