@@ -23,6 +23,7 @@ class Maps(PluginInterface):
 	__connection = None#The database connection
 	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
 	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
+	__userlists = {}#a dictionary that contains the index mapping of the tracks per user
 	
 	
 	def __init__(self, pipes, args):
@@ -220,11 +221,18 @@ class Maps(PluginInterface):
 			sec = (time  % 60000) / 1000.0
 			minutes = (time // 60000)
 			return "{}:{:2.3f}".format(minutes, sec)
-		rows  = [(Label(str(i + 1), ('Maps', 'listCallback'), (i, )),
-				Label(self.__currentMaps[i]['Name'], ('Maps', 'listCallback'), (i, )), 
-				Label(self.__currentMaps[i]['Author']), 
-				Label(timeToString(self.__currentMaps[i]['GoldTime']))) 
+		rows = 	[(i, 
+				self.__currentMaps[i]['Name'],
+				self.__currentMaps[i]['Author'],
+				timeToString(self.__currentMaps[i]['GoldTime'])) 
 				for i in xrange(len(self.__currentMaps))]
+		#save the list for this user
+		self.__userlists[login] = dict([(i[0], self.__currentMaps[i[0]]['FileName']) for i in rows])
+		rows  = [(Label(str(i[0] + 1), ('Maps', 'listCallback'), (i[0], )),
+				Label(i[1], ('Maps', 'listCallback'), (i[0], )), 
+				Label(i[2]), 
+				Label(i[3]))
+				for i in rows]
 		self.callMethod(('WindowManager', 'displayTableWindow'), 
 					login, 'Maps.Maplist', 'Maplist', (70, 60), (-35, 30), rows, 15, (5, 30, 25, 10),
 					('Id', 'Mapname', 'Authorname', 'GoldTime'))
@@ -406,12 +414,12 @@ class Maps(PluginInterface):
 		if len(params) > 1 and params[0] == 'add':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAdd'):
 				try:
-					newJukeboxEntry = self.__currentMaps[int(params[1])]
+					newJukeboxEntry = self.__userlists[login][int(params[1])]
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Could not find the newJukeboxEntry with id ' + str(params[1]), login)
 				
-				if len(filter(lambda x: (x[0]['FileName'] == newJukeboxEntry['FileName']), self.__jukebox)) > 0:
+				if len(filter(lambda x: (x[0]['FileName'] == newJukeboxEntry), self.__jukebox)) > 0:
 					self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
 									'This map is already in jukebox, wait until it is being played!',
 									login)
@@ -423,6 +431,10 @@ class Maps(PluginInterface):
 								'''You already have a newJukeboxEntry in jukebox, wait until it has been played or
 								drop it to add this one.''', login)
 						return False
+				
+				#now we know that the map will be juked we need to find it in the list
+				newJukeboxEntry = filter(lambda x: x['FileName'] == newJukeboxEntry)[0]
+					
 				self.__jukebox.append((newJukeboxEntry, login))
 				self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
 							self.callFunction(('Players', 'getPlayerNickname'), login)
