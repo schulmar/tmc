@@ -457,7 +457,7 @@ class Maps(PluginInterface):
 					
 			try:
 					newJukeboxEntry = self.__jukebox[index]
-			except KeyError:
+			except IndexError:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'Invalid jukebox id "' + params[1] + '"', login)
 				return False		
