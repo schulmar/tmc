@@ -108,6 +108,23 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'karma', ('Maps', 'chat_karma'),
 					'Handle the karma of this map.')
 		
+		self.callMethod(('TmChat', 'registerChatCommand'), '---', ('Maps', 'chat_triple_minus'),
+					'Like /karma vote 0')
+		self.callMethod(('TmChat', 'registerChatCommand'), '--', ('Maps', 'chat_double_minus'),
+					'Like /karma vote 17')
+		self.callMethod(('TmChat', 'registerChatCommand'), '-', ('Maps', 'chat_minus'),
+					'Like /karma vote 33')
+		self.callMethod(('TmChat', 'registerChatCommand'), '-+', ('Maps', 'chat_plus_minus'),
+					'Like /karma vote 50')
+		self.callMethod(('TmChat', 'registerChatCommand'), '+-', ('Maps', 'chat_plus_minus'),
+					'Like /karma vote 50')
+		self.callMethod(('TmChat', 'registerChatCommand'), '+', ('Maps', 'chat_plus'),
+					'Like /karma vote 67')
+		self.callMethod(('TmChat', 'registerChatCommand'), '++', ('Maps', 'chat_double_plus'),
+					'Like /karma vote 83')
+		self.callMethod(('TmChat', 'registerChatCommand'), '+++', ('Maps', 'chat_triple_plus'),
+					'Like /karma vote 100')
+		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerDisconnect', 'onPlayerDisconnect')
@@ -745,3 +762,23 @@ class Maps(PluginInterface):
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Unknown command /karma ' + ' '.join(params), login)
+	def chat_triple_minus(self, login, params):
+		self.chat_karma(login, 'vote 0')
+	
+	def chat_double_minus(self, login, params):
+		self.chat_karma(login, 'vote 17')
+		
+	def chat_minus(self, login, params):
+		self.chat_karma(login, 'vote 33')
+		
+	def chat_plus_minus(self, login, params):
+		self.chat_karma(login, 'vote 50')
+		
+	def chat_plus(self, login, params):
+		self.chat_karma(login, 'vote 67')
+	
+	def chat_double_plus(self, login, params):
+		self.chat_karma(login, 'vote 83')
+		
+	def chat_triple_plus(self, login, params):
+		self.chat_karma(login, 'vote 100')	
