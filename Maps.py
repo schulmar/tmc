@@ -433,7 +433,8 @@ class Maps(PluginInterface):
 						return False
 				
 				#now we know that the map will be juked we need to find it in the list
-				newJukeboxEntry = filter(lambda x: x['FileName'] == newJukeboxEntry)[0]
+				newJukeboxEntry = filter(lambda x: x['FileName'] == newJukeboxEntry,
+										self.__currentMaps)[0]
 					
 				self.__jukebox.append((newJukeboxEntry, login))
 				self.callMethod(('TmConnector', 'ChatSendServerMessage'), 
