@@ -34,6 +34,13 @@ class Window(object):
         \param child The child to add
         """
         self.__children.append(child)
+        
+    def setChildren(self, newChildren):
+        """
+        \brief Overwrite the children list with a new one
+        \param newChildren The new children list
+        """
+        self.__children = newChildren
 
     def setTitle(self, title):
         """
