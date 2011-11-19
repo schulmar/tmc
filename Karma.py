@@ -7,6 +7,13 @@ from PluginInterface import *
 import MySQLdb
 
 class Karma(PluginInterface):
+    """
+    \brief An universal karma class
+    
+    This class provides karma to any class of objects that is indexed 
+    via integers. Users can vote, comment and flag as well as answering
+    on comments.
+    """
     
     __connection = None#the database connection object
     __types = {}#A mapping from type names to typeIds
