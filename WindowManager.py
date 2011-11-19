@@ -42,7 +42,8 @@ class WindowManager(PluginInterface):
 		self.displayMl(ml, name, login)
 
 	def displayPagedWindow(self, login, name, title, size, pos, pages = []):
-		window = PagedWindow(name, title, pages)
+		window = PagedWindow(title, pages)
+		window.setName(name)
 		window.setSize(*size)
 		window.setPos(*pos)
 		self.__addWindow(login, name, window)
