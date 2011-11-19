@@ -174,8 +174,9 @@ class PagedWindow(Window):
         \param title The title of the window
         \param pages The content of the pages
         """
-        self.__pages = pages
-        self.__bigStep = 10
+        self.__pages = pages #The list of pages
+        self.__bigStep = 10 #The number of pages to skip on a big step
+        self.__currentPage = 0 #The currently displayed page
         super(PagedWindow, self).__init__(title)
 
     def setBigStep(self, bigStep):
