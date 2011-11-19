@@ -6,21 +6,18 @@ from Manialink import *
 
 """
 
-class Window(object):
+class Widget(object):
     """
-    \brief The basic window class
+    \brief An abstract basic widget class
     """
-    
-    def __init__(self, title):
-        self.__closeButton = True #Should this window have a close button?
-        self.__title = 'Default Title' #The title of the window
-        self.__style = ('Bgs1','BgDialogBlur') #The style of this window's background
-        self.__icon = ('Icons64x64_1', 'TrackInfo') #The (iconStyle, iconSubstyle) of this window
-        self.__name = None #The name of this window
-        self.__children = [] #The children of this window (ManialinkElements)
-        self.__size = (0, 0) #The size of this window
-        self.__pos = (0, 0, 0) #The position of this window
-
+    def __init__(self):
+        """
+        \brief Initialize the widgets members
+        """
+        self.__name = None #The name of this widget
+        self.__size = (0, 0) #The widgets size
+        self.__pos = (0, 0, 0) #The widgets position
+        
     def getName(self):
         """
         \brief Return the name of the window
@@ -34,6 +31,92 @@ class Window(object):
         \param name The new name
         """
         self.__name = name
+        
+    def getSize(self):
+        """
+        \brief Get the widgets size
+        \return (width, height)
+        """
+        return self.__size
+    
+    def setSize(self, size):
+        """
+        \brief Set the widgets size
+        \param Size The new size, should be (int, int)
+        """
+        self.__size = (int(size[0]), int(size[1]))
+    
+    def getPos(self):
+        """
+        \brief Return the widgets position
+        \return (x, y, z)
+        """
+        self.__pos
+        
+    def setPos(self, pos):
+        """
+        \brief Set the widgets position
+        \param pos The new position, either (x, y) or (x, y, z)
+        """
+        if len(pos) == 2:
+            self.__pos = (int(pos[0]), int(pos[1]), self.__pos[2])
+        else:
+            self.__pos = (int(pos[0]), int(pos[1]), int(pos[2]))
+            
+    def getManialink(self):
+        pass
+            
+class CommentInput(Widget):
+    def __init__(self, callback, title):
+        """
+        \brief Construct the CommentInput
+        \param callback The function that will get called on submit
+        """
+        self.__callback = callback #The submit-callback
+        self.__title = title #The title of the window
+        
+    def getManialink(self):
+        pos = self.getPos()
+        size = self.getSize()
+        
+        mainFrame = Frame()
+        mainFrame['posn'] = '{:int} {:int} {:int}'.format(pos[0] - size[0] // 2, pos[1] + size[1] // 2, pos[2])
+        
+        bodyBgQuad = Quad()
+        bodyBgQuad['sizen'] = '{:int} {:int}'.format(*size)
+        bodyBgQuad['posn'] = '0 0 -1'
+        bodyBgQuad['style'] = 'Bgs1' 
+        bodyBgQuad['substyle'] = 'BgWindow1'
+        mainFrame.addChild(bodyBgQuad) 
+        
+        titleBgQuad = Quad()
+        titleBgQuad['sizen'] = '{:int} {:int}'.format(size[0], 3)
+        titleBgQuad['style'] = 'Bgs1'
+        titleBgQuad['substyle'] = 'BgTitle2'
+        mainFrame.addChild(titleBgQuad)
+        
+        titleLabel = Label()         
+        titleLabel['text'] = self.__title
+        titleLabel['posn'] = '2 1 1'
+        titleLabel['sizn'] = '{:int} {:int}'.format(size[0] - 4, size[1] - 1)
+        mainFrame.addChild(titleLabel)
+        
+        return mainFrame
+
+class Window(Widget):
+    """
+    \brief The basic window class
+    """
+    
+    def __init__(self, title):
+        self.__closeButton = True #Should this window have a close button?
+        self.__title = 'Default Title' #The title of the window
+        self.__style = ('Bgs1','BgDialogBlur') #The style of this window's background
+        self.__icon = ('Icons64x64_1', 'TrackInfo') #The (iconStyle, iconSubstyle) of this window
+        self.__children = [] #The children of this window (ManialinkElements)
+        self.__size = (0, 0) #The size of this window
+        self.__pos = (0, 0, 0) #The position of this window
+        super(Window, self).__init__()
 
     def addChild(self, child):
         """
@@ -92,24 +175,6 @@ class Window(object):
         \param size The size should be a 2-element sized iterable of int convertibles
         """
         self.__size = (int(size[0]), int(size[1]))
-        
-    def getPos(self):
-        """
-        \brief Return the current position of the window
-        \return The current position of the window
-        """
-        return self.__pos
-        
-    def setPos(self, pos):
-        """
-        \brief Set the position of the window
-        \param pos The position should be a 2 or 3 elements sized
-            iterable of int convertibles
-        """
-        if len(pos) == 2:
-            self.__pos = (int(pos[0]), int(pos[1]), self.__pos[2])
-        else:
-            self.__pos = (int(pos[0]), int(pos[1]), int(pos[2]))
 
     def getManialink(self):
         #the main frame

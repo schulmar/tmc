@@ -1,6 +1,7 @@
 from PluginInterface import *
 from Manialink import *
 import os
+from WindowElements import *
 
 """
 \file ChatCommands.py
@@ -34,7 +35,7 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('player', 'chat_player', 'Manage one player, type /player help for more information')
 		rightAdd('ChatCommands.playerAddGroup', 'Add players to groups (that are below the calling players own highest level)')
 		rightAdd('ChatCommands.playerRemoveGroup', 'Remove players from groups (that are below the calling players own highest level)')
-		#registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
+		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
 
 	def chat_echo(self, login, args):
 		"""
@@ -172,73 +173,7 @@ class ChatCommands(PluginInterface):
 		\param login The login of the calling player
 		\param args Additional command line params
 		
-		Currently displays an upload form		
+		Currently displays a comment form		
 		"""
-		return None
-		frame = Frame()
-		
-		label = Label()
-		label['text'] = 'Submit'
-		frame.addChild(label)
-		
-		quad = Quad()
-		quad['sizen'] = '10 2'
-		quad['style'] = 'Bgs1'
-		quad['substyle'] = 'PlayerCard'
-		ml = self.callFunction(('Http', 'getUploadToken'), ('ChatCommands', 'chat_test_upload'), login)
-		quad['manialink'] = 'POST(http://' + str(ml[1][0]) + ':' + str(ml[1][1]) \
-							+ '?token=' + str(ml[0]) + '&file=inputTrackFile,inputTrackFile)' 
-		frame.addChild(quad)
-		
-		entry = FileEntry()
-		entry['posn'] = "0 4"
-		entry['sizen'] = "10 2"
-		entry['name'] = "inputTrackFile"
-		entry['folder'] = "./"
-		entry['default'] = "Pick Track"
-		frame.addChild(entry)
-		
-		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'), frame, 'testUpload', login)
-		
-	def chat_test_upload(self, entries, data, login):
-		self.callMethod(('ManialinkManager', 'hideManialinkToLogin'), 'testUpload', login)
-		return
-		trackPath = os.path.dirname(self.callFunction(('TmConnector', 'GetMapsDirectory')))
-		directUploadPath = trackPath + os.path.sep + 'direct_upload'
-		if not os.path.isdir(directUploadPath):
-			os.mkdir(directUploadPath)
-		
-		directUploadUserPath = directUploadPath + os.path.sep + login
-		if not os.path.isdir(directUploadUserPath):
-			os.mkdir(directUploadUserPath)
-		fileName = os.path.split(entries['file'])[1]
-		filePath = directUploadUserPath + os.path.sep + fileName 
-			
-		if os.path.isfile(filePath):
-			return """
-					<?xml version="1.0" encoding="utf-8" ?>
-					<manialink>
-						<label text="$f11$oError$o$fff: A file with this name already exists in your upload directory" />
-					</manialink>
-					"""
-			
-		f = open(filePath, "w")
-		f.write(data)
-		f.close()
-		
-		if self.callFunction(('TmConnector', 'InsertMap'), 
-					'direct_upload' + os.path.sep + login + os.path.sep + fileName):
-			return """
-					<?xml version="1.0" encoding="utf-8" ?>
-					<manialink>
-						<label text="Thank you for uploading this track!"/>
-					</manialink>
-					"""
-		else:
-			os.remove(filePath)
-			return """
-				<?xml version="1.0" encoding="utf-8" ?>
-				<manialink>
-					<label text="$f12$oError$o$fff: Could not insert the file, is this a trackfile?" />
-				</manialink>
-			"""
+		ci = CommentInput(('ChatCommands', 'comment_enter'), 'An awfully long title that never should occur in real applications')
+		self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.commentTest', ci)
