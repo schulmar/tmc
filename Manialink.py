@@ -131,7 +131,8 @@ alignable = ['valign', 'halign']
 linkable = ['url', 'manialink', 'maniazones', 'addplayerid']
 formatable = ['style', 'textsize', 'textcolor']
 multimedia = displayable + ['data', 'play', 'looping']
-entry = displayable + alignable + formatable + ['name', 'default', 'autonewline']
+entry = displayable + alignable + formatable + ['name', 'default', 'autonewline',
+				'focusareacolor1', 'focusareacolor2']
 
 class Quad(XmlElement):
 	"""
