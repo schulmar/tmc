@@ -628,7 +628,7 @@ class Maps(PluginInterface):
 		frame.addChild(entry)
 		
 		w = Window('Choose map for upload')
-		w.setWidth((30, 10))
+		w.setSize((30, 10))
 		w.setPos((-15, 5))
 		w.addChild(frame)
 		
