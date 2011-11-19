@@ -67,6 +67,12 @@ class Widget(object):
         pass
             
 class CommentInput(Widget):
+    """
+    \brief A comment input dialog
+    
+    This expects a callback which will get called on submit.
+    The text is in the enty with name commentTex
+    """
     def __init__(self, callback, title):
         """
         \brief Construct the CommentInput
