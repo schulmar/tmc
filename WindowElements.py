@@ -73,13 +73,19 @@ class CommentInput(Widget):
     This expects a callback which will get called on submit.
     The text is in the enty with name commentTex
     """
-    def __init__(self, callback, title):
+    def __init__(self, callback, callbackArgs, title, text = 'Enter your comment here!'):
         """
         \brief Construct the CommentInput
         \param callback The function that will get called on submit
+        \param callbackArgs Additional arguments that should be passed 
+            to the callback
+        \param title The title of the dialog
+        \param text The initial text of the entry
         """
         self.__callback = callback #The submit-callback
+        self.__callbackArgs = callbackArgs #the additional arguments to the callback function
         self.__title = title #The title of the window
+        self.__text = text #The initial text of the enty
         super(CommentInput, self).__init__()
         
     def getManialink(self):
@@ -118,7 +124,7 @@ class CommentInput(Widget):
         entry['posn'] = '2 -8 1'
         entry['sizen'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 20)
         entry['autonewline'] = '1'
-        entry['default'] = 'Enter your comment here!'
+        entry['default'] = self.__text
         entry['name'] = 'commentText'
         entry['focusareacolor1'] = '0009'
         entry['focusareacolor2'] = '000F'
