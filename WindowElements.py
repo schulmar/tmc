@@ -110,7 +110,7 @@ class CommentInput(Widget):
         """     
         entry = Entry()
         entry['posn'] = '2 -8 1'
-        entry['sizen'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 10)
+        entry['sizen'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 20)
         entry['autonewline'] = '1'
         entry['default'] = 'Enter your comment here!'
         entry['name'] = 'commentText'
