@@ -5,6 +5,7 @@ import urllib
 import json
 from Manialink import *
 import base64
+from WindowElements import *
 
 """
 \file Maps.py
@@ -626,9 +627,13 @@ class Maps(PluginInterface):
 		entry['default'] = "Pick Track"
 		frame.addChild(entry)
 		
-		self.callMethod(('WindowManager', 'displayWindow'),
-		                        login, 'Maps.directMapUpload', 'Choose map for upload',
-		                        (30, 10), (-15, 5), [frame])
+		w = Window('Choose map for upload')
+		w.setWidth((30, 10))
+		w.setPos((-15, 5))
+		w.addChild(frame)
+		
+		self.callMethod(('WindowManager', 'displayWindow'), 
+					login, 'Maps.directMapUpload', w)
 		
 	def directMapUpload(self, entries, data, login):
 		"""
