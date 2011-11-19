@@ -138,6 +138,26 @@ class Karma(PluginInterface):
             self.__loadTypes()
             return True
         
+    @staticmethod    
+    def voteChanged(objectType, objectKey, objectVote, userName):
+        """
+        \brief Signaled when a vote was changed
+        \param objectType The name of the voted object class
+        \param objectKey The key of the object class instance
+        \param objectVote The vote that was given
+        \param userName The name of the voting user
+        """
+        pass
+    
+    @staticmethod
+    def karmaChanged(objectType, objectKey, karma):
+        """
+        \brief Signaled when the karma has changed
+        \param objectType The name of the voted object class
+        \param objectKey The key of the object class instance
+        \param karma The new karma value
+        """
+        
     def changeVote(self, objectType, objectKey, objectVote, userName):
         """
         \brief Change the vote for an object (create one if there is none)
@@ -165,6 +185,10 @@ class Karma(PluginInterface):
                   objectVote))
         cursor.close()
         self.__connection.commit()
+        
+        self.signalEvent('voteChanged', objectType, objectKey, objectVote, userName)
+        self.signalEvent('karmaChanged', objectType, objectKey, self.getKarma(objectType, objectKey))
+        
         return True
     
     def hasVoted(self, objectType, objectId, userName):
@@ -241,6 +265,30 @@ class Karma(PluginInterface):
         `karma_votes`.`FType` = %s
         """, (objectId, objectTypeId))
         return [(row['Vote'], row['userName']) for row in cursor.fetchall()]
+    
+    def getComment(self, commentId):
+        """
+        \brief Get one comment
+        \param The id of the comment to fetch
+        \return (commentId, text, userName, date, objectType, objectId) 
+        """
+        cursor = self.__getCursor()
+        cursor.execute("""
+        SELECT `Id`, `Text`, `users`.`name` as `userName`, `Created`, `karma_types`.`Name` as `Type`, `FKey`
+        FROM `karma_comments` 
+        JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
+        JOIN `karma_types` ON `karma_comments`.`FType` = `karma_types`.`Id`
+        WHERE
+        `karma_comments`.`Id` = %s
+        """, (commentId, ))
+        comment = cursor.fetchone()
+        comment = (comment['Id'], 
+                   comment['Text'], 
+                   comment['userName'],                   
+                   comment['Created'], 
+                   comment['Type'], 
+                   comment['FKey'])
+        return comment
     
     def addComment(self, objectType, objectId, commentText, userName, flag = False):
         """
