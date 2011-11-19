@@ -51,7 +51,7 @@ class Widget(object):
         \brief Return the widgets position
         \return (x, y, z)
         """
-        self.__pos
+        return self.__pos
         
     def setPos(self, pos):
         """
@@ -74,6 +74,7 @@ class CommentInput(Widget):
         """
         self.__callback = callback #The submit-callback
         self.__title = title #The title of the window
+        super(CommentInput, self).__init__()
         
     def getManialink(self):
         pos = self.getPos()
