@@ -79,29 +79,77 @@ class CommentInput(Widget):
     def getManialink(self):
         pos = self.getPos()
         size = self.getSize()
-        
+
         mainFrame = Frame()
-        mainFrame['posn'] = '{:int} {:int} {:int}'.format(pos[0] - size[0] // 2, pos[1] + size[1] // 2, pos[2])
-        
+        mainFrame['posn'] = '{:d} {:d} {:d}'.format(pos[0], pos[1], pos[2])
+
         bodyBgQuad = Quad()
-        bodyBgQuad['sizen'] = '{:int} {:int}'.format(*size)
+        bodyBgQuad['sizen'] = '{:d} {:d}'.format(*size)
         bodyBgQuad['posn'] = '0 0 -1'
-        bodyBgQuad['style'] = 'Bgs1' 
+        bodyBgQuad['style'] = 'Bgs1'
         bodyBgQuad['substyle'] = 'BgWindow1'
-        mainFrame.addChild(bodyBgQuad) 
-        
+        mainFrame.addChild(bodyBgQuad)
+
         titleBgQuad = Quad()
-        titleBgQuad['sizen'] = '{:int} {:int}'.format(size[0], 3)
+        titleBgQuad['sizen'] = '{:d} {:d}'.format(size[0], 6)
         titleBgQuad['style'] = 'Bgs1'
         titleBgQuad['substyle'] = 'BgTitle2'
         mainFrame.addChild(titleBgQuad)
-        
-        titleLabel = Label()         
+
+        titleLabel = Label()
         titleLabel['text'] = self.__title
-        titleLabel['posn'] = '2 1 1'
-        titleLabel['sizn'] = '{:int} {:int}'.format(size[0] - 4, size[1] - 1)
+        titleLabel['posn'] = '2 -2 1'
+        titleLabel['sizn'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 1)
         mainFrame.addChild(titleLabel)
+        """
+        entryBgQuad = Quad()
+        entryBgQuad['bgcolor'] = '0009'
+        entryBgQuad['sizen'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 10)
+        entryBgQuad['posn'] = '2 -8 0'
+        mainFrame.addChild(entryBgQuad)
+        """     
+        entry = Entry()
+        entry['posn'] = '2 -8 1'
+        entry['sizen'] = '{:d} {:d}'.format(size[0] - 4, size[1] - 10)
+        entry['autonewline'] = '1'
+        entry['default'] = 'Enter your comment here!'
+        entry['name'] = 'commentText'
+        entry['focusareacolor1'] = '0009'
+        entry['focusareacolor2'] = '000F'
+        mainFrame.addChild(entry)
+
+        cancelButtonBgQuad = Quad()
+        cancelButtonBgQuad['posn'] = '{:d} {:d} 1'.format(4, 8 - size[1])
+        cancelButtonBgQuad['sizen'] = '10 4'
+        cancelButtonBgQuad['style'] = 'Bgs1'
+        cancelButtonBgQuad['substyle'] = 'BgButton'
+        cancelButtonBgQuad.setCallback(('WindowManager', 'closeWindow'), self.getName())
+        mainFrame.addChild(cancelButtonBgQuad)
         
+        cancelButtonLabel = Label()
+        cancelButtonLabel['posn'] = '{:d} {:d} 2'.format(5, 7 - size[1])
+        cancelButtonLabel['sizen'] = '8 3'
+        cancelButtonLabel['text'] = 'Cancel'
+        cancelButtonLabel.setCallback(('WindowManager', 'closeWindow'), self.getName())
+        mainFrame.addChild(cancelButtonLabel)
+        
+        submitButtonBgQuad = Quad()
+        submitButtonBgQuad['halign'] = 'right'
+        submitButtonBgQuad['posn'] = '{:d} {:d} 1'.format(size[0] - 4, 8 - size[1])
+        submitButtonBgQuad['sizen'] = '10 4'
+        submitButtonBgQuad['style'] = 'Bgs1'
+        submitButtonBgQuad['substyle'] = 'BgButton'
+        submitButtonBgQuad.setCallback(self.__callback)
+        mainFrame.addChild(submitButtonBgQuad)
+        
+        submitButtonLabel = Label()
+        submitButtonLabel['halign'] = 'right'
+        submitButtonLabel['posn'] = '{:d} {:d} 2'.format(size[0] - 6, 7 - size[1])
+        submitButtonLabel['sizen'] = '8 3'
+        submitButtonLabel['text'] = 'Submit'
+        submitButtonLabel.setCallback(self.__callback)
+        mainFrame.addChild(submitButtonLabel)
+
         return mainFrame
 
 class Window(Widget):
