@@ -21,6 +21,13 @@ class Window(object):
         self.__size = (0, 0) #The size of this window
         self.__pos = (0, 0, 0) #The position of this window
 
+    def getName(self):
+        """
+        \brief Return the name of the window
+        \return The name of the window
+        """
+        return self.__name
+
     def setName(self, name):
         """
         \brief Set the name of this window
@@ -72,12 +79,26 @@ class Window(object):
         """
         self.__closeButton = bool(shouldHaveCloseButton)
         
+    def getSize(self):
+        """
+        \brief Return the current size of the window
+        \return The current size of the window
+        """
+        return self.__size
+        
     def setSize(self, size):
         """
         \brief Set the size of this window
         \param size The size should be a 2-element sized iterable of int convertibles
         """
         self.__size = (int(size[0]), int(size[1]))
+        
+    def getPos(self):
+        """
+        \brief Return the current position of the window
+        \return The current position of the window
+        """
+        return self.__pos
         
     def setPos(self, pos):
         """
@@ -186,6 +207,12 @@ class PagedWindow(Window):
         """
         self.__bigStep = bigStep
         
+    def getCurrentPageIndex(self):
+        """
+        \brief Return the index of the current page
+        \return The index of the current page
+        """
+        return self.__currentPage
 
     def setCurrentPage(self, page):
         """
@@ -202,8 +229,11 @@ class PagedWindow(Window):
             
         ml = super(PagedWindow, self).getManialink()
 
+        size = self.getSize()
+        name = self.getName()
+
         f = Frame()
-        f['posn'] = str(self.__size[0]//2) + ' ' + str(-self.__size[1]) + ' 1'
+        f['posn'] = str(size[0]//2) + ' ' + str(-size[1]) + ' 1'
         ml.addChild(f)
 
         pageNumber = Label()
@@ -231,7 +261,7 @@ class PagedWindow(Window):
             prevPage['halign'] = 'center'
             prevPage['style'] = 'Icons64x64_1'
             prevPage['substyle'] = 'ArrowPrev'
-            prevPage.setCallback(('WindowManager','changePage'), self.__name, self.__currentPage - 1)
+            prevPage.setCallback(('WindowManager','changePage'), name, self.__currentPage - 1)
             f.addChild(prevPage)
 
             prevFastPage = Quad()
@@ -245,7 +275,7 @@ class PagedWindow(Window):
                 prevFastPageNumber = self.__currentPage - self.__bigStep
             else:
                 prevFastPageNumber = 0
-            prevFastPage.setCallback(('WindowManager','changePage'), self.__name, prevFastPageNumber)
+            prevFastPage.setCallback(('WindowManager','changePage'), name, prevFastPageNumber)
             f.addChild(prevFastPage)
 
             firstPage = Quad()
@@ -255,7 +285,7 @@ class PagedWindow(Window):
             firstPage['halign'] = 'center'
             firstPage['style'] = 'Icons64x64_1'
             firstPage['substyle'] = 'ArrowFirst'
-            firstPage.setCallback(('WindowManager','changePage'), self.__name, 0)
+            firstPage.setCallback(('WindowManager','changePage'), name, 0)
             f.addChild(firstPage)
 
         if self.__currentPage < len(self.__pages) - 1:
@@ -266,7 +296,7 @@ class PagedWindow(Window):
             nextPage['halign'] = 'center'
             nextPage['style'] = 'Icons64x64_1'
             nextPage['substyle'] = 'ArrowNext'
-            nextPage.setCallback(('WindowManager','changePage'), self.__name, self.__currentPage + 1)
+            nextPage.setCallback(('WindowManager','changePage'), name, self.__currentPage + 1)
             f.addChild(nextPage)
 
             nextFastPage = Quad()
@@ -280,7 +310,7 @@ class PagedWindow(Window):
                 nextFastPageNumber = self.__currentPage + self.__bigStep
             else:
                 nextFastPageNumber = len(self.__pages) - 1
-            nextFastPage.setCallback(('WindowManager','changePage'), self.__name, nextFastPageNumber)
+            nextFastPage.setCallback(('WindowManager','changePage'), name, nextFastPageNumber)
             f.addChild(nextFastPage)
 
             lastPage = Quad()
@@ -290,7 +320,7 @@ class PagedWindow(Window):
             lastPage['halign'] = 'center'
             lastPage['style'] = 'Icons64x64_1'
             lastPage['substyle'] = 'ArrowLast'
-            lastPage.setCallback(('WindowManager','changePage'), self.__name, len(self.__pages) - 1)
+            lastPage.setCallback(('WindowManager','changePage'), name, len(self.__pages) - 1)
             f.addChild(lastPage)
 
         return ml
