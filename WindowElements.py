@@ -172,7 +172,7 @@ class Window(Widget):
     def __init__(self, title):
         super(Window, self).__init__()
         self.__closeButton = True #Should this window have a close button?
-        self.__title = 'Default Title' #The title of the window
+        self.__title = title #The title of the window
         self.__style = ('Bgs1','BgDialogBlur') #The style of this window's background
         self.__icon = ('Icons64x64_1', 'TrackInfo') #The (iconStyle, iconSubstyle) of this window
         self.__children = [] #The children of this window (ManialinkElements)
