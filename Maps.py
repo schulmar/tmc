@@ -17,17 +17,11 @@ This plugin should manage the maps on the server
 class Maps(PluginInterface):
 	"""
 	\brief The Maps plugin class derived from PluginInterface
-	"""
-	__currentMaps = []#List of the maps that currently run on the server
-	__currentMap = 0#The index of the current map in the list
-	__nextMap = 0#The index of the next map in the list
-	__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
-	__connection = None#The database connection
-	__matchSettingsFileName = 'tracklist.txt'#The name of the matchsettings file
-	__jukebox = []#List of tracks that are currently in the jukebox (track, loginOfJuker)
-	__playerDict = {}#a dictionary that contains the index mapping of the tracks per user
-	__directUploadPath = 'direct_upload'#the name of the map folder for direct uploads
-	__karmaMapObjectType = 'Maps.map'#the objectTypeName of maps for the karma system
+	"""	
+	__MapObjectType = 'Maps.map' #the objectTypeName of maps for the karma system
+	__writeCommentWindowName = 'Maps.writeComment' #The name of the comment window
+	__displayCommentsWindowName = 'Maps.displayComment' #The name of the comments window
+	__addCommentRight = 'Maps.addComment' #The name of the right to add comments to maps
 	
 	def __init__(self, pipes, args):
 		"""
@@ -35,6 +29,15 @@ class Maps(PluginInterface):
 		\param pipes The pipes to the PluginManager process
 		\param args Additional userdefined args 
 		"""
+		self.__currentMaps = []#List of the maps that currently run on the server
+		self.__currentMap = 0#The index of the current map in the list
+		self.__nextMap = 0#The index of the next map in the list
+		self.__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
+		self.__connection = None#The database connection
+		self.__matchSettingsFileName = 'tracklist.txt' #The name of the matchsettings file
+		self.__jukebox = [] #List of tracks that are currently in the jukebox (track, loginOfJuker)
+		self.__playerDict = {} #a dictionary that contains the index mapping of the tracks per user
+		self.__directUploadPath = 'direct_upload' #the name of the map folder for direct uploads
 		super(Maps, self).__init__(pipes)
 
 	def initialize(self, args):
@@ -64,7 +67,7 @@ class Maps(PluginInterface):
 		self.__connection.commit()
 		self.__getMapListFromServer()
 		
-		self.callMethod(('Karma', 'addType'), self.__karmaMapObjectType)
+		self.callMethod(('Karma', 'addType'), self.__MapObjectType)
 		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.addFromMX', 'Add maps from mania-exchange')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'addmx', ('Maps', 'chat_addmx'), 
@@ -126,6 +129,23 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), '+++', ('Maps', 'chat_triple_plus'),
 					'Like /karma vote 100')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerChat', 'onPlayerChat')
+		
+		self.callMethod(('Acl', 'rightAdd'), self.__addCommentRight, 
+					'Add comments to a map.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.deleteOwnComments',
+					'Delete own comments on maps.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.deleteOthersComments',
+					'Delete others comments on maps.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.editOwnComments',
+					'Edit own comments on maps.')
+		self.callMethod(('Acl', 'addRight'), 'Maps.editOthersComments',
+					'Edit others comments on maps.')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.replyComment',
+					'Reply to comments made on maps.')
+		self.callMethod(('Acl', 'userHasRight'), 'Maps.voteComment',
+					'Vote on comments made on maps.')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'comment', ('Maps', 'chat_comment'),
+					'Write a comment on this track, see /comment help for more information.')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
@@ -720,10 +740,10 @@ class Maps(PluginInterface):
 		
 		if params[0] == 'show':
 			votes = self.callFunction(('Karma', 'getVotes'), 
-									self.__karmaMapObjectType, 
+									self.__MapObjectType, 
 									currentMapId)
 			karma = self.callFunction(('Karma', 'getKarma'), 
-									self.__karmaMapObjectType,
+									self.__MapObjectType,
 									currentMapId)
 			positiveCount = len(filter(lambda x: x[0] >= 50,votes))
 			negativeCount = len(filter(lambda x: x[0] < 50,votes))
@@ -761,35 +781,62 @@ class Maps(PluginInterface):
 				vote = 100
 			
 			self.callMethod(('Karma', 'changeVote'), 
-						self.__karmaMapObjectType, currentMapId, vote, login)
+						self.__MapObjectType, currentMapId, vote, login)
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Accepted your vote of ' + str(vote), login)
 			self.chat_karma(login, 'show')			
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Unknown command /karma ' + ' '.join(params), login)
+			
 	def chat_triple_minus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 0
+		"""
 		self.chat_karma(login, 'vote 0')
 	
 	def chat_double_minus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 17
+		"""
 		self.chat_karma(login, 'vote 17')
 		
 	def chat_minus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 33
+		"""
 		self.chat_karma(login, 'vote 33')
 		
 	def chat_plus_minus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 50
+		"""
 		self.chat_karma(login, 'vote 50')
 		
 	def chat_plus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 67
+		"""
 		self.chat_karma(login, 'vote 67')
 	
 	def chat_double_plus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 83
+		"""
 		self.chat_karma(login, 'vote 83')
 		
 	def chat_triple_plus(self, login, params):
+		"""
+		\brief Convenience function for /karma vote 100
+		"""
 		self.chat_karma(login, 'vote 100')	
 		
 	def onPlayerChat(self, PlayerUid, Login, Text, IsRegisteredCmd):
+		"""
+		\brief Player chat callback
+		
+		Filters chat for convenience chat votes ---, --, -, +-, -+, +, ++, ++
+		"""
 		Text = Text.strip()
 		functions = {'---' : self.chat_triple_minus,
 					'--' : self.chat_double_minus,
@@ -803,3 +850,185 @@ class Maps(PluginInterface):
 			functions[Text](Login, None)
 		except KeyError:
 			pass
+		
+	def chat_comment(self, login, params):
+		"""
+		\brief The comment chatcommand callback
+		\param login The calling players login
+		\param params additional params to the command
+		"""
+		if params == None:
+			params = 'write'
+			
+		params = params.split()
+		
+		if params[0] == 'write':
+			commentWindow = CommentInput(('Maps', 'cb_comment'), (),
+										'Comment on ' + self.getCurrentMap()['Name'])
+			commentWindow.setSize((70, 50))
+			commentWindow.setPos((-30, 25))
+			self.callMethod(('WindowManager', 'displayWindow'), login, self.__writeCommentWindowName, commentWindow)
+		elif params[0] == 'display':
+			comments = self.callFunction(('Karma', 'getComments'), 
+										self.__MapObjectType, 
+										self.getMapIdFromUid(self.getCurrentMap()['Uid']))
+			comments = self.__prepareComments(comments)
+			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'], comments)
+			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
+			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
+			commentsWindow.setCommentVoteCallback(('Maps', 'cb_commentVote'))
+			self.callMethod(('WindowManager', 'displayWindow'), login, self.__displayCommentsWindowName, commentsWindow)
+	
+	def __prepareComments(self, comments, login, depth = 0):
+		canDeleteOwn = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.deleteOwnComments')
+		canDeleteOthers = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.deleteOthersComments')
+		canEditOwn = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.editOwnComments')
+		canEditOthers = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.editOthersComments')
+		canReply = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment')
+		canVote = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.voteComment')
+		output = []
+		for i in comments:
+			if i[2] == login:
+				#the comment is mine
+				votable = False #Can not vote on own comment
+				editable = canEditOwn
+				deletable = canDeleteOwn
+				answerable = False #Can not answer own comment
+			else:
+				#the comment is from someone else
+				votable = canVote
+				editable = canEditOthers
+				deletable = canDeleteOthers
+				answerable = canReply
+				
+			comment = {'depth' : depth, 
+						'height' : 4, 
+						'karma' : reduce(lambda x: x[0], i[4], 0),
+						'votable' : votable,
+						'editable' : editable,
+						'deletable' : deletable,
+						'answerable' : answerable,
+						'nickName' : self.callFunction(('Players', 'getPlayerNickname'), i[2]),
+						'commentTuple' : i}
+			#append this comment
+			output.append(comment)
+			#append the answers to this comment
+			output.extend(self.__prepareComments(i[5], login, depth + 1))
+	
+	def cb_commentDelete(self, entries, login, commentId):
+		"""
+		\brief Delete a comment
+		\param entries Should be emtpy
+		\param login The login of the invoking player
+		\param commentId The id of the comment to delete
+		"""
+		#Hide the comments window
+		self.callMethod(('WindowManager', 'hideWindow'), login, 
+					self.__displayCommentsWindowName)
+		comment = self.callFunction(('Karma', 'getComment'), commentId)
+		if comment[2] == login:
+			#it is my comment
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.deleteOwnComments'):
+				self.callMethod(('Karma', 'deleteComment'), commentId)
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Deleted your comment.', login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You are not allowed to delete your comments.', login)
+		else:
+			#it is someone else comment
+			if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.deleteOthersComments'):
+				self.callMethod(('Karma', 'deleteComment'), commentId)
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'$zDeleted ' + 
+							self.callFunction(('Players', 'getPlayerNickname'), 
+											comment[2]) + 
+							' $zcomment.', login)
+			else:
+				self.log('Error: User ' + login + ' tried to delete ' + 
+						comment[2] + '\'s comment')
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You are not allowed to delete others comments!', login)
+				
+	def cb_commentEdit(self, entries, login, commentId):
+		"""
+		\brief Callback for editing a comment
+		\param entries Should be empty
+		\param login The login of the invoking player
+		\param commentId The id of the comment to edit
+		"""
+		#Hide the comment window
+		self.callMethod(('WindowManager', 'hideWindow'), login, 
+					self.__displayCommentsWindowName)
+		comment = self.callFunction(('Karma', 'getComment'), commentId)
+		
+		if comment[2] == login:
+			#it is my comment
+			if self.callFunction(('Acl', 'userHasRight'), 
+								login, 'Maps.editOwnComments'):
+				pass
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You are not allowed to edit your comments.', login)
+				return	
+		else:
+			#it is someone else comment
+			if self.callFunction(('Acl', 'userHasRight'), 
+								login, 'Maps.editOthersComments'):
+				pass
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You are not allowed to edit others comments.', login)
+				return
+			
+		commentWindow = CommentInput(('Maps', 'cb_comment'), (), 
+										'Edit comment', 
+										comment[1])
+		commentWindow.setSize((70, 50))
+		commentWindow.setPos((-30, 25))
+		self.callMethod(('WindowManager', 'displayWindow'), login, 
+					self.__writeCommentWindowName, commentWindow)
+		
+	def cb_commentVote(self, entries, login, commentId, vote):
+		"""
+		\brief The comment vote callback
+		\param entries Should be empty
+		\param login The login of the invoking player
+		\param commentId The id of the comment to vote on
+		\param vote The vote value
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.voteComment'):
+			comment = self.callFunction(('Karma', 'getComment'), commentId)
+			if comment[2] == login:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You are not allowed to vote for your own comments', login)
+				return
+			else:
+				#Hide the comment window
+				self.callMethod(('WindowManager', 'hideWindow'), login, 
+					self.__displayCommentsWindowName)
+				
+				self.callMethod(('Karma', 'changeVote'), 
+							self.callFunction(('Karma', 'getCommentTypeName')),
+							commentId, 
+							vote,
+							login)
+				
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Thank you for voting.', login)
+		
+				
+			
+	def cb_comment(self, entries, login):
+		self.callMethod(('WindowManager', 'hideWindow'), login, self.__writeCommentWindowName)
+		
+		if self.callFunction(('Acl', 'userHasRight'), login, 
+									self.__addCommentRight):
+			self.callMethod(('Karma', 'addComment'), self.__MapObjectType, 
+				self.getMapIdFromUid(self.getCurrentMap()['Uid']),
+				entries['commentText'])
+			self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'),
+						'Thank you for you opinion.', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'),
+						'You have insufficient rights to add comments to a track', login)

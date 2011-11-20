@@ -175,7 +175,10 @@ class ChatCommands(PluginInterface):
 		
 		Currently displays a comment form		
 		"""
+		"""
 		ci = CommentInput(('ChatCommands', 'comment_enter'), 'An awfully long title that never should occur in real applications')
 		ci.setSize((80, 60))
 		ci.setPos((-40, 30))
 		self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.commentTest', ci)
+		"""
+		pass

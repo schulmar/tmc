@@ -451,3 +451,140 @@ class PagedWindow(Window):
 
         return ml
         
+class CommentOutput(PagedWindow):
+    """
+    \brief Prints some comments on the screen
+    """
+    def __init__(self, title, comments):
+        """
+        \brief Create a paged window with the comments
+        \param title The title of the window
+        \param comments The comments as given by Karma.getComments
+        """
+        pages = map(self.__getCommentMl, comments)
+        
+        self.__commentVoteCallback = (None, None) #The callback on comment votes
+        self.__commentEditCallback = (None, None) #The callback for editing comments
+        self.__commentDeleteCallback = (None, None) #The callback for deleting comments
+        
+        super(CommentOutput, self).__init__(title, pages)
+        
+    @staticmethod
+    def commentVoteCallbackSignature(entries, login, commentId, vote):
+        """
+        \brief The commentVoteCallback signature
+        \param entries The entries, should be emtpy
+        \param login The login of the invoking player
+        \param commentId The id of the comment voted an
+        \param vote The vote value
+        """
+        pass
+        
+    def setCommentVoteCallback(self, callback):
+        """
+        \brief Set the comment vote callback
+        \param callback The new callback
+        """
+        self.__commentVoteCallback = callback
+    
+    @staticmethod
+    def commentEditCallbackSignature(entries, login, commentId):
+        """
+        \brief The commentEditCallback signature
+        \param entries Should be empty
+        \param login The login of the invoking player
+        \param commentId The id of the comment to edit
+        """
+        pass
+    
+    def setCommentEditCallback(self, callback):
+        """
+        \brief Set the new comment edit callback (invoked on clicking edit)
+        \param callback The new callback
+        """
+        self.__commentEditCallback = callback
+    
+    @staticmethod
+    def commentDeleteCallbackSignature(entries, login, commentId):
+        """
+        \brief The signature of the commentDeleteCallback
+        \param entries Should be empty
+        \param login The login of the invoking player
+        \param commentId The id of the comment to delete
+        """
+        pass
+    
+    def setCommentDeleteCallback(self, callback):
+        """
+        \brief Set the new commentDeleteCallback
+        \param callback The new callback
+        """
+        self.__commentDeleteCallback = callback
+    
+    def __getCommentMl(self, comment):
+        """
+        \brief Setup the Manialink for one comment
+        \param comment Expected {depth, height, karma, votable, editable, deletable, answerable, nickName, commentTuple}
+        \return The manialink
+        """
+        indent = 2 * comment['depth']
+        width = self.getSize()[0] - indent 
+        height = comment['height']
+        
+        commentFrame = Frame()
+        commentFrame['posn'] = '{:d} {:d}'.format(indent, 0)
+        
+        commentBgQuad = Quad()
+        commentBgQuad['sizen'] = '{:d} {:d}'.format(width, height + 10)
+        commentBgQuad['style'] = 'Bgs1'
+        commentBgQuad['substyle'] = 'BgWindow1'
+        commentFrame.addChild(commentBgQuad)
+        
+        headBarBgQuad = Quad()
+        headBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 3)
+        headBarBgQuad['posn'] = '1 -1 1'
+        headBarBgQuad['style'] = 'Bgs1'
+        headBarBgQuad['substyle'] = 'BgTitle3'
+        commentFrame.addChild(headBarBgQuad)
+        
+        nameLabel = Label()
+        nameLabel['text'] = comment['nickName']
+        nameLabel['posn'] = '2 -2 2'
+        nameLabel['sizen'] = '{:d} {:d}'.format(width // 2 - 2, 2)
+        commentFrame.addChild(nameLabel)
+        
+        votesFrame = Frame()
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width // 2, -1)
+        commentFrame.addChild(votesFrame)
+        
+        voteDown = Quad()
+        voteDown['posn'] = '0 0 1'
+        voteDown['sizen'] = '2 2'
+        voteDown['style'] = 'Icons64x64_1'
+        voteDown['substyle'] = 'ArrowDown'
+        voteDown.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 0)
+        votesFrame.addChild(voteDown)
+        
+        karmaLabel = Label()
+        karmaLabel['text'] = '{:d}%'.format(comment['commentTuple'][1])
+        karmaLabel['posn'] = '{:d} {:d} 1'.format(4, 0)
+        karmaLabel['sizen'] = '4 2'
+        votesFrame.addChild(karmaLabel)
+        
+        voteUp = Quad()
+        voteUp['posn'] = '10 0 1'
+        voteUp['sizen'] = '2 2'
+        voteUp['style'] = 'Icons64x64_1'
+        voteUp['substyle'] = 'ArrowUp'
+        voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
+        votesFrame.addChild(voteUp)
+        
+        footBarBgQuad = Quad()
+        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 3)
+        footBarBgQuad['valing'] = 'bottom'
+        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(1, 1 - (height + 10))
+        footBarBgQuad['style'] = 'Bgs1'
+        footBarBgQuad['style'] = 'BgTitle2'
+        commentFrame.addChild(footBarBgQuad)
+        
+        return commentFrame

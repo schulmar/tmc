@@ -17,6 +17,7 @@ class Karma(PluginInterface):
     
     __connection = None#the database connection object
     __types = {}#A mapping from type names to typeIds
+    __commentTypeName = 'Karma.comment' #The typename of comments
     __commentTypeId = None#The typeId of the comments ('Karma.comment')
     
     def __init__(self, pipes, args):
@@ -95,8 +96,8 @@ class Karma(PluginInterface):
         self.__loadTypes()
         
         #enable voting/comments on comments
-        self.addType('Karma.comment')
-        self.__commentTypeId = self.__types['Karma.comment']
+        self.addType(self.__commentTypeName)
+        self.__commentTypeId = self.__types[self.__commentTypeName]
             
     def __getCursor(self):
         """
@@ -266,6 +267,9 @@ class Karma(PluginInterface):
         """, (objectId, objectTypeId))
         return [(row['Vote'], row['userName']) for row in cursor.fetchall()]
     
+    def getCommentTypeName(self):
+        return self.__commentTypeName
+        
     def getComment(self, commentId):
         """
         \brief Get one comment
