@@ -610,10 +610,10 @@ class CommentOutput(PagedWindow):
         
         if comment['answerable'] or True:
             answerButtonLabel = Label()
-            answerButtonLabel['text'] = 'Reply'
+            answerButtonLabel['text'] = 'Answer'
             answerButtonLabel['valign'] = 'bottom'
-            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 2)
-            answerButtonLabel['sizen'] = '8 3'
+            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
+            answerButtonLabel['sizen'] = '9 4'
             answerButtonLabel['focusareacolor1'] = '0000'
             #answerButtonLabel.setCallback(self.__com)
             footBarFrame.addChild(answerButtonLabel)
@@ -622,9 +622,9 @@ class CommentOutput(PagedWindow):
             editButtonLabel = Label()
             editButtonLabel['text'] = 'Edit'
             editButtonLabel['valign'] = 'bottom'
-            editButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 20, 2)
-            editButtonLabel['sizen'] = '8 3'
-            editButtonLabel['focusareacolor1'] = '0000'
+            editButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 20, 1)
+            editButtonLabel['sizen'] = '9 4'
+            editButtonLabel['focusareacolor1'] = '000F'
             editButtonLabel.setCallback(self.__commentEditCallback, comment['commentTuple'][0])
             footBarFrame.addChild(editButtonLabel)
             
@@ -632,9 +632,9 @@ class CommentOutput(PagedWindow):
             deleteButtonLabel = Label()
             deleteButtonLabel['text'] = 'Delete'
             deleteButtonLabel['valign'] = 'bottom'
-            deleteButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 30, 2)
-            deleteButtonLabel['sizen'] = '8 3'
-            deleteButtonLabel['focusareacolor1'] = '0000'
+            deleteButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 30, 1)
+            deleteButtonLabel['sizen'] = '9 4'
+            deleteButtonLabel['focusareacolor1'] = '000F'
             deleteButtonLabel.setCallback(self.__commentDeleteCallback, comment['commentTuple'][0])
             footBarFrame.addChild(deleteButtonLabel)
             
