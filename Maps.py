@@ -142,7 +142,7 @@ class Maps(PluginInterface):
 					'Edit others comments on maps.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.replyComment',
 					'Reply to comments made on maps.')
-		self.callMethod(('Acl', 'userHasRight'), 'Maps.voteComment',
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.voteComment',
 					'Vote on comments made on maps.')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'comment', ('Maps', 'chat_comment'),
 					'Write a comment on this track, see /comment help for more information.')
