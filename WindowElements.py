@@ -534,7 +534,8 @@ class CommentOutput(PagedWindow):
         commentFrame['posn'] = '{:d} {:d}'.format(indent, 0)
         
         commentBgQuad = Quad()
-        commentBgQuad['sizen'] = '{:d} {:d}'.format(width, height + 10)
+        commentBgQuad['posn'] = '1 0'
+        commentBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, height + 10)
         commentBgQuad['style'] = 'Bgs1'
         commentBgQuad['substyle'] = 'BgWindow1'
         commentFrame.addChild(commentBgQuad)
@@ -553,13 +554,13 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(nameLabel)
         
         votesFrame = Frame()
-        votesFrame['posn'] = '{:d} {:d} 1'.format(width // 2, -2)
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 10, -3)
         commentFrame.addChild(votesFrame)
         
         voteDown = Quad()
         voteDown['valign'] = 'center'
         voteDown['posn'] = '0 0 1'
-        voteDown['sizen'] = '4 4'
+        voteDown['sizen'] = '5 5'
         voteDown['style'] = 'Icons64x64_1'
         voteDown['substyle'] = 'ArrowDown'
         voteDown.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 0)
@@ -568,14 +569,14 @@ class CommentOutput(PagedWindow):
         karmaLabel = Label()
         karmaLabel['valign'] = 'center'
         karmaLabel['text'] = '{:d}%'.format(comment['karma'])
-        karmaLabel['posn'] = '{:d} {:d} 1'.format(4, 0)
+        karmaLabel['posn'] = '{:d} {:d} 1'.format(5, 0)
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
         voteUp = Quad()
         voteUp['valign'] = 'center'
-        voteUp['posn'] = '10 0 1'
-        voteUp['sizen'] = '4 4'
+        voteUp['posn'] = '7 0 1'
+        voteUp['sizen'] = '5 5'
         voteUp['style'] = 'Icons64x64_1'
         voteUp['substyle'] = 'ArrowUp'
         voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
@@ -592,7 +593,7 @@ class CommentOutput(PagedWindow):
         textLabel = Label()
         textLabel['text'] = comment['commentTuple'][1]
         textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
-        textLabel['posn'] = '1 -5 1'
+        textLabel['posn'] = '2 -6 1'
         commentFrame.addChild(textLabel)
         
         return [commentFrame]
