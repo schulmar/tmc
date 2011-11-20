@@ -540,7 +540,7 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(commentBgQuad)
         
         headBarBgQuad = Quad()
-        headBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 3)
+        headBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 5)
         headBarBgQuad['posn'] = '1 -1 1'
         headBarBgQuad['style'] = 'Bgs1'
         headBarBgQuad['substyle'] = 'BgTitle3'
@@ -553,12 +553,12 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(nameLabel)
         
         votesFrame = Frame()
-        votesFrame['posn'] = '{:d} {:d} 1'.format(width // 2, -1)
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width // 2, -2)
         commentFrame.addChild(votesFrame)
         
         voteDown = Quad()
         voteDown['posn'] = '0 0 1'
-        voteDown['sizen'] = '2 2'
+        voteDown['sizen'] = '4 4'
         voteDown['style'] = 'Icons64x64_1'
         voteDown['substyle'] = 'ArrowDown'
         voteDown.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 0)
@@ -572,7 +572,7 @@ class CommentOutput(PagedWindow):
         
         voteUp = Quad()
         voteUp['posn'] = '10 0 1'
-        voteUp['sizen'] = '2 2'
+        voteUp['sizen'] = '4 4'
         voteUp['style'] = 'Icons64x64_1'
         voteUp['substyle'] = 'ArrowUp'
         voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
@@ -585,5 +585,11 @@ class CommentOutput(PagedWindow):
         footBarBgQuad['style'] = 'Bgs1'
         footBarBgQuad['style'] = 'BgTitle2'
         commentFrame.addChild(footBarBgQuad)
+        
+        textLabel = Label()
+        textLabel['text'] = comment['commentTuple'][1]
+        textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
+        textLabel['posn'] = '1 5 1'
+        commentFrame.addChild(textLabel)
         
         return [commentFrame]
