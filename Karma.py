@@ -374,7 +374,7 @@ class Karma(PluginInterface):
         
         cursor = self.__getCursor()
         cursor.execute("""
-        SELECT Id, Text, `users`.`name` as `userName`, `Created` 
+        SELECT `karma_comments`.`Id` as `Id, `Text`, `users`.`name` as `userName`, `Created` 
         FROM `karma_comments` JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         WHERE
         `karma_comments`.`FKey` = %s AND
