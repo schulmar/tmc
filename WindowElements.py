@@ -299,7 +299,7 @@ class Window(Widget):
         return f
 
 class PagedWindow(Window):
-    def __init__(self, title, pages):
+    def __init__(self, title, pages = []):
         """
         \brief Create a paged window
         \param title The title of the window
@@ -330,6 +330,13 @@ class PagedWindow(Window):
         \param page The pagenumber that should be displayed
         """
         self.__currentPage = int(page)
+            
+    def setPages(self, pages):
+        """
+        \brief Set the pages of this window
+        \param pages The new pages
+        """
+        self.__pages = pages
             
     def getManialink(self):
         try:
@@ -445,8 +452,9 @@ class CommentOutput(PagedWindow):
         \param title The title of the window
         \param comments The comments as given by Karma.getComments
         """
+        super(CommentOutput, self).__init__(title)
         pages = map(self.__getCommentMl, comments)
-        super(CommentOutput, self).__init__(title, pages)
+        self.setPages(pages)
         
         self.__commentVoteCallback = (None, None) #The callback on comment votes
         self.__commentEditCallback = (None, None) #The callback for editing comments
