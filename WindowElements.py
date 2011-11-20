@@ -222,20 +222,6 @@ class Window(Widget):
         \param shouldHaveCloseButton is boolean
         """
         self.__closeButton = bool(shouldHaveCloseButton)
-        
-    def getSize(self):
-        """
-        \brief Return the current size of the window
-        \return The current size of the window
-        """
-        return self.__size
-        
-    def setSize(self, size):
-        """
-        \brief Set the size of this window
-        \param size The size should be a 2-element sized iterable of int convertibles
-        """
-        self.__size = (int(size[0]), int(size[1]))
 
     def getManialink(self):
         #the main frame
