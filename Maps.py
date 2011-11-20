@@ -877,12 +877,13 @@ class Maps(PluginInterface):
 							'There are no comments on this track.', login)
 				return
 			comments = self.__prepareComments(comments, login)
-			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'], comments)
+			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'])
 			commentsWindow.setSize((80, 70))
 			commentsWindow.setPos((-40, 35))
 			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
 			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
 			commentsWindow.setCommentVoteCallback(('Maps', 'cb_commentVote'))
+			commentsWindow.setComments(comments)
 			self.callMethod(('WindowManager', 'displayWindow'), login, self.__displayCommentsWindowName, commentsWindow)
 	
 	def __prepareComments(self, comments, login, depth = 0):

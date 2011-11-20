@@ -450,7 +450,7 @@ class CommentOutput(PagedWindow):
     """
     \brief Prints some comments on the screen
     """
-    def __init__(self, title, comments):
+    def __init__(self, title):
         """
         \brief Create a paged window with the comments
         \param title The title of the window
@@ -462,8 +462,7 @@ class CommentOutput(PagedWindow):
         self.__commentEditCallback = (None, None) #The callback for editing comments
         self.__commentDeleteCallback = (None, None) #The callback for deleting comments
         
-        pages = map(self.__getCommentMl, comments)
-        self.setPages(pages)
+        self.setPages([])
         
     @staticmethod
     def commentVoteCallbackSignature(entries, login, commentId, vote):
@@ -516,6 +515,10 @@ class CommentOutput(PagedWindow):
         \param callback The new callback
         """
         self.__commentDeleteCallback = callback
+    
+    def setComments(self, comments):
+        self.setPages(map(self.__getCommentMl, comments))
+        
     
     def __getCommentMl(self, comment):
         """
