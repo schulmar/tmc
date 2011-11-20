@@ -82,11 +82,11 @@ class CommentInput(Widget):
         \param title The title of the dialog
         \param text The initial text of the entry
         """
+        super(CommentInput, self).__init__()
         self.__callback = callback #The submit-callback
         self.__callbackArgs = callbackArgs #the additional arguments to the callback function
         self.__title = title #The title of the window
         self.__text = text #The initial text of the enty
-        super(CommentInput, self).__init__()
         
     def getManialink(self):
         pos = self.getPos()
@@ -170,14 +170,12 @@ class Window(Widget):
     """
     
     def __init__(self, title):
+        super(Window, self).__init__()
         self.__closeButton = True #Should this window have a close button?
         self.__title = 'Default Title' #The title of the window
         self.__style = ('Bgs1','BgDialogBlur') #The style of this window's background
         self.__icon = ('Icons64x64_1', 'TrackInfo') #The (iconStyle, iconSubstyle) of this window
         self.__children = [] #The children of this window (ManialinkElements)
-        self.__size = (0, 0) #The size of this window
-        self.__pos = (0, 0, 0) #The position of this window
-        super(Window, self).__init__()
 
     def addChild(self, child):
         """
@@ -307,10 +305,10 @@ class PagedWindow(Window):
         \param title The title of the window
         \param pages The content of the pages
         """
+        super(PagedWindow, self).__init__(title)
         self.__pages = pages #The list of pages
         self.__bigStep = 10 #The number of pages to skip on a big step
         self.__currentPage = 0 #The currently displayed page
-        super(PagedWindow, self).__init__(title)
 
     def setBigStep(self, bigStep):
         """
@@ -448,12 +446,11 @@ class CommentOutput(PagedWindow):
         \param comments The comments as given by Karma.getComments
         """
         pages = map(self.__getCommentMl, comments)
+        super(CommentOutput, self).__init__(title, pages)
         
         self.__commentVoteCallback = (None, None) #The callback on comment votes
         self.__commentEditCallback = (None, None) #The callback for editing comments
         self.__commentDeleteCallback = (None, None) #The callback for deleting comments
-        
-        super(CommentOutput, self).__init__(title, pages)
         
     @staticmethod
     def commentVoteCallbackSignature(entries, login, commentId, vote):
