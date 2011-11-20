@@ -138,7 +138,7 @@ class Maps(PluginInterface):
 					'Delete others comments on maps.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.editOwnComments',
 					'Edit own comments on maps.')
-		self.callMethod(('Acl', 'addRight'), 'Maps.editOthersComments',
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.editOthersComments',
 					'Edit others comments on maps.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.replyComment',
 					'Reply to comments made on maps.')
