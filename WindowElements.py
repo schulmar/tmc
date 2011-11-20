@@ -583,4 +583,4 @@ class CommentOutput(PagedWindow):
         footBarBgQuad['style'] = 'BgTitle2'
         commentFrame.addChild(footBarBgQuad)
         
-        return commentFrame
+        return [commentFrame]
