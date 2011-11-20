@@ -318,7 +318,7 @@ class Karma(PluginInterface):
         INSERT INTO `karma_comments`
         (`text`, `FKey`, `FType`, `UserId`, `Created`) VALUES
         (%s, %s, %s, %s, NOW())
-        """)
+        """, (commentText, objectId, objectTypeId, userId))
         
         #is a flag set?
         if flag:
