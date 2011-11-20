@@ -549,12 +549,13 @@ class CommentOutput(PagedWindow):
         
         nameLabel = Label()
         nameLabel['text'] = comment['nickName']
-        nameLabel['posn'] = '2 -2 2'
+        nameLabel['posn'] = '4 -2 2'
         nameLabel['sizen'] = '{:d} {:d}'.format(width // 2 - 2, 2)
+        nameLabel['focusareacolor2'] = '000F'
         commentFrame.addChild(nameLabel)
         
         votesFrame = Frame()
-        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 10, -3)
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 20, -3)
         commentFrame.addChild(votesFrame)
         
         voteDown = Quad()
@@ -583,11 +584,11 @@ class CommentOutput(PagedWindow):
         votesFrame.addChild(voteUp)
         
         footBarBgQuad = Quad()
-        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 3)
+        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 4, 4)
         footBarBgQuad['valing'] = 'bottom'
-        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(1, 1 - (height + 10))
+        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(2, 1 - (height + 10))
         footBarBgQuad['style'] = 'Bgs1'
-        footBarBgQuad['style'] = 'BgTitle2'
+        footBarBgQuad['style'] = 'BgTitle3'
         commentFrame.addChild(footBarBgQuad)
         
         textLabel = Label()
