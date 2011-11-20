@@ -453,12 +453,13 @@ class CommentOutput(PagedWindow):
         \param comments The comments as given by Karma.getComments
         """
         super(CommentOutput, self).__init__(title)
-        pages = map(self.__getCommentMl, comments)
-        self.setPages(pages)
         
         self.__commentVoteCallback = (None, None) #The callback on comment votes
         self.__commentEditCallback = (None, None) #The callback for editing comments
         self.__commentDeleteCallback = (None, None) #The callback for deleting comments
+        
+        pages = map(self.__getCommentMl, comments)
+        self.setPages(pages)
         
     @staticmethod
     def commentVoteCallbackSignature(entries, login, commentId, vote):
