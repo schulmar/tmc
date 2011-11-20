@@ -871,7 +871,7 @@ class Maps(PluginInterface):
 		elif params[0] == 'display':
 			comments = self.callFunction(('Karma', 'getComments'), 
 										self.__MapObjectType, 
-										self.getMapIdFromUid(self.getCurrentMap()['Uid']))
+										self.getMapIdFromUid(self.getCurrentMap()['UId']))
 			comments = self.__prepareComments(comments)
 			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'], comments)
 			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
@@ -1025,7 +1025,7 @@ class Maps(PluginInterface):
 		if self.callFunction(('Acl', 'userHasRight'), login, 
 									self.__addCommentRight):
 			self.callMethod(('Karma', 'addComment'), self.__MapObjectType, 
-				self.getMapIdFromUid(self.getCurrentMap()['Uid']),
+				self.getMapIdFromUid(self.getCurrentMap()['UId']),
 				entries['commentText'])
 			self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'),
 						'Thank you for you opinion.', login)
