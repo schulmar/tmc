@@ -612,9 +612,27 @@ class CommentOutput(PagedWindow):
             answerButtonLabel = Label()
             answerButtonLabel['text'] = 'Reply'
             answerButtonLabel['valign'] = 'bottom'
-            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 4)
+            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
             answerButtonLabel['sizen'] = '6 3'
+            #answerButtonLabel.setCallback(self.__com)
             footBarFrame.addChild(answerButtonLabel)
         
-        
+        if comment['editable'] or True:
+            editButtonLabel = Label()
+            editButtonLabel['text'] = 'Edit'
+            editButtonLabel['valign'] = 'bottom'
+            editButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 20, 1)
+            editButtonLabel['sizen'] = '6 3'
+            editButtonLabel.setCallback(self.__commentEditCallback, comment['commentTuple'][0])
+            footBarFrame.addChild(editButtonLabel)
+            
+        if comment['deletable'] or True:
+            deleteButtonLabel = Label()
+            deleteButtonLabel['text'] = 'Delete'
+            deleteButtonLabel['valign'] = 'bottom'
+            deleteButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 30, 1)
+            deleteButtonLabel['sizen'] = '7 3'
+            deleteButtonLabel.setCallback(self.__commentDeleteCallback, comment['commentTuple'][0])
+            footBarFrame.addChild(deleteButtonLabel)
+            
         return [commentFrame]
