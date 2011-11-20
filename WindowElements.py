@@ -551,11 +551,10 @@ class CommentOutput(PagedWindow):
         nameLabel['text'] = comment['nickName']
         nameLabel['posn'] = '4 -2 2'
         nameLabel['sizen'] = '{:d} {:d}'.format(width // 2 - 2, 2)
-        nameLabel['focusareacolor2'] = '000F'
         commentFrame.addChild(nameLabel)
         
         votesFrame = Frame()
-        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 20, -3)
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 15, -3)
         commentFrame.addChild(votesFrame)
         
         voteDown = Quad()
@@ -570,14 +569,14 @@ class CommentOutput(PagedWindow):
         karmaLabel = Label()
         karmaLabel['valign'] = 'center'
         karmaLabel['text'] = '{:d}%'.format(comment['karma'])
-        karmaLabel['posn'] = '{:d} {:d} 1'.format(5, 0)
+        karmaLabel['posn'] = '{:d} {:d} 1'.format(6, 0)
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
         voteUp = Quad()
         voteUp['valign'] = 'center'
         voteUp['posn'] = '7 0 1'
-        voteUp['sizen'] = '5 5'
+        voteUp['sizen'] = '8 5'
         voteUp['style'] = 'Icons64x64_1'
         voteUp['substyle'] = 'ArrowUp'
         voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
@@ -585,10 +584,10 @@ class CommentOutput(PagedWindow):
         
         footBarBgQuad = Quad()
         footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 4, 4)
-        footBarBgQuad['valing'] = 'bottom'
-        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(2, 1 - (height + 10))
+        footBarBgQuad['valign'] = 'bottom'
+        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(2, -10)
         footBarBgQuad['style'] = 'Bgs1'
-        footBarBgQuad['style'] = 'BgTitle3'
+        footBarBgQuad['substyle'] = 'BgTitle3'
         commentFrame.addChild(footBarBgQuad)
         
         textLabel = Label()
