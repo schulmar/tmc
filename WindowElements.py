@@ -268,7 +268,7 @@ class Window(Widget):
             close['valign'] = 'center'
             close['sizen'] = '4 4'
             close['posn'] = str(size[0] - 3) + ' 0 2'
-            close.setCallback(('WindowManager', 'closeWindow'), self.__name)
+            close.setCallback(('WindowManager', 'closeWindow'), self.getName())
             f.addChild(close)
     
             #background of the closebutton
