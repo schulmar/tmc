@@ -81,6 +81,9 @@ class PluginInterface(object):
 			string += ' ' + str(i)
 		self.callMethod(('Logger', 'log'), self.__class__.__name__ + ': ' + string)
 
+	def questioner(self):
+		return self.__questioner
+
 	def __work(self):
 		while self.__running:
 			try:

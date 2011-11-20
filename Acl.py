@@ -124,7 +124,7 @@ class Acl(PluginInterface):
 		usersResult = cursor.fetchall()
 		self.users = {}
 		for i in usersResult:
-			groupsResult = cursor.fetchall()
+			#groupsResult = cursor.fetchall()
 			self.users[str(i['name'])] = int(i['id'])
 		cursor.close()
 
@@ -155,7 +155,7 @@ class Acl(PluginInterface):
 		try:
 			return self.users[userName]
 		except KeyError:
-			self.callMethod(('Logger', 'log'), 'Acl error: user ' + str(userName) + ' unknown in request from ' + str(self.questioner))
+			self.callMethod(('Logger', 'log'), 'Acl error: user ' + str(userName) + ' unknown in request from ' + str(self.questioner()))
 			return None
 
 	def getIdFromGroupName(self, groupName):
@@ -167,7 +167,7 @@ class Acl(PluginInterface):
 		try:
 			return self.groups[groupName]
 		except KeyError:
-			self.callMethod(('Logger', 'log'), 'Acl error: group ' + groupName + ' unknown in request from ' + str(self.questioner))
+			self.callMethod(('Logger', 'log'), 'Acl error: group ' + groupName + ' unknown in request from ' + str(self.questioner()))
 			return None
 		
 	def getIdFromRightName(self, rightName):
@@ -179,7 +179,7 @@ class Acl(PluginInterface):
 		try:
 			return self.rights[rightName][0]
 		except KeyError:
-			self.callMethod(('Logger', 'log'), 'Acl error: right ' + rightName + ' unknown in request from ' + str(self.questioner))
+			self.callMethod(('Logger', 'log'), 'Acl error: right ' + rightName + ' unknown in request from ' + str(self.questioner()))
 			return None
 
 	def userHasRight(self, userName, rightName):
