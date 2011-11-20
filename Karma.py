@@ -378,7 +378,7 @@ class Karma(PluginInterface):
         FROM `karma_comments` JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         WHERE
         `karma_comments`.`FKey` = %s AND
-        `karma_comments`.`FType` = %s AND  
+        `karma_comments`.`FType` = %s  
         """, (objectId, objectTypeId))
         #get the output format
         comments = [(row['Id'], row['Text'], row['userName'], row['Created'], [], []) 
