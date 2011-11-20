@@ -381,7 +381,7 @@ class Karma(PluginInterface):
         `karma_comments`.`FType` = %s  
         """, (objectId, objectTypeId))
         #get the output format
-        comments = [(row['Id'], row['Text'], row['userName'], row['Created'], [], []) 
+        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], []] 
                     for row in cursor.fetchall()]
         cursor.close()
         
