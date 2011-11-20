@@ -540,8 +540,8 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(commentBgQuad)
         
         headBarBgQuad = Quad()
-        headBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 5)
-        headBarBgQuad['posn'] = '1 -1 1'
+        headBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 6)
+        headBarBgQuad['posn'] = '1 0 1'
         headBarBgQuad['style'] = 'Bgs1'
         headBarBgQuad['substyle'] = 'BgTitle3'
         commentFrame.addChild(headBarBgQuad)
@@ -557,6 +557,7 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(votesFrame)
         
         voteDown = Quad()
+        voteDown['valign'] = 'center'
         voteDown['posn'] = '0 0 1'
         voteDown['sizen'] = '4 4'
         voteDown['style'] = 'Icons64x64_1'
@@ -565,12 +566,14 @@ class CommentOutput(PagedWindow):
         votesFrame.addChild(voteDown)
         
         karmaLabel = Label()
+        karmaLabel['valign'] = 'center'
         karmaLabel['text'] = '{:d}%'.format(comment['karma'])
         karmaLabel['posn'] = '{:d} {:d} 1'.format(4, 0)
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
         voteUp = Quad()
+        voteUp['valign'] = 'center'
         voteUp['posn'] = '10 0 1'
         voteUp['sizen'] = '4 4'
         voteUp['style'] = 'Icons64x64_1'
@@ -589,7 +592,7 @@ class CommentOutput(PagedWindow):
         textLabel = Label()
         textLabel['text'] = comment['commentTuple'][1]
         textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
-        textLabel['posn'] = '1 5 1'
+        textLabel['posn'] = '1 -5 1'
         commentFrame.addChild(textLabel)
         
         return [commentFrame]
