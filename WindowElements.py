@@ -224,7 +224,11 @@ class Window(Widget):
     def getManialink(self):
         #the main frame
         f = Frame()
-        f['posn'] = str(self.__pos[0]) + ' ' + str(self.__pos[1]) + ' ' + str(self.__pos[2])
+        
+        size = self.getSize()
+        pos = self.getPos()
+        
+        f['posn'] = str(pos[0]) + ' ' + str(pos[1]) + ' ' + str(pos[2])
         
         if self.__icon != None:
             #the icon of the window
@@ -242,14 +246,14 @@ class Window(Widget):
         title['text'] = self.__title
         title['posn'] = '4 0 2'
         title['valign'] = 'center'
-        title['sizen'] = str(self.__size[0] - (4 + 6)) + ' 2'
+        title['sizen'] = str(size[0] - (4 + 6)) + ' 2'
         f.addChild(title)
 
         #the titlebar background
         titlebg = Quad()
         titlebg['posn'] = '0 0 1'
         titlebg['valign'] = 'center'
-        titlebg['sizen'] = str(self.__size[0]) + ' 5'
+        titlebg['sizen'] = str(size[0]) + ' 5'
         titlebg['style'] = 'Bgs1'
         titlebg['substyle'] = 'BgPager'
         f.addChild(titlebg)
@@ -263,7 +267,7 @@ class Window(Widget):
             close['halign'] = 'center'
             close['valign'] = 'center'
             close['sizen'] = '4 4'
-            close['posn'] = str(self.__size[0] - 3) + ' 0 2'
+            close['posn'] = str(size[0] - 3) + ' 0 2'
             close.setCallback(('WindowManager', 'closeWindow'), self.__name)
             f.addChild(close)
     
@@ -272,7 +276,7 @@ class Window(Widget):
             closebg['halign'] = 'center'
             closebg['valign'] = 'center'
             closebg['sizen'] = '3 3'
-            closebg['posn'] = str(self.__size[0] - 3) + ' 0 1' 
+            closebg['posn'] = str(size[0] - 3) + ' 0 1' 
             closebg['style'] = 'Bgs1'
             closebg['substyle'] = 'BgCard1'
             f.addChild(closebg)
@@ -282,7 +286,7 @@ class Window(Widget):
         background['halign'] = 'top'
         background['valign'] = 'left'
         background['posn'] = '0 0 0'
-        background['sizen'] = str(self.__size[0]) + ' ' + str(self.__size[1])
+        background['sizen'] = str(size[0]) + ' ' + str(size[1])
         background['style'] = str(self.__style[0])
         background['substyle'] = str(self.__style[1])
 
@@ -290,7 +294,7 @@ class Window(Widget):
 
         content = Frame()
         content['posn'] = '0 -3'
-        content['sizen'] = str(self.__size[0]) + ' ' + str(self.__size[1] - 3)
+        content['sizen'] = str(size[0]) + ' ' + str(size[1] - 3)
         f.addChild(content)
 
         for c in self.__children:
