@@ -535,7 +535,7 @@ class CommentOutput(PagedWindow):
         
         commentBgQuad = Quad()
         commentBgQuad['posn'] = '1 0'
-        commentBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, height + 10)
+        commentBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, height + 12)
         commentBgQuad['style'] = 'Bgs1'
         commentBgQuad['substyle'] = 'BgWindow1'
         commentFrame.addChild(commentBgQuad)
@@ -554,17 +554,18 @@ class CommentOutput(PagedWindow):
         commentFrame.addChild(nameLabel)
         
         votesFrame = Frame()
-        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 15, -3)
+        votesFrame['posn'] = '{:d} {:d} 1'.format(width - 16, -3)
         commentFrame.addChild(votesFrame)
         
-        voteDown = Quad()
-        voteDown['valign'] = 'center'
-        voteDown['posn'] = '0 0 1'
-        voteDown['sizen'] = '5 5'
-        voteDown['style'] = 'Icons64x64_1'
-        voteDown['substyle'] = 'ArrowDown'
-        voteDown.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 0)
-        votesFrame.addChild(voteDown)
+        if comment['votable']:
+            voteDown = Quad()
+            voteDown['valign'] = 'center'
+            voteDown['posn'] = '0 0 1'
+            voteDown['sizen'] = '5 5'
+            voteDown['style'] = 'Icons64x64_1'
+            voteDown['substyle'] = 'ArrowDown'
+            voteDown.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 0)
+            votesFrame.addChild(voteDown)
         
         karmaLabel = Label()
         karmaLabel['valign'] = 'center'
@@ -573,27 +574,41 @@ class CommentOutput(PagedWindow):
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
-        voteUp = Quad()
-        voteUp['valign'] = 'center'
-        voteUp['posn'] = '9 0 1'
-        voteUp['sizen'] = '5 5'
-        voteUp['style'] = 'Icons64x64_1'
-        voteUp['substyle'] = 'ArrowUp'
-        voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
-        votesFrame.addChild(voteUp)
-        
-        footBarBgQuad = Quad()
-        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 6)
-        footBarBgQuad['valign'] = 'bottom'
-        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(1, 2 - (height + 15))
-        footBarBgQuad['style'] = 'Bgs1'
-        footBarBgQuad['substyle'] = 'BgTitle2'
-        commentFrame.addChild(footBarBgQuad)
+        if comment['votable']:
+            voteUp = Quad()
+            voteUp['valign'] = 'center'
+            voteUp['posn'] = '9 0 1'
+            voteUp['sizen'] = '5 5'
+            voteUp['style'] = 'Icons64x64_1'
+            voteUp['substyle'] = 'ArrowUp'
+            voteUp.setCallback(self.__commentVoteCallback, comment['commentTuple'][0], 100)
+            votesFrame.addChild(voteUp)
         
         textLabel = Label()
         textLabel['text'] = comment['commentTuple'][1]
         textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
         textLabel['posn'] = '2 -6 1'
         commentFrame.addChild(textLabel)
+        
+        footBarFrame = Frame()
+        footBarFrame['posn'] = '{:d} {:d} 1'.format(1, 2 - (height + 14))
+        commentFrame.addChild(footBarFrame)
+        
+        footBarBgQuad = Quad()
+        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 6)
+        footBarBgQuad['valign'] = 'bottom'
+        footBarBgQuad['style'] = 'Bgs1'
+        footBarBgQuad['substyle'] = 'BgTitle2'
+        footBarFrame.addChild(footBarBgQuad)
+     
+        dateLabel = Label()
+        dateLabel['text'] = comment['commentTuple'][3]
+        dateLabel['valign'] = 'center'
+        dateLabel['posn'] = '1 3'
+        dateLabel['sizen'] = '{:d} {:d}'.format(width // 2, 3)
+        footBarFrame.addChild(dateLabel)
+        
+        #answerButtonQuad = Quad()
+        
         
         return [commentFrame]
