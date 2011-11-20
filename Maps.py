@@ -878,6 +878,8 @@ class Maps(PluginInterface):
 				return
 			comments = self.__prepareComments(comments, login)
 			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'], comments)
+			commentsWindow.setSize((80, 70))
+			commentsWindow.setPos((-40, 35))
 			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
 			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
 			commentsWindow.setCommentVoteCallback(('Maps', 'cb_commentVote'))
