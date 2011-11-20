@@ -1027,8 +1027,8 @@ class Maps(PluginInterface):
 			self.callMethod(('Karma', 'addComment'), self.__MapObjectType, 
 				self.getMapIdFromUid(self.getCurrentMap()['UId']),
 				entries['commentText'], login)
-			self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'),
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Thank you for you opinion.', login)
 		else:
-			self.callMethod(('TmConnector', 'ChatSendServerMessagToLogin'),
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to add comments to a track', login)
