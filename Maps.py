@@ -923,7 +923,7 @@ class Maps(PluginInterface):
 		\param commentId The id of the comment to delete
 		"""
 		#Hide the comments window
-		self.callMethod(('WindowManager', 'closeWindow'), login, 
+		self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
 					self.__displayCommentsWindowName)
 		comment = self.callFunction(('Karma', 'getComment'), commentId)
 		if comment[2] == login:
@@ -958,7 +958,7 @@ class Maps(PluginInterface):
 		\param commentId The id of the comment to edit
 		"""
 		#Hide the comment window
-		self.callMethod(('WindowManager', 'closeWindow'), login, 
+		self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
 					self.__displayCommentsWindowName)
 		comment = self.callFunction(('Karma', 'getComment'), commentId)
 		
@@ -1005,7 +1005,7 @@ class Maps(PluginInterface):
 				return
 			else:
 				#Hide the comment window
-				self.callMethod(('WindowManager', 'closeWindow'), login, 
+				self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
 					self.__displayCommentsWindowName)
 				
 				self.callMethod(('Karma', 'changeVote'), 
@@ -1020,7 +1020,7 @@ class Maps(PluginInterface):
 				
 			
 	def cb_comment(self, entries, login):
-		self.callMethod(('WindowManager', 'closeWindow'), login, self.__writeCommentWindowName)
+		self.callMethod(('WindowManager', 'closeWindow'), {}, login, self.__writeCommentWindowName)
 		
 		if self.callFunction(('Acl', 'userHasRight'), login, 
 									self.__addCommentRight):
