@@ -918,6 +918,7 @@ class Maps(PluginInterface):
 			output.append(comment)
 			#append the answers to this comment
 			output.extend(self.__prepareComments(i[5], login, depth + 1))
+		return output
 	
 	def cb_commentDelete(self, entries, login, commentId):
 		"""
