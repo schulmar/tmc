@@ -609,24 +609,12 @@ class CommentOutput(PagedWindow):
         footBarFrame.addChild(dateLabel)
         
         if comment['answerable'] or True:
-            answerButtonFrame = Frame()
-            answerButtonFrame['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
-            footBarFrame.addChild(answerButtonFrame)
-            
-            answerButtonQuad = Quad()
-            answerButtonQuad['valign'] = 'bottom'
-            answerButtonQuad['posn'] = '0 1'
-            answerButtonQuad['sizen'] = '8 4'
-            answerButtonQuad['style'] = 'Bgs1'
-            answerButtonQuad['substyle'] = 'BgButton'
-            answerButtonFrame.addChild(answerButtonQuad)
-        
             answerButtonLabel = Label()
             answerButtonLabel['text'] = 'Reply'
             answerButtonLabel['valign'] = 'bottom'
-            answerButtonLabel['posn'] = '2 2'
+            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 4)
             answerButtonLabel['sizen'] = '6 3'
-            answerButtonFrame.addChild(answerButtonLabel)
+            footBarFrame.addChild(answerButtonLabel)
         
         
         return [commentFrame]
