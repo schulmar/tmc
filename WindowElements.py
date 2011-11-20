@@ -583,9 +583,9 @@ class CommentOutput(PagedWindow):
         votesFrame.addChild(voteUp)
         
         footBarBgQuad = Quad()
-        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 4, 4)
+        footBarBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, 6)
         footBarBgQuad['valign'] = 'bottom'
-        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(2, 2 - (height + 10))
+        footBarBgQuad['posn'] = '{:d} {:d} 1'.format(1, 2 - (height + 15))
         footBarBgQuad['style'] = 'Bgs1'
         footBarBgQuad['substyle'] = 'BgTitle2'
         commentFrame.addChild(footBarBgQuad)
