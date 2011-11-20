@@ -876,7 +876,7 @@ class Maps(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'There are no comments on this track.', login)
 				return
-			comments = self.__prepareComments(comments)
+			comments = self.__prepareComments(comments, login)
 			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'], comments)
 			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
 			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
