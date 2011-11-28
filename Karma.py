@@ -380,6 +380,7 @@ class Karma(PluginInterface):
         WHERE
         `karma_comments`.`FKey` = %s AND
         `karma_comments`.`FType` = %s  
+        ORDER BY `karma_comments`.`Id` DESC
         """, (objectId, objectTypeId))
         #get the output format
         comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], []] 
@@ -405,6 +406,7 @@ class Karma(PluginInterface):
         WHERE
         `karma_comments`.`FKey` = %s AND
         `karma_comments`.`FType` = %s  
+        ORDER BY `karma_comments`.`Id` DESC
         """, (commentId, self.__commentTypeId))
         #get the output format
         comments = [(row['Id'], row['Text'], row['userName'], row['Created'], [], []) 
