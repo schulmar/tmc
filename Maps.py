@@ -22,6 +22,8 @@ class Maps(PluginInterface):
 	__writeCommentWindowName = 'Maps.writeComment' #The name of the comment window
 	__displayCommentsWindowName = 'Maps.displayComment' #The name of the comments window
 	__addCommentRight = 'Maps.addComment' #The name of the right to add comments to maps
+	__editOwnCommentsRight = 'Maps.editOwnComments' #The name of the right to edit ones own comments
+	__editOthersCommentsRight = 'Maps.editOthersComments' #The name of the right to edit others comments
 	
 	def __init__(self, pipes, args):
 		"""
@@ -144,11 +146,9 @@ class Maps(PluginInterface):
 					'Reply to comments made on maps.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.voteComment',
 					'Vote on comments made on maps.')
-		self.callMethod(('TmChat', 'registerChatCommand'), 'comment', ('Maps', 'chat_comment'),
-					'Write a comment on this track, see /comment help for more information.')
 		
-		self.callMethod(('TmChat', 'registerChatCommand'), 'comments', ('Maps', 'chat_comments'),
-					'Display the comments on this track (like /comment display)')
+		self.callMethod(('TmChat', 'registerChatComment'), 'map', ('Maps', 'chat_map'),
+					'Commands concerning the current map. (see /map help)')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
@@ -860,6 +860,47 @@ class Maps(PluginInterface):
 		except KeyError:
 			pass
 		
+	def chat_map(self, login, params):
+		"""
+		\brief Handle chat commands concerning the current map
+		\param login The login of the calling player
+		\param params Additional params
+		"""
+		if params == None:
+			params = 'help'
+			
+		params = params.split()
+			
+		commands = {
+				'help' : 'Display all subcommand names of map.',
+				'comment' : 'Write a comment about this map.',
+				'comments' : 'Display all comments about this map'
+				}
+		
+		if params[0] == 'help':
+			if len(params) == 2:
+				try:
+					description = commands[params[1]]
+				except KeyError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Could not find help for ' + params[1], login)
+					return None
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'/map ' + params[1] + ': ' + description, login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'/map has following subcommands: ' + str(params.keys())
+						+ ' try /map help <subcommand> to for more information', 
+						login)
+				
+		elif params[0] == 'comment':
+			self.chat_comment(login, ' '.join(params[1:]))
+		elif params[0] == 'comments':
+			self.chat_comment(login, 'display')
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Unknown command /map ' + str(' '.join(params)), login)
+		
 	def chat_comment(self, login, params):
 		"""
 		\brief The comment chatcommand callback
@@ -982,7 +1023,7 @@ class Maps(PluginInterface):
 		if comment[2] == login:
 			#it is my comment
 			if self.callFunction(('Acl', 'userHasRight'), 
-								login, 'Maps.editOwnComments'):
+								login, self.__editOwnCommentsRight):
 				pass
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
@@ -991,14 +1032,14 @@ class Maps(PluginInterface):
 		else:
 			#it is someone else comment
 			if self.callFunction(('Acl', 'userHasRight'), 
-								login, 'Maps.editOthersComments'):
+								login, self.__editOthersCommentsRight):
 				pass
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'You are not allowed to edit others comments.', login)
 				return
 			
-		commentWindow = CommentInput(('Maps', 'cb_comment'), (), 
+		commentWindow = CommentInput(('Maps', 'cb_commentChanged'), (commentId), 
 										'Edit comment', 
 										comment[1])
 		commentWindow.setSize((70, 50))
@@ -1043,12 +1084,39 @@ class Maps(PluginInterface):
 									self.__addCommentRight):
 			self.callMethod(('Karma', 'addComment'), self.__MapObjectType, 
 				self.getMapIdFromUid(self.getCurrentMap()['UId']),
-				entries['commentText'], login)
+				entries['commentText'], login) 
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Thank you for you opinion.', login)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to add comments to a track', login)
 			
-	def chat_comments(self, login, params):
-		self.chat_comment(login, 'display')
+	def cb_commentChanged(self, entries, login, commentId):
+		self.callMethod(('WindowManager', 'closeWindow'), {}, login, self.__writeCommentWindowName)
+		
+		comment = self.callFunction(('Karma', 'getComment'), commentId)
+		
+		if comment[2] == login:
+			#it is my comment
+			if self.callFunction(('Acl', 'userHasRight'), login,
+							self.__editOwnCommentRight):
+				self.callMethod(('Karma', 'editComment'), commentId, 
+							entries['commentText'])
+				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
+							'Comment edited.', login)
+			else:
+				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
+							'You have insufficient rights to edit your comment.', login)
+		else:
+			#it is someone else' comment'
+			if self.callFunction(('Acl', 'userHasRight'), login,
+								self.__editOthersCommentsRight):
+				self.callMethod(('Karma', 'editComment'), commentId, 
+							entries['commentText'])
+				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
+							'Comment edited.', login)
+			else:
+				self.log(login + ' tried to edit comment of ' + comment[2] + 
+						' without the right to do this')
+				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
+							'You have insufficient rights to edit comments of other players.', login)
