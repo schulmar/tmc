@@ -886,10 +886,10 @@ class Maps(PluginInterface):
 								'Could not find help for ' + params[1], login)
 					return None
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'/map ' + params[1] + ': ' + description, login)
+							'command /map ' + params[1] + ': ' + description, login)
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'/map has following subcommands: ' + str(commands.keys())
+						'command /map has following subcommands: ' + str(commands.keys())
 						+ ' try /map help <subcommand> to for more information', 
 						login)
 				
