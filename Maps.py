@@ -930,7 +930,8 @@ class Maps(PluginInterface):
 							'There are no comments on this map.', login)
 				return
 			comments = self.__prepareComments(comments, login)
-			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'])
+			commentsWindow = CommentOutput(str(len(comments)) + ' Comments on '
+										 + self.getCurrentMap()['Name'])
 			commentsWindow.setSize((80, 70))
 			commentsWindow.setPos((-40, 35))
 			commentsWindow.setCommentAnswerCallback(('Maps', 'cb_commentAnswer'))
