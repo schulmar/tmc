@@ -147,6 +147,9 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'comment', ('Maps', 'chat_comment'),
 					'Write a comment on this track, see /comment help for more information.')
 		
+		self.callMethod(('TmChat', 'registerChatCommand'), 'comments', ('Maps', 'chat_comments'),
+					'Display the comments on this track (like /comment display)')
+		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerDisconnect', 'onPlayerDisconnect')
@@ -912,7 +915,7 @@ class Maps(PluginInterface):
 				
 			comment = {'depth' : depth, 
 						'height' : 4, 
-						'karma' : reduce(lambda x: x[0], i[4], 0),
+						'karma' : reduce(lambda x, y: x + y[0], i[4], 0),
 						'votable' : votable,
 						'editable' : editable,
 						'deletable' : deletable,
@@ -1042,3 +1045,6 @@ class Maps(PluginInterface):
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to add comments to a track', login)
+			
+	def chat_comments(self, login, params):
+		self.chat_comment(login, 'display')
