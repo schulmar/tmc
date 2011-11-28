@@ -534,8 +534,20 @@ class CommentOutput(PagedWindow):
         """
         self.__commentAnswerCallback = callback
     def setComments(self, comments):
-        self.setPages(map(self.__getCommentMl, comments))
-        
+        manialinks = []
+        page = Frame()
+        size = self.getSize()
+        consumedHeight = 0
+        for c in comments:
+            if size < consumedHeight + 12 + c[1]:
+                manialinks.append(page)
+                page = Frame()
+            ml = self.__getCommentMl(c)
+            heightFrame = Frame()
+            heightFrame['posn'] = '0 {:d}'.format(-consumedHeight)
+            heightFrame.addChild(ml)
+            page.addChild(heightFrame)
+        self.setPages(manialinks)
     
     def __getCommentMl(self, comment):
         """
