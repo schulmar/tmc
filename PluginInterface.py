@@ -97,7 +97,10 @@ class PluginInterface(object):
 				if isinstance(job, Stop):
 					self.__running = False
 				elif isinstance(job, Method):
-					method = getattr(self, job.name)
+					try:
+						method = getattr(self, job.name)
+					except AttributeError:
+						print('Unknown method ' + job.name + str(job.getArgs()))
 					self.__questioner = job.questioner
 					method(*job.getArgs())
 				elif isinstance(job, Event):
