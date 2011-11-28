@@ -163,6 +163,8 @@ class Maps(PluginInterface):
 		\brief Retrieve the servers list of maps and save into local storage
 		"""
 		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 10000, 0)
+		self.__currentMap = self.callFunction(('TmConnector', 'GetCurrentMapIndex'))
+		self.__nextMap = self.callFunction(('TmConnector', 'GetNextMapIndex'))
 		
 		dbInsertMaps = [(str(mapDict['UId']), 
 						str(mapDict['Name']), 
