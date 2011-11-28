@@ -933,6 +933,7 @@ class Maps(PluginInterface):
 			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'])
 			commentsWindow.setSize((80, 70))
 			commentsWindow.setPos((-40, 35))
+			commentsWindow.setCommentAnswerCallback(('Maps', 'cb_commentAnswer'))
 			commentsWindow.setCommentDeleteCallback(('Maps', 'cb_commentDelete'))
 			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
 			commentsWindow.setCommentVoteCallback(('Maps', 'cb_commentVote'))
@@ -970,10 +971,10 @@ class Maps(PluginInterface):
 						'answerable' : answerable,
 						'nickName' : self.callFunction(('Players', 'getPlayerNickname'), i[2]),
 						'commentTuple' : i}
-			#append this comment
-			output.append(comment)
 			#append the answers to this comment
 			output.extend(self.__prepareComments(i[5], login, depth + 1))
+			#append this comment
+			output.append(comment)
 		return output
 	
 	def cb_commentDelete(self, entries, login, commentId):
