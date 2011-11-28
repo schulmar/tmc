@@ -461,6 +461,7 @@ class CommentOutput(PagedWindow):
         self.__commentVoteCallback = (None, None) #The callback on comment votes
         self.__commentEditCallback = (None, None) #The callback for editing comments
         self.__commentDeleteCallback = (None, None) #The callback for deleting comments
+        self.__commentAnswerCallback = (None, None) #The callback for answering to comments
         
         self.setPages([])
         
@@ -515,7 +516,23 @@ class CommentOutput(PagedWindow):
         \param callback The new callback
         """
         self.__commentDeleteCallback = callback
+        
+    @staticmethod
+    def commentAnswerCallbackSignature(entries, login, aswerToCommentId):
+        """
+        \brief The signature of the commentAnswerCallback
+        \param entries Should be empty
+        \param login The login of the calling player
+        \param answerToCommentId The id of the comment to answer to
+        """
+        pass
     
+    def setCommentAnswerCallback(self, callback):
+        """
+        \brief Set the answer callback
+        \param callback the new answer callback0
+        """
+        self.__commentAnswerCallback = callback
     def setComments(self, comments):
         self.setPages(map(self.__getCommentMl, comments))
         
@@ -615,7 +632,7 @@ class CommentOutput(PagedWindow):
             answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
             answerButtonLabel['sizen'] = '9 4'
             answerButtonLabel['focusareacolor1'] = '0000'
-            #answerButtonLabel.setCallback(self.__com)
+            answerButtonLabel.setCallback(self.__commentAnswerCallback, comment['commentTuple'][0])
             footBarFrame.addChild(answerButtonLabel)
         
         if comment['editable'] or True:

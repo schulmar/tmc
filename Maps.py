@@ -83,7 +83,7 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'removethis', ('Maps', 'chat_removethis'), 
 						'Remove the current map from the server (does not delete file)')
 		
-		self.callMethod(('Acl', 'rightAdd'), 'Maps.skip', 'Skip the current track')
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.skip', 'Skip the current map')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'skip', ('Maps', 'chat_skip'),
 					'Skip the current map')
 		
@@ -104,7 +104,7 @@ class Maps(PluginInterface):
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.jukeboxDisplay', 
 					'Display the jukebox')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'jukebox', ('Maps', 'chat_jukebox'),
-					'Jukebox trackmanagement. Type /jukebox help for more information')
+					'Jukebox mapmanagement. Type /jukebox help for more information')
 		
 		self.callMethod(('TmChat', 'registerChatCommand'), 'upload', ('Maps', 'chat_upload'), 
 					'Upload a map file to the server from within the game.')
@@ -221,9 +221,9 @@ class Maps(PluginInterface):
 	
 	def addMap(self, fileName, Data):
 		"""
-		\brief Create a new track with the given name and Data in the servers maps directory
-		\param fileName The track name, can be expanded by relative paths (the directories must exist)
-		\param Data The contents of the track file
+		\brief Create a new map with the given name and Data in the servers maps directory
+		\param fileName The map name, can be expanded by relative paths (the directories must exist)
+		\param Data The contents of the map file
 		"""
 		mapPath = self.__getMapPath()
 		mapPath += fileName
@@ -243,9 +243,9 @@ class Maps(PluginInterface):
 			
 	def addFromMX(self, mxId):
 		"""
-		\brief Add a new track from Maniaexchange
-		\param mxId The id of the track on mania-exchange.com
-		\return Trackname if the track was added and None if it was not possible
+		\brief Add a new map from Maniaexchange
+		\param mxId The id of the map on mania-exchange.com
+		\return Mapname if the map was added and None if it was not possible
 		"""	
 		f = urllib.urlopen('http://tm.mania-exchange.com/tracks/download/' + str(mxId))
 		content = f.read()
@@ -278,7 +278,7 @@ class Maps(PluginInterface):
 			self.callMethod(('TmConnector', 'AddMap'), self.__mxPath + fileName)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'You do not have the right to add tracks from mania-exchange', login)
+						'You do not have the right to add maps from mania-exchange', login)
 			
 	def chat_list(self, login, params):
 		"""
@@ -286,7 +286,7 @@ class Maps(PluginInterface):
 		\param login The login of the caller
 		\param params Additional parameters given by the caller
 		
-		Displays a list of all tracks to the calling player
+		Displays a list of all maps to the calling player
 		"""
 		def timeToString(time):
 			sec = (time  % 60000) / 1000.0
@@ -333,7 +333,7 @@ class Maps(PluginInterface):
 		\brief Chat callback to remove the current map from server
 		\param login The login of the player
 		\param params Additional parameters that were given by the player
-		\return True when the track is no longer in map list, False if could not remove
+		\return True when the map is no longer in map list, False if could not remove
 		"""
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.removeThis'):
 			if self.callFunction(('TmConnector', 'RemoveMap'), self.getCurrentMap()['FileName']):
@@ -460,7 +460,7 @@ class Maps(PluginInterface):
 		\param isWarmup Is this warmupMode?
 		\param isMatchContinuation Is this a continuation of the map?
 		
-		Used to remove tracks from jukebox when they are played
+		Used to remove maps from jukebox when they are played
 		"""
 		if (len(self.__jukebox) > 0 and 
 			self.__jukebox[0][0]['FileName'] == Map['FileName']):
@@ -529,12 +529,12 @@ class Maps(PluginInterface):
 								'Indices have to be integer numbers!', login)
 					return False
 			else:
-				myTracks = filter(lambda x: (login == x[1]), self.__jukebox)
-				if len(myTracks) == 0:
+				myMaps = filter(lambda x: (login == x[1]), self.__jukebox)
+				if len(myMaps) == 0:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								'You do not have any tracks in jukebox!', login)
+								'You do not have any maps in jukebox!', login)
 				else:
-					index = self.__jukebox.index(myTracks[0])
+					index = self.__jukebox.index(myMaps[0])
 					
 			try:
 					newJukeboxEntry = self.__jukebox[index]
@@ -587,14 +587,14 @@ class Maps(PluginInterface):
 		self.callMethod(('TmConnector', 'ChooseNextMapList'), 
 					[i[0]['FileName'] for i in self.__jukebox])
 	
-	def jukeboxCallback(self, entries, login, trackId):
+	def jukeboxCallback(self, entries, login, mapId):
 		"""
 		\brief Called when user clicks element in list command
 		\param entries The entries of the manialink (should be empty)
 		\param login The login of the calling player 
-		\param trackId The id of the track in the users list of tracks  
+		\param mapId The id of the map in the users list of maps  
 		"""
-		self.chat_jukebox(login, 'drop ' + str(trackId))
+		self.chat_jukebox(login, 'drop ' + str(mapId))
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.jukeboxAddMultiple'):
 			self.chat_jukebox(login, 'display')
 		else:
@@ -649,7 +649,7 @@ class Maps(PluginInterface):
 		entry['sizen'] = "15 3"
 		entry['name'] = "inputTrackFile"
 		entry['folder'] = "."
-		entry['default'] = "Pick Track"
+		entry['default'] = "Pick Map"
 		frame.addChild(entry)
 		
 		w = Window('Choose map for upload')
@@ -662,7 +662,7 @@ class Maps(PluginInterface):
 		
 	def directMapUpload(self, entries, data, login):
 		"""
-		\brief Callback for the direct http upload of tracks
+		\brief Callback for the direct http upload of maps
 		\param entries The entries dict of the request (containing the filename)
 		\param data The file data of the file uploaded
 		\param login The login of the uploading user
@@ -706,7 +706,7 @@ class Maps(PluginInterface):
 				return """
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
-					<label text="Thank you for uploading this track!"/>
+					<label text="Thank you for uploading this map!"/>
 				</manialink>
 				"""
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
@@ -894,7 +894,10 @@ class Maps(PluginInterface):
 						login)
 				
 		elif params[0] == 'comment':
-			self.chat_comment(login, ' '.join(params[1:]))
+			try:
+				self.chat_comment(login, ' '.join(params[1:]))
+			except IndexError:
+				self.chat_comment(login, None)
 		elif params[0] == 'comments':
 			self.chat_comment(login, 'display')
 		else:
@@ -924,7 +927,7 @@ class Maps(PluginInterface):
 										self.getMapIdFromUid(self.getCurrentMap()['UId']))
 			if len(comments) == 0:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'There are no comments on this track.', login)
+							'There are no comments on this map.', login)
 				return
 			comments = self.__prepareComments(comments, login)
 			commentsWindow = CommentOutput('Comments on ' + self.getCurrentMap()['Name'])
@@ -1089,7 +1092,7 @@ class Maps(PluginInterface):
 						'Thank you for you opinion.', login)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'You have insufficient rights to add comments to a track', login)
+						'You have insufficient rights to add comments to a map', login)
 			
 	def cb_commentChanged(self, entries, login, commentId):
 		self.callMethod(('WindowManager', 'closeWindow'), {}, login, self.__writeCommentWindowName)
@@ -1120,3 +1123,56 @@ class Maps(PluginInterface):
 						' without the right to do this')
 				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
 							'You have insufficient rights to edit comments of other players.', login)
+				
+	def cb_commentAnswer(self, entries, login, commentId):
+		"""
+		\brief Callback on clicking answer on comments
+		\param entries Should be empty
+		\param login The login of the calling player
+		\param commentId The id of the comment to answer to
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment'):
+			
+			comment = self.callFunction(('Karma', 'getComment'), commentId)
+			if comment[2] != login:
+				nickName = self.callFunction(('Players', 'getPlayerNickname'), comment[2])
+				
+				commentWindow = CommentInput(('Maps', 'cb_commentAnswered'), (commentId), 
+											'Answer to ' + str(nickName) + ' $z\'s comment', 
+											comment[1])
+				commentWindow.setSize((70, 50))
+				commentWindow.setPos((-30, 25))
+				self.callMethod(('WindowManager', 'displayWindow'), login, 
+							self.__writeCommentWindowName, commentWindow)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You are not allowed to answer your own comments.', 
+						login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient rights to reply to comments.', 
+						login)
+		
+	def cb_commentAnswered(self, entries, login, commentId):
+		"""
+		\brief Callback on clicking answer on comments
+		\param entries Should be empty
+		\param login The login of the calling player
+		\param commentId The id of the comment to answer to
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment'):
+			comment = self.callFunction(('Karma', 'getComment'), commentId)
+			if comment[2] != login:
+				nickName = self.callFunction(('Players', 'getPlayerNickname'), comment[2])
+				self.callMethod(('Karma', 'addComment'), )
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Thank you for your answer to ' + nickName + '$z\'s comment', 
+						login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You are not allowed to answer your own comments.', 
+						login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient rights to reply to comments.', 
+						login)

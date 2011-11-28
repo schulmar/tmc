@@ -123,4 +123,4 @@ class Players(PluginInterface):
 			if row != None:
 				return row['nick']
 			else:
-				return None
+				return ''
