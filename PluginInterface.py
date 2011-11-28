@@ -107,7 +107,11 @@ class PluginInterface(object):
 				elif isinstance(job, Event):
 					pass
 				elif isinstance(job, Function):
-					function = getattr(self, job.name)
+					try:
+						function = getattr(self, job.name)
+					except AttributeError:
+						print('Unknown function ' + self.__class__.__name__ + '.'
+							+ job.name + str(job.getArgs()))
 					self.__questioner = job.questioner
 					value = function(*job.getArgs())
 					self.inPipe.send(Result(job, value))

@@ -147,7 +147,7 @@ class Maps(PluginInterface):
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.voteComment',
 					'Vote on comments made on maps.')
 		
-		self.callMethod(('TmChat', 'registerChatComment'), 'map', ('Maps', 'chat_map'),
+		self.callMethod(('TmChat', 'registerChatCommand'), 'map', ('Maps', 'chat_map'),
 					'Commands concerning the current map. (see /map help)')
 		
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'MapListModified', 'onMapListModified')
