@@ -4,11 +4,30 @@ import threading
 import os
 import traceback
 
+"""
+\file PluginManager.py
+\brief Contains the PluginManager class
+"""
+
 class PluginManager(object):
+	"""
+	\brief This class is the central communicator between all plugins
+	
+	Each plugin is registered here and will be started from here!
+	"""
 	def __init__(self):
-		self.plugins = {}
+		"""
+		\brief Initialize with no plugins
+		"""
+		self.plugins = {} #The map from plugin names to plugin contents
 
 	def loadPlugin(self, caller, fileName, args = None):
+		"""
+		\brief Load the plugin in the file 
+		\param caller The name of the plugin that requests this load 
+		\param fileName The filename of the plugin to load
+		\param args Startup arguments to this plugin
+		"""
 		pipe0, childPipe0 = Pipe()
 		pipe1, childPipe1 = Pipe()
 		p = Process(target = loadPlugin, args = (fileName, (childPipe0, childPipe1), args))
@@ -21,6 +40,11 @@ class PluginManager(object):
 		self.__StartPlugin(pluginName, args)
 
 	def __StartPlugin(self, name, args = None):
+		"""
+		\brief Start the plugin process
+		\param name The name of the plugin to start
+		\param args The startup arguments of this plugin
+		"""
 		plugin = self.plugins[name]
 		plugin.running = True
 		plugin.threads[0].start()
@@ -31,8 +55,15 @@ class PluginManager(object):
 		print('Started plugin ' + name)
 
 	def __StopPlugin(self, name):
-		plugin = self.plugins[name]
-
+		"""
+		\brief Stop the named plugin
+		\param name The name of the plugin to stop
+		"""
+		try:
+			plugin = self.plugins[name]
+		except KeyError:
+			print('Could not stop unknown plugin ' + str(name))
+			return False
 		plugin.req_lock.acquire()
 		plugin.pipes[0].send(Stop())
 		plugin.req_lock.release()
@@ -41,8 +72,18 @@ class PluginManager(object):
 		plugin.process.join()
 
 	def unloadPlugin(self, name):
+		"""
+		\brief Unload a plugin from the manager
+		\param name The name of the plugin to unload
+		
+		This first stops the plugin and then removes it from the plugin list
+		"""
+		
 		self.__StopPlugin(name)
-		plugin = self.plugins[name]
+		try:
+			plugin = self.plugins[name]
+		except KeyError:
+			return False
 		for p in self.plugins.items():
 			for l in p[1].listeners.items():
 				p[1].listeners[l[0]] = (l[1], filter(lambda x: plugin != x[0],l[1]))
@@ -50,6 +91,11 @@ class PluginManager(object):
 		print('Unloaded plugin list: ', self.plugins)
 
 	def restartPlugin(self, caller, name):
+		"""
+		\brief Restart the plugin
+		\param caller The one demanding the restart
+		\param name THe name of the plugin to restart
+		"""
 		if name in self.plugins:
 			print('Restarting plugin ' + str(name) + ' on request of ' + str(caller.name))
 
@@ -64,14 +110,30 @@ class PluginManager(object):
 
 
 	def shutdown(self):
+		"""
+		\brief Shutdown the whole system
+		
+		Shuts down all plugins and then the manager
+		"""
 		for plugin in self.plugins.keys():
 			self.__StopPlugin(plugin)
 		del self.plugins
 
 	def PluginList(self, caller):
+		"""
+		\brief Get the list of all plugin names
+		\param caller The name of the calling plugin
+		"""
 		return self.plugins.keys()
 
 	def __listenForRequests(self, pluginName):
+		"""
+		\brief The listener function for incoming requests
+		\param pluginName The plugin to listen for
+		
+		This function listens for outgoing requests from the named plugin,
+		each in its own thread to not block the others
+		"""
 		try:
 			plugin = self.plugins[pluginName]
 			while plugin.running:
@@ -91,7 +153,11 @@ class PluginManager(object):
 				elif isinstance(request, Method):
 					if request.name[0] == None:
 						#print('Processing Method ' + str(request.name[1] + str(request.getArgs())))
-						method = getattr(self, request.name[1])
+						try:
+							method = getattr(self, request.name[1])
+						except:
+							print('Could not call method PluginManager.' + 
+								str(request.name[1]) + str(request.getArgs()))
 						method(plugin, *request.getArgs())
 					else:
 						try:
@@ -107,7 +173,11 @@ class PluginManager(object):
 				elif isinstance(request, Function):
 					if request.name[0] == None:
 						#print('Processing Function ' + str(request.name[1]) + str(request.getArgs()))
-						function = getattr(self, request.name[1])
+						try:
+							function = getattr(self, request.name[1])
+						except:
+							print('Could not call function PluginManager.' + 
+								str(request.name[1]) + str(request.getArgs()))
 						plugin.pipes[1].send(Result(request, function(plugin, *request.getArgs())))
 					elif request.name[0] in self.plugins:
 						recipient = self.plugins[request.name[0]]
@@ -131,6 +201,13 @@ class PluginManager(object):
 			pass
 
 	def __listenForAnswers(self, pluginName):
+		"""
+		\brief This function listens for answers from the plugin
+		\param pluginName The plugin to listen on
+		
+		Each plugin has an affiliated thread that runs this function
+		and listens for answers on requests that were made to this plugin
+		"""
 		try:
 			plugin = self.plugins[pluginName]
 			while plugin.running:
@@ -151,6 +228,13 @@ class PluginManager(object):
 			pass
 
 	def subscribeEvent(self, caller, pluginName, eventName, callbackMethod):
+		"""
+		\brief Subscribe a plugin function to an event of a plugin
+		\param caller The subscriber
+		\param pluginName The plugin that gets subscribed
+		\param eventName The event of the plugin that gets subscribed
+		\param callbackMethod The name of the callbackMethod to the event
+		"""
 		try:
 			plugin = self.plugins[pluginName]
 			if not eventName in plugin.listeners:
@@ -163,6 +247,13 @@ class PluginManager(object):
 			return False
 
 	def unsubscribeEvent(self, caller, pluginName, eventName, callbackMethod):
+		"""
+		\brief Unsubscribe from an event
+		\param caller The plugin that unsubscribes
+		\param pluginName The plugin from which to unsubscribe
+		\param eventName The event from which to unsubscribe
+		\param callbackMethod The callbackMethod to unsubsribe
+		"""
 		plugin = self.plugins[pluginName]
 		item = (caller, callbackMethod)
 		if item in plugin.listeners[eventName]:
@@ -170,16 +261,19 @@ class PluginManager(object):
 
 
 class PluginElement:
+	"""
+	\brief A placeholder class to manage a plugin in the pluginManager
+	"""
 	def __init__(self, name, depends, provides, pipes, threads, process, fileName, args):
-		self.depends = depends
-		self.provides = provides
-		self.name = name
-		self.running = False
-		self.threads = threads
-		self.process = process
-		self.req_lock = threading.Lock()
-		self.pipes = pipes
-		self.listeners = {}
-		self.fileName = fileName
-		self.args = args
+		self.depends = depends #The dependencies of this plugin
+		self.provides = provides #The provided functionality of this plugin
+		self.name = name #The name of this plugin
+		self.running = False #The running state of this plugin
+		self.threads = threads #The threads of this plugin
+		self.process = process #The process instance of this plugin
+		self.req_lock = threading.Lock() #The request lock of this plugin
+		self.pipes = pipes #The communication pipes oft his plugin
+		self.listeners = {} #The event listeners to this plugin
+		self.fileName = fileName #The fileName of the plugin file
+		self.args = args #The initial args of this plugin
 
