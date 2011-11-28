@@ -889,7 +889,7 @@ class Maps(PluginInterface):
 							'/map ' + params[1] + ': ' + description, login)
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'/map has following subcommands: ' + str(params.keys())
+						'/map has following subcommands: ' + str(commands.keys())
 						+ ' try /map help <subcommand> to for more information', 
 						login)
 				
