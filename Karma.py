@@ -278,7 +278,8 @@ class Karma(PluginInterface):
         """
         cursor = self.__getCursor()
         cursor.execute("""
-        SELECT `Id`, `Text`, `users`.`name` as `userName`, `Created`, `karma_types`.`Name` as `Type`, `FKey`
+        SELECT `karma_comments`.`Id`, `Text`, `users`.`name` as `userName`, `Created`, 
+                `karma_types`.`Name` as `Type`, `FKey`
         FROM `karma_comments` 
         JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         JOIN `karma_types` ON `karma_comments`.`FType` = `karma_types`.`Id`
