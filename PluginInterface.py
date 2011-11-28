@@ -100,7 +100,8 @@ class PluginInterface(object):
 					try:
 						method = getattr(self, job.name)
 					except AttributeError:
-						print('Unknown method ' + job.name + str(job.getArgs()))
+						print('Unknown method ' + self.__class__.__name__ + '.'
+							 + job.name + str(job.getArgs()))
 					self.__questioner = job.questioner
 					method(*job.getArgs())
 				elif isinstance(job, Event):
