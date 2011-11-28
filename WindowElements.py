@@ -547,6 +547,7 @@ class CommentOutput(PagedWindow):
             heightFrame['posn'] = '0 {:d}'.format(-consumedHeight)
             heightFrame.addChild(ml)
             page.addChild(heightFrame)
+        manialinks.append(page)
         self.setPages(manialinks)
     
     def __getCommentMl(self, comment):
