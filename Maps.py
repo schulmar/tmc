@@ -1044,7 +1044,7 @@ class Maps(PluginInterface):
 							'You are not allowed to edit others comments.', login)
 				return
 			
-		commentWindow = CommentInput(('Maps', 'cb_commentChanged'), (commentId), 
+		commentWindow = CommentInput(('Maps', 'cb_commentChanged'), (commentId, 0), 
 										'Edit comment', 
 										comment[1])
 		commentWindow.setSize((70, 50))
