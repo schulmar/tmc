@@ -19,6 +19,9 @@ class XmlElement(object):
 		self.attribs = dict([(attrib, None) for attrib in attribs])
 		self.children = []
 		self.content = None
+		
+	def __str__(self):
+		return self.getXML()
 	
 	def addChild(self, child):
 		"""
