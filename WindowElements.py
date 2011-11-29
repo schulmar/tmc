@@ -557,7 +557,7 @@ class CommentOutput(PagedWindow):
         """
         \brief Setup the Manialink for one comment
         \param comment Expected {depth, height, karma, votable, editable, deletable, answerable, nickName, commentTuple}
-        \return The manialink
+        \return The manialink toplevel frame
         """
         indent = 2 * comment['depth']
         width = self.getSize()[0] - indent 
@@ -671,4 +671,4 @@ class CommentOutput(PagedWindow):
             deleteButtonLabel.setCallback(self.__commentDeleteCallback, comment['commentTuple'][0])
             footBarFrame.addChild(deleteButtonLabel)
             
-        return [commentFrame]
+        return commentFrame
