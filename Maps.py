@@ -1166,7 +1166,10 @@ class Maps(PluginInterface):
 			comment = self.callFunction(('Karma', 'getComment'), commentId)
 			if comment[2] != login:
 				nickName = self.callFunction(('Players', 'getPlayerNickname'), comment[2])
-				self.callMethod(('Karma', 'addComment'), )
+				self.callMethod(('Karma', 'addComment'), self.__MapObjectType,
+							self.getMapIdFromUid(self.getCurrentMap()['UId']),
+							entries['commentText'],
+							login)
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Thank you for your answer to ' + nickName + '$z\'s comment', 
 						login)
