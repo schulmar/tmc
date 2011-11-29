@@ -409,7 +409,7 @@ class Karma(PluginInterface):
         ORDER BY `karma_comments`.`Id` DESC
         """, (commentId, self.__commentTypeId))
         #get the output format
-        comments = [(row['Id'], row['Text'], row['userName'], row['Created'], [], []) 
+        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], []] 
                     for row in cursor.fetchall()]
         cursor.close()
         
