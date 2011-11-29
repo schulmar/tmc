@@ -1162,6 +1162,8 @@ class Maps(PluginInterface):
 		\param login The login of the calling player
 		\param commentId The id of the comment to answer to
 		"""
+		self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
+					self.__writeCommentWindowName)
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment'):
 			comment = self.callFunction(('Karma', 'getComment'), commentId)
 			if comment[2] != login:
