@@ -395,7 +395,7 @@ class Karma(PluginInterface):
         
     def __getCommentsOnComment(self, commentId):
         """
-        \brief Helperfunction to retrieve the comments on a comment
+        \brief Helper function to retrieve the comments on a comment
         \param commentId The id of the comment whose comments are to be retrieved
         \return Like getComments
         """
