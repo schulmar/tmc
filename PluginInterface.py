@@ -109,6 +109,11 @@ class PluginInterface(object):
 						print('Used wrong arguments in method call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
 							+ ' from ' + job.questioner)
+					except Exception as e:
+						print('Exception in method call ' 
+							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
+							+ ' from ' + job.questioner)
+						raise e
 				elif isinstance(job, Event):
 					pass
 				elif isinstance(job, Function):
@@ -124,6 +129,11 @@ class PluginInterface(object):
 						print('Used wrong arguments in function call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs())
 							+ ' from ' + job.questioner)
+					except Exception as e:
+						print('Exception in function call ' 
+							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
+							+ ' from ' + job.questioner)
+						raise e
 					self.inPipe.send(Result(job, value))
 			except KeyboardInterrupt:
 				self.__stop()
