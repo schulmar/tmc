@@ -1135,7 +1135,7 @@ class Maps(PluginInterface):
 		"""
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment'):
 			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
-							self.__writeCommentWindowName)
+							self.__displayCommentsWindowName)
 			comment = self.callFunction(('Karma', 'getComment'), commentId)
 			if comment[2] != login:
 				nickName = self.callFunction(('Players', 'getPlayerNickname'), comment[2])
