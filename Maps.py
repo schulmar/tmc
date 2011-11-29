@@ -1134,14 +1134,15 @@ class Maps(PluginInterface):
 		\param commentId The id of the comment to answer to
 		"""
 		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.replyComment'):
-			
+			self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
+							self.__writeCommentWindowName)
 			comment = self.callFunction(('Karma', 'getComment'), commentId)
 			if comment[2] != login:
 				nickName = self.callFunction(('Players', 'getPlayerNickname'), comment[2])
 				
-				commentWindow = CommentInput(('Maps', 'cb_commentAnswered'), (commentId), 
+				commentWindow = CommentInput(('Maps', 'cb_commentAnswered'), (commentId, ), 
 											'Answer to ' + str(nickName) + ' $z\'s comment', 
-											comment[1])
+											'Type your answer here (double click to edit)')
 				commentWindow.setSize((70, 50))
 				commentWindow.setPos((-30, 25))
 				self.callMethod(('WindowManager', 'displayWindow'), login, 
