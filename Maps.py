@@ -1106,7 +1106,7 @@ class Maps(PluginInterface):
 							self.__editOwnCommentsRight):
 				self.callMethod(('Karma', 'editComment'), commentId, 
 							entries['commentText'])
-				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Comment edited.', login)
 			else:
 				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
