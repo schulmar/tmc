@@ -539,13 +539,16 @@ class CommentOutput(PagedWindow):
         size = self.getSize()
         consumedHeight = 0
         for c in comments:
-            if size < consumedHeight + 12 + c['height']:
+            height = 12 + c['height']
+            if size < consumedHeight + height:
                 manialinks.append(page)
                 page = []
+                consumedHeight = 0
             ml = self.__getCommentMl(c)
             heightFrame = Frame()
             heightFrame['posn'] = '0 {:d}'.format(-consumedHeight)
             heightFrame.addChild(ml)
+            consumedHeight += height
             page.append(heightFrame)
         manialinks.append(page)
         self.setPages(manialinks)
