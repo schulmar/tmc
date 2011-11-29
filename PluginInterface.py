@@ -109,6 +109,7 @@ class PluginInterface(object):
 						print('Used wrong arguments in method call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
 							+ ' from ' + job.questioner)
+						raise
 					except:
 						print('Exception in method call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
@@ -129,6 +130,7 @@ class PluginInterface(object):
 						print('Used wrong arguments in function call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs())
 							+ ' from ' + job.questioner)
+						raise
 					except:
 						print('Exception in function call ' 
 							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
