@@ -103,7 +103,12 @@ class PluginInterface(object):
 						print('Unknown method ' + self.__class__.__name__ + '.'
 							 + job.name + str(job.getArgs()))
 					self.__questioner = job.questioner
-					method(*job.getArgs())
+					try:
+						method(*job.getArgs())
+					except TypeError:
+						print('Used wrong arguments in method call ' 
+							+ self.__class__.__name__ + '.' + str(job.getArgs()) 
+							+ ' from ' + job.questioner)
 				elif isinstance(job, Event):
 					pass
 				elif isinstance(job, Function):
@@ -113,7 +118,12 @@ class PluginInterface(object):
 						print('Unknown function ' + self.__class__.__name__ + '.'
 							+ job.name + str(job.getArgs()))
 					self.__questioner = job.questioner
-					value = function(*job.getArgs())
+					try:
+						value = function(*job.getArgs())
+					except TypeError:
+						print('Used wrong arguments in function call ' 
+							+ self.__class__.__name__ + '.' + str(job.getArgs())
+							+ ' from ' + job.questioner)
 					self.inPipe.send(Result(job, value))
 			except KeyboardInterrupt:
 				self.__stop()
