@@ -151,7 +151,7 @@ class CommentInput(Widget):
         submitButtonBgQuad['sizen'] = '10 4'
         submitButtonBgQuad['style'] = 'Bgs1'
         submitButtonBgQuad['substyle'] = 'BgButton'
-        submitButtonBgQuad.setCallback(self.__callback)
+        submitButtonBgQuad.setCallback(self.__callback, *self.__callbackArgs)
         mainFrame.addChild(submitButtonBgQuad)
         
         submitButtonLabel = Label()
@@ -159,7 +159,7 @@ class CommentInput(Widget):
         submitButtonLabel['posn'] = '{:d} {:d} 2'.format(size[0] - 6, 7 - size[1])
         submitButtonLabel['sizen'] = '8 3'
         submitButtonLabel['text'] = 'Submit'
-        submitButtonLabel.setCallback(self.__callback)
+        submitButtonLabel.setCallback(self.__callback, *self.__callbackArgs)
         mainFrame.addChild(submitButtonLabel)
 
         return mainFrame
