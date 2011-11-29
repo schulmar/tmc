@@ -1103,7 +1103,7 @@ class Maps(PluginInterface):
 		if comment[2] == login:
 			#it is my comment
 			if self.callFunction(('Acl', 'userHasRight'), login,
-							self.__editOwnCommentRight):
+							self.__editOwnCommentsRight):
 				self.callMethod(('Karma', 'editComment'), commentId, 
 							entries['commentText'])
 				self.callMethod(('TmChat', 'ChatSendServerMessageToLogin'),
