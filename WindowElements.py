@@ -540,7 +540,7 @@ class CommentOutput(PagedWindow):
         consumedHeight = 0
         for c in comments:
             height = 12 + c['height']
-            if size < consumedHeight + height:
+            if size[1] < consumedHeight + height:
                 manialinks.append(page)
                 page = []
                 consumedHeight = 0
