@@ -84,15 +84,16 @@ class WindowManager(PluginInterface):
 				pass
 		self.displays[login][name] = window
 
-	def displayWindow(self, login, name, window):
+	def displayWindow(self, login, name, window, useOldState = False):
 		"""
 		\brief Display the given window
 		\param login The player to display the window to
 		\param name The name of the window to display
 		\param window The window instance to display
+		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		window.setName(name)
-		self.__addWindow(login, name, window)
+		self.__addWindow(login, name, window, useOldState)
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
 
@@ -124,6 +125,7 @@ class WindowManager(PluginInterface):
 		\param pos The upper left corner of the window
 		\param rows The rows to display
 		\param rowsPerPage The number of rows to display per page
+		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		pages = []
 		i = 0
@@ -139,7 +141,7 @@ class WindowManager(PluginInterface):
 				frame.addChild(e)
 			pages[pageNumber].append(frame)
 			i += 1
-		self.displayPagedWindow(login, name, title, size, pos, pages)
+		self.displayPagedWindow(login, name, title, size, pos, pages, useOldState)
 
 	def displayTableWindow(self, login, name, title, size, pos, rows, rowsPerPage, 
 						columnWidths, headLine = None, useOldState = False):
@@ -154,6 +156,7 @@ class WindowManager(PluginInterface):
 		\param rowsPerPage The number of rows to display per page
 		\param columntWidths The widths of each column
 		\param headLine The headlines of each column
+		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		if headLine != None:
 			rowsPerPage += 1
@@ -180,7 +183,7 @@ class WindowManager(PluginInterface):
 				x += c
 				i += 1
 			lines.append(line)
-		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
+		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage, useOldState)
 
 	def displayTableStringsWindow(self, login, name, title, size, pos, rows, 
 								rowsPerPage, columnWidths, headLine = None, useOldState = False):
@@ -195,6 +198,7 @@ class WindowManager(PluginInterface):
 		\param rowsPerPage The number of rows to display per page
 		\param columntWidths The widths of each column
 		\param headLine The headlines of each column
+		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		lines = []
 		for r in rows:
@@ -210,7 +214,8 @@ class WindowManager(PluginInterface):
 				line.append(lbl)
 				i += 1
 			lines.append(line)
-		self.displayTableWindow(login, name, title, size, pos, lines, rowsPerPage, columnWidths, headLine)
+		self.displayTableWindow(login, name, title, size, pos, lines, 
+							rowsPerPage, columnWidths, headLine, useOldState)
 
 	#args = (windowName, pageNumber)
 	def changePage(self, entries, login, name, pageNumber):
