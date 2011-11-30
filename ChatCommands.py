@@ -38,6 +38,8 @@ class ChatCommands(PluginInterface):
 				'Remove players from groups (that are below the calling players own highest level)')
 		rightAdd('ChatCommands.playerDisplayRights',
 				'Display the rights another player has.')
+		rightAdd('ChatCommands.playerChangeRight',
+				'Change a right of a user.')
 		registerChatCommand('player', 'chat_player', 'Manage one player, type /player help for more information')
 		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
@@ -191,9 +193,12 @@ class ChatCommands(PluginInterface):
 			nickName = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 			
 			window = RightsWindow( nickName + '$z\'s rights')
-			window.setSize((80, 70))
+			window.setSize((85, 70))
 			window.setPos((-40, 35))
 			window.setSetRightCallback(('ChatCommands', 'cb_setRight'), args)
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.userChangeRight'):
+				window.setEditable(True)
 			window.setRights(positive + negative)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.userRights', window)
