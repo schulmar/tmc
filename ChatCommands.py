@@ -225,9 +225,9 @@ class ChatCommands(PluginInterface):
 		\param the player to manage
 		"""
 		if value:
-			self.chat_player(login, 'rightadd ' +  rightName + ' ' + player)
+			self.chat_player(login, 'rightadd ' + player + ' ' +  rightName)
 		else:
-			self.chat_player(login, 'rightremove ' +  rightName + ' ' +  player)
+			self.chat_player(login, 'rightremove ' +  player + ' ' +  rightName)
 		self.chat_player(login, 'rights ' + player)
 
 	def chat_test(self, login, args):
