@@ -115,7 +115,7 @@ class WindowManager(PluginInterface):
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
 
-	def displayLinesWindow(self, login, name, title, size, pos, rows, rowsPerPage):
+	def displayLinesWindow(self, login, name, title, size, pos, rows, rowsPerPage, useOldState = False):
 		"""
 		\brief Display lines in a window
 		\param login The login of the player to display to
@@ -142,7 +142,7 @@ class WindowManager(PluginInterface):
 		self.displayPagedWindow(login, name, title, size, pos, pages)
 
 	def displayTableWindow(self, login, name, title, size, pos, rows, rowsPerPage, 
-						columnWidths, headLine = None):
+						columnWidths, headLine = None, useOldState = False):
 		"""
 		\brief Display manialink elements in a table
 		\param login The player to display to
@@ -182,7 +182,8 @@ class WindowManager(PluginInterface):
 			lines.append(line)
 		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage)
 
-	def displayTableStringsWindow(self, login, name, title, size, pos, rows, rowsPerPage, columnWidths, headLine = None):
+	def displayTableStringsWindow(self, login, name, title, size, pos, rows, 
+								rowsPerPage, columnWidths, headLine = None, useOldState = False):
 		"""
 		\brief Display strings in a table
 		\param login The player to display to
