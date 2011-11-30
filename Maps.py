@@ -904,7 +904,7 @@ class Maps(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Unknown command /map ' + str(' '.join(params)), login)
 		
-	def chat_comment(self, login, params):
+	def chat_comment(self, login, params, preserveState = False):
 		"""
 		\brief The comment chatcommand callback
 		\param login The calling players login
@@ -920,7 +920,9 @@ class Maps(PluginInterface):
 										'Comment on ' + self.getCurrentMap()['Name'])
 			commentWindow.setSize((70, 50))
 			commentWindow.setPos((-30, 25))
-			self.callMethod(('WindowManager', 'displayWindow'), login, self.__writeCommentWindowName, commentWindow)
+			self.callMethod(('WindowManager', 'displayWindow'), 
+						login, self.__writeCommentWindowName, 
+						commentWindow)
 		elif params[0] == 'display':
 			comments = self.callFunction(('Karma', 'getComments'), 
 										self.__MapObjectType, 
@@ -939,7 +941,9 @@ class Maps(PluginInterface):
 			commentsWindow.setCommentEditCallback(('Maps', 'cb_commentEdit'))
 			commentsWindow.setCommentVoteCallback(('Maps', 'cb_commentVote'))
 			commentsWindow.setComments(comments)
-			self.callMethod(('WindowManager', 'displayWindow'), login, self.__displayCommentsWindowName, commentsWindow)
+			self.callMethod(('WindowManager', 'displayWindow'), 
+						login, self.__displayCommentsWindowName, 
+						commentsWindow, preserveState)
 	
 	def __prepareComments(self, comments, login, depth = 0):
 		canDeleteOwn = self.callFunction(('Acl', 'userHasRight'), login, 'Maps.deleteOwnComments')
@@ -985,9 +989,6 @@ class Maps(PluginInterface):
 		\param login The login of the invoking player
 		\param commentId The id of the comment to delete
 		"""
-		#Hide the comments window
-		self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
-					self.__displayCommentsWindowName)
 		comment = self.callFunction(('Karma', 'getComment'), commentId)
 		if comment[2] == login:
 			#it is my comment
@@ -995,6 +996,8 @@ class Maps(PluginInterface):
 				self.callMethod(('Karma', 'deleteComment'), commentId)
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Deleted your comment.', login)
+				#Refresh the comments window
+				self.chat_comment(login, 'display', True)
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'You are not allowed to delete your comments.', login)
@@ -1007,6 +1010,8 @@ class Maps(PluginInterface):
 							self.callFunction(('Players', 'getPlayerNickname'), 
 											comment[2]) + 
 							' $zcomment.', login)
+				#Refresh the comments window
+				self.chat_comment(login, 'display', True)
 			else:
 				self.log('Error: User ' + login + ' tried to delete ' + 
 						comment[2] + '\'s comment')
@@ -1065,11 +1070,7 @@ class Maps(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'You are not allowed to vote for your own comments', login)
 				return
-			else:
-				#Hide the comment window
-				self.callMethod(('WindowManager', 'closeWindow'), {}, login, 
-					self.__displayCommentsWindowName)
-				
+			else:				
 				self.callMethod(('Karma', 'changeVote'), 
 							self.callFunction(('Karma', 'getCommentTypeName')),
 							commentId, 
@@ -1078,8 +1079,8 @@ class Maps(PluginInterface):
 				
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Thank you for voting.', login)
-		
-				
+				#Refresh the comments window
+				self.chat_comment(login, 'display', True)
 			
 	def cb_comment(self, entries, login):
 		self.callMethod(('WindowManager', 'closeWindow'), {}, login, self.__writeCommentWindowName)
