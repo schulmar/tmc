@@ -542,7 +542,7 @@ class TableWindow(LinesWindow):
                 x += c
                 i += 1
             lines.append(line)
-        self.setLines(lines)
+        self.setLines(lines, linesPerPage)
         
 class CommentOutput(PagedWindow):
     """
