@@ -66,15 +66,22 @@ class WindowManager(PluginInterface):
 		except KeyError:
 			self.log('error: login ' + str(login) + ' has no windows to be closed')
 
-	def __addWindow(self, login, name, window):
+	def __addWindow(self, login, name, window, useOldState = False):
 		"""
 		\brief Add a window to manage
 		\param login The player to display the window to
 		\param name The name of the window to display
 		\param window The window instance to display
+		\param useOldState Should the state of the replaced window be used
 		"""
 		if not (login in self.displays):
 			self.displays[login] = {}
+		if useOldState:
+			try:
+				oldWindow = self.displays[login][name]
+				window.setState(oldWindow.getState())
+			except KeyError:
+				pass
 		self.displays[login][name] = window
 
 	def displayWindow(self, login, name, window):
@@ -89,7 +96,7 @@ class WindowManager(PluginInterface):
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
 
-	def displayPagedWindow(self, login, name, title, size, pos, pages = []):
+	def displayPagedWindow(self, login, name, title, size, pos, pages, useOldState = False):
 		"""
 		\brief Display a paged window
 		\param login The player to display tdhe window to
@@ -98,12 +105,13 @@ class WindowManager(PluginInterface):
 		\param size The size of the window
 		\param pos The upper left corner of the window
 		\param pages A list of pages (manialinks)
+		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		window = PagedWindow(title, pages)
 		window.setName(name)
 		window.setSize(size)
 		window.setPos(pos)
-		self.__addWindow(login, name, window)
+		self.__addWindow(login, name, window, useOldState)
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
 
