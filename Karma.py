@@ -366,7 +366,7 @@ class Karma(PluginInterface):
         
         #Select a comment on this comment
         cursor.execute("""
-        SELECT `commentId`
+        SELECT `Id`
         FROM `karma_comments`
         WHERE `FType` = %s AND
         `FKey` = %s
