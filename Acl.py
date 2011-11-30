@@ -52,7 +52,7 @@ class Acl(PluginInterface):
 				`name` text NOT NULL,
 				`level` int NOT NULL,
 				`description` text NOT NULL,
-				`default` ENUM("true", "false") NOT NULL DEFAULT "false",
+				`default` BOOLEAN NOT NULL DEFAULT '0',
 				PRIMARY KEY (`id`)
 			);
 			""")
@@ -414,6 +414,10 @@ class Acl(PluginInterface):
 		\return True when the group was deleted
 		"""
 		groupId = self.getIdFromGroupName(groupName)
+		
+		if groupId == None:
+			return False
+		
 		cursor = self.__getCursor()
 		cursor.execute('DELETE FROM `groups` WHERE `id`=%s', (int(groupId),))
 		cursor.execute('DELETE FROM `groupsToRights` WHERE `groupId`=%s', (int(groupId),))
@@ -422,6 +426,31 @@ class Acl(PluginInterface):
 		self.connection.commit()
 		self.__loadGroups()
 		return True
+		
+
+	def groupSetDefault(self, groupName, default = True):
+		"""
+		\brief Set wether a group is default or not
+		\param groupName The name of the group to set
+		\param default The value to which to set, defaults to True
+		"""
+		groupId = self.getIdFromGroupName(groupName)
+		
+		if groupId == None:
+			return False
+		
+		cursor = self.__getCursor()
+		cursor.execute("""
+			UPDATE `groups` 
+			SET `default` = %s
+			WHERE `id` = %s
+		""", (bool(default), int(groupId)))
+		cursor.close()
+		self.connection.commit()
+		self.__loadGroups()
+		
+		return True
+		
 
 	def groupHasRight(self, groupName, rightName):
 		"""
