@@ -863,8 +863,8 @@ class RightsWindow(TableWindow):
             rightDescription['autonewline'] = '1'
             row.append(rightDescription)
             rows.append(row)
-        self.setTable(rows, size[0] // 8, 
+        self.setTable(rows, size[0] // 10, 
                       (buttonSize, 
-                        int(size[0] * nameSize), 
-                        int(size[0] * descriptionSize)), 
+                        int((size[0] - buttonSize) * nameSize), 
+                        int((size[0] - buttonSize) * descriptionSize)), 
                       ('Enabled', 'Right-name', 'Description'))
