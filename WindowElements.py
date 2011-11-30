@@ -472,7 +472,11 @@ class PagedWindow(Window):
     def setState(self, state):
         try:
             newCPage = state['currentPage']
-            if newCPage < len(self.__pages):
+            if newCPage < 0:
+                self.__currentPage = 0
+            elif newCPage >= len(self.__pages):
+                self.__currentPage = len(self.__pages) - 1
+            else:
                 self.__currentPage = newCPage
         except KeyError:
             return
