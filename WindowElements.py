@@ -64,6 +64,22 @@ class Widget(object):
             self.__pos = (int(pos[0]), int(pos[1]), int(pos[2]))
             
     def getManialink(self):
+        """
+        \brief Get the manialink elements of this window
+        """
+        pass
+    
+    def getState(self):
+        """
+        \brief Get the current state of this window
+        """
+        pass
+    
+    def setState(self, state):
+        """
+        \brief Set the current state of this window
+        \param state A former, saved state
+        """
         pass
             
 class CommentInput(Widget):
@@ -445,6 +461,21 @@ class PagedWindow(Window):
             f.addChild(lastPage)
 
         return ml
+    
+    def getState(self):
+        """
+        \brief Get the current state of the window
+        \return The state dictionary
+        """
+        return {'currentPage' : self.__currentPage}
+        
+    def setState(self, state):
+        try:
+            newCPage = state['currentPage']
+            if newCPage < len(self.__pages):
+                self.__currentPage = newCPage
+        except KeyError:
+            return
         
 class CommentOutput(PagedWindow):
     """
@@ -559,7 +590,7 @@ class CommentOutput(PagedWindow):
         \return The manialink toplevel frame
         """
         deleted = comment['commentTuple'][6]
-        indent = 2 * comment['depth']
+        indent = comment['depth']
         width = self.getSize()[0] - indent
         head = 6
         foot = 6
