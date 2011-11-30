@@ -195,28 +195,36 @@ class ChatCommands(PluginInterface):
 			window = RightsWindow( nickName + '$z\'s rights')
 			window.setSize((85, 70))
 			window.setPos((-40, 35))
-			window.setSetRightCallback(('ChatCommands', 'cb_setRight'))
+			window.setSetRightCallback(('ChatCommands', 'cb_setRight'), (args[1], ))
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.userChangeRight'):
 				window.setEditable(True)
 			window.setRights(positive + negative)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
-						'ChatCommands.userRights', window)
+						'ChatCommands.userRights', window, True)
+		elif args[0] == 'rightadd':
+			self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
+		elif args[1] == 'rightremove':
+			self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Unknown command /player ' + 
 					str(args), login)
 		return False
 	
-	def cb_setRight(self, entries, login, rightName, value):
+	def cb_setRight(self, entries, login, rightName, value, player):
 		"""
 		\brief Callback for setting rights of users
 		\param entries Should be emtpy
 		\param login The login of the calling player
 		\param rightName The name of the right to set
 		\param value The value to set the right to
+		\param the player to manage
 		"""
-		#Todo: Write on
-		self.chat_player(login, '')
+		if value:
+			self.chat_player(login, 'rightadd', rightName, value, player)
+		else:
+			self.chat_player(login, 'rightremove', rightName, value, player)
+		self.chat_player(login, 'rights ' + player)
 
 	def chat_test(self, login, args):
 		"""
