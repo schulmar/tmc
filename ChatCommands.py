@@ -195,7 +195,7 @@ class ChatCommands(PluginInterface):
 			window = RightsWindow( nickName + '$z\'s rights')
 			window.setSize((85, 70))
 			window.setPos((-40, 35))
-			window.setSetRightCallback(('ChatCommands', 'cb_setRight'), args)
+			window.setSetRightCallback(('ChatCommands', 'cb_setRight'))
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.userChangeRight'):
 				window.setEditable(True)
