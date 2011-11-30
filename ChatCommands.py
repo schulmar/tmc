@@ -32,9 +32,14 @@ class ChatCommands(PluginInterface):
 	#	registerChatCommand('restart', 'chat_restart')
 		registerChatCommand('hello', 'chat_hello', 'Print a hello message to the calling players chat')
 
+		rightAdd('ChatCommands.playerAddGroup', 
+				'Add players to groups (that are below the calling players own highest level)')
+		rightAdd('ChatCommands.playerRemoveGroup', 
+				'Remove players from groups (that are below the calling players own highest level)')
+		rightAdd('ChatCommands.playerDisplayRights',
+				'Display the rights another player has.')
 		registerChatCommand('player', 'chat_player', 'Manage one player, type /player help for more information')
-		rightAdd('ChatCommands.playerAddGroup', 'Add players to groups (that are below the calling players own highest level)')
-		rightAdd('ChatCommands.playerRemoveGroup', 'Remove players from groups (that are below the calling players own highest level)')
+		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
 
 	def chat_echo(self, login, args):
@@ -87,7 +92,8 @@ class ChatCommands(PluginInterface):
 		args = args.strip()
 		args = args.split()
 		commands = {'addgrp' 		: ('... addgrp <player> <group>', 'Add player to a group'),
-					'removegrp' 	: ('... removegrp <player> <group>', 'Remove player from a group')}
+					'removegrp' 	: ('... removegrp <player> <group>', 'Remove player from a group'),
+					'rights'		: ('... rights <player>', 'Manage the rights of a player')}
 	#display help for players
 		if args[0] == 'help':
 			if len(args) == 1:
@@ -139,7 +145,7 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'/player remove needs exactly 2 parameters', login)
 				return False
-			if not self.callFunction(('Acl', 'userHasRight'), args[1], 'ChatCommands.playerRemoveGroup'):
+			if not self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.playerRemoveGroup'):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'You don\'t have sufficient rights to remove players from groups!', login)
 				return False
@@ -162,10 +168,50 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Could not remove player ' 
 							+ args[1] + ' from group ' + args[2] + '. Did you spell everything correctly?')
 				return False
-
-		self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Unknown command /player ' + 
+		elif args[0] == 'rights':
+			if len(args) != 2:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'/player remove needs exactly one parameter', login)
+				return False
+			if (login != args[1] and not
+				self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.playerDisplayRights')):
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You don\'t have sufficient rights to display the rights of players!', login)
+				return False
+			userRights = self.callFunction(('Acl', 'userGetDirectRights'), args[1])
+			if userRights == None:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Unknown user ' + args[1], login)
+				return False
+			allRights = self.callFunction(('Acl', 'rightGetAll'))
+			positive = [(r[0], r[1][1], True) for r in allRights.items() and r[0] in userRights]
+			negative = [(r[0], r[1][1], False) for r in allRights.items() and r[0] not in userRights]
+			
+			nickName = self.callFunction(('Players', 'getPlayerNickname'), args[1])
+			
+			window = RightsWindow( nickName + '$z\'s rights')
+			window.setSize((80, 70))
+			window.setPos((40, 35))
+			window.setSetRightCallback(('ChatCommands', 'cb_setRight'), args)
+			window.setRights(positive + negative)
+			self.callMethod(('WindowManager', 'displayWindow'), login, 
+						'ChatCommands.userRights', window)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Unknown command /player ' + 
 					str(args), login)
 		return False
+	
+	def cb_setRight(self, entries, login, rightName, value):
+		"""
+		\brief Callback for setting rights of users
+		\param entries Should be emtpy
+		\param login The login of the calling player
+		\param rightName The name of the right to set
+		\param value The value to set the right to
+		"""
+		#Todo: Write on
+		self.chat_player(login, '')
 
 	def chat_test(self, login, args):
 		"""
