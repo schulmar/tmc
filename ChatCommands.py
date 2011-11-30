@@ -103,7 +103,7 @@ class ChatCommands(PluginInterface):
 				try:
 					desc = commands[args[1]]
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-								'/player ' + args[1] + ': ' + str(desc), login)
+								'command /player ' + args[1] + ': ' + str(desc), login)
 				except KeyError:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Unknown /player subcommand "' + args[1] + '"', login)
