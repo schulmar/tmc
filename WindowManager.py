@@ -212,7 +212,7 @@ class WindowManager(PluginInterface):
 					lbl['text'] = str(r[i])
 				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
 				line.append(lbl)
-				i += 1
+				i += 1		
 			lines.append(line)
 		self.displayTableWindow(login, name, title, size, pos, lines, 
 							rowsPerPage, columnWidths, headLine, useOldState)
