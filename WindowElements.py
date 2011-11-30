@@ -494,6 +494,8 @@ class LinesWindow(PagedWindow):
         pages = []
         i = 0
         size = self.getSize()
+        #correct the size as header is already used
+        size = (size[0], size[1] - 8) 
         for row in lines:
             rowNumber = i % linesPerPage
             pageNumber = i // linesPerPage
