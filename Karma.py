@@ -458,7 +458,7 @@ class Karma(PluginInterface):
         cursor.close() 
         
         for c in comments:
-            c[4] = self.getVotes('Karma.comment', c[0])
+            c[4] = self.getVotes(self.__commentTypeName, c[0])
             c[5] = self.__getCommentsOnComment(c[0])
             if c[6]:#is deleted
                 c[1] = ''
@@ -473,7 +473,8 @@ class Karma(PluginInterface):
         """
         cursor = self.__getCursor()
         cursor.execute("""
-        SELECT `karma_comments`.`Id` as `Id`, `Text`, `users`.`name` as `userName`, `Created` 
+        SELECT `karma_comments`.`Id` as `Id`, `Text`, `users`.`name` as `userName`, `Created`,
+        `Deleted` 
         FROM `karma_comments` JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         WHERE
         `karma_comments`.`FKey` = %s AND
@@ -481,14 +482,12 @@ class Karma(PluginInterface):
         ORDER BY `karma_comments`.`Id` DESC
         """, (commentId, self.__commentTypeId))
         #get the output format
-        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], []] 
+        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], [], row['Deleted']] 
                     for row in cursor.fetchall()]
         cursor.close()
         
-        
-        
         for c in comments:
-            c[4] = self.getVotes('Karma.comment', c[0])
+            c[4] = self.getVotes(self.__commentTypeName, c[0])
             c[5] = self.__getCommentsOnComment(c[0])
             if c[6]:#is deleted
                 c[1] = ''
