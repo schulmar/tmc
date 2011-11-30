@@ -185,8 +185,8 @@ class ChatCommands(PluginInterface):
 							'Unknown user ' + args[1], login)
 				return False
 			allRights = self.callFunction(('Acl', 'rightGetAll'))
-			positive = [(r[0], r[1][1], True) for r in allRights.items() and r[0] in userRights]
-			negative = [(r[0], r[1][1], False) for r in allRights.items() and r[0] not in userRights]
+			positive = [(r[0], r[1][1], True) for r in allRights.items() if r[0] in userRights]
+			negative = [(r[0], r[1][1], False) for r in allRights.items() if r[0] not in userRights]
 			
 			nickName = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 			
