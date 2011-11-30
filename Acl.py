@@ -40,7 +40,7 @@ class Acl(PluginInterface):
 			cursor.execute(
 			"""CREATE TABLE IF NOT EXISTS `users`(
 				`id` int NOT NULL auto_increment,
-				`name` varchar(50),
+				`name` varchar(50) NOT NULL,
 				PRIMARY KEY (`id`),
 				UNIQUE KEY `name` (`name`)
 			);
