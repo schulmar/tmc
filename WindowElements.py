@@ -831,11 +831,11 @@ class RightsWindow(TableWindow):
         for right in rights:
             row = []
             rightEnabled = Quad()
-            rightEnabled['sizen'] = '5 5'
+            rightEnabled['sizen'] = '4 4'
             rightEnabled['posn'] = '1 1'
             rightEnabled['style'] = 'Icons64x64_1'
             if right[2]:
-                rightEnabled['substyle'] = 'LvlGreen'
+                rightEnabled['substyle'] = 'Green'
             else:
                 rightEnabled['substyle'] = 'LvlRed'
             if self.__editable:
@@ -847,13 +847,15 @@ class RightsWindow(TableWindow):
             
             rightName = Label()
             rightName['text'] = right[0]
-            rightName['sizen'] = '{:d} 2'.format(int((size[0] - 8) * 0.2))
+            rightName['sizen'] = '{:d} 4'.format(int((size[0] - 8) * 0.2))
+            rightName['autonewline'] = '1'
             row.append(rightName)
             
             rightDescription = Label()
             rightDescription['text'] = right[1]
-            rightDescription['sizen'] = '{:d} 2'.format(int((size[0] - 8) * 0.8))
+            rightDescription['sizen'] = '{:d} 4'.format(int((size[0] - 8) * 0.8))
+            rightDescription['autonewline'] = '1'
             row.append(rightDescription)
             rows.append(row)
-        self.setTable(rows, size[0] // 3, (7, int(size[0] * 0.2), int(size[0] * 0.8)), 
+        self.setTable(rows, size[0] // 6, (7, int(size[0] * 0.2), int(size[0] * 0.8)), 
                       ('Enabled', 'Right-name', 'Description'))
