@@ -539,12 +539,11 @@ class CommentOutput(PagedWindow):
         size = self.getSize()
         consumedHeight = 0
         for c in comments:
-            height = 12 + c['height']
+            (ml, height) = self.__getCommentMl(c)
             if size[1] < consumedHeight + height:
                 manialinks.append(page)
                 page = []
                 consumedHeight = 0
-            ml = self.__getCommentMl(c)
             heightFrame = Frame()
             heightFrame['posn'] = '0 {:d}'.format(-consumedHeight)
             heightFrame.addChild(ml)
@@ -559,16 +558,25 @@ class CommentOutput(PagedWindow):
         \param comment Expected {depth, height, karma, votable, editable, deletable, answerable, nickName, commentTuple}
         \return The manialink toplevel frame
         """
+        deleted = comment['commentTuple'][6]
         indent = 2 * comment['depth']
-        width = self.getSize()[0] - indent 
-        height = comment['height']
+        width = self.getSize()[0] - indent
+        head = 6
+        foot = 6
+        if deleted:
+            height = 0
+        else:
+            height = comment['height']
+        
+        consumedHeight = 0
         
         commentFrame = Frame()
         commentFrame['posn'] = '{:d} {:d}'.format(indent, 0)
         
         commentBgQuad = Quad()
         commentBgQuad['posn'] = '1 0'
-        commentBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, height + 12)
+        commentBgQuad['sizen'] = '{:d} {:d}'.format(width - 2, height + head + foot)
+        consumedHeight += height + head + foot
         commentBgQuad['style'] = 'Bgs1'
         commentBgQuad['substyle'] = 'BgWindow1'
         commentFrame.addChild(commentBgQuad)
@@ -590,7 +598,7 @@ class CommentOutput(PagedWindow):
         votesFrame['posn'] = '{:d} {:d} 1'.format(width - 16, -3)
         commentFrame.addChild(votesFrame)
         
-        if comment['votable']:
+        if comment['votable'] and not deleted:
             voteDown = Quad()
             voteDown['valign'] = 'center'
             voteDown['posn'] = '0 0 1'
@@ -607,7 +615,7 @@ class CommentOutput(PagedWindow):
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
-        if comment['votable']:
+        if comment['votable'] and not deleted:
             voteUp = Quad()
             voteUp['valign'] = 'center'
             voteUp['posn'] = '9 0 1'
@@ -641,34 +649,36 @@ class CommentOutput(PagedWindow):
         dateLabel['sizen'] = '{:d} {:d}'.format(width // 2, 3)
         footBarFrame.addChild(dateLabel)
         
-        if comment['answerable'] or True:
-            answerButtonLabel = Label()
-            answerButtonLabel['text'] = 'Answer'
-            answerButtonLabel['valign'] = 'bottom'
-            answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
-            answerButtonLabel['sizen'] = '9 4'
-            answerButtonLabel['focusareacolor1'] = '0000'
-            answerButtonLabel.setCallback(self.__commentAnswerCallback, comment['commentTuple'][0])
-            footBarFrame.addChild(answerButtonLabel)
-        
-        if comment['editable'] or True:
-            editButtonLabel = Label()
-            editButtonLabel['text'] = 'Edit'
-            editButtonLabel['valign'] = 'bottom'
-            editButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 20, 1)
-            editButtonLabel['sizen'] = '9 4'
-            editButtonLabel['focusareacolor1'] = '000F'
-            editButtonLabel.setCallback(self.__commentEditCallback, comment['commentTuple'][0])
-            footBarFrame.addChild(editButtonLabel)
+        if not deleted:
+            if comment['answerable']:
+                answerButtonLabel = Label()
+                answerButtonLabel['text'] = 'Answer'
+                answerButtonLabel['valign'] = 'bottom'
+                answerButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 10, 1)
+                answerButtonLabel['sizen'] = '9 4'
+                answerButtonLabel['focusareacolor1'] = '0000'
+                answerButtonLabel.setCallback(self.__commentAnswerCallback, comment['commentTuple'][0])
+                footBarFrame.addChild(answerButtonLabel)
             
-        if comment['deletable'] or True:
-            deleteButtonLabel = Label()
-            deleteButtonLabel['text'] = 'Delete'
-            deleteButtonLabel['valign'] = 'bottom'
-            deleteButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 30, 1)
-            deleteButtonLabel['sizen'] = '9 4'
-            deleteButtonLabel['focusareacolor1'] = '000F'
-            deleteButtonLabel.setCallback(self.__commentDeleteCallback, comment['commentTuple'][0])
-            footBarFrame.addChild(deleteButtonLabel)
+            if comment['editable']:
+                editButtonLabel = Label()
+                editButtonLabel['text'] = 'Edit'
+                editButtonLabel['valign'] = 'bottom'
+                editButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 20, 1)
+                editButtonLabel['sizen'] = '9 4'
+                editButtonLabel['focusareacolor1'] = '000F'
+                editButtonLabel.setCallback(self.__commentEditCallback, comment['commentTuple'][0])
+                footBarFrame.addChild(editButtonLabel)
+                
             
-        return commentFrame
+            if comment['deletable']:
+                deleteButtonLabel = Label()
+                deleteButtonLabel['text'] = 'Delete'
+                deleteButtonLabel['valign'] = 'bottom'
+                deleteButtonLabel['posn'] = '{:d} {:d} 1'.format(width - 30, 1)
+                deleteButtonLabel['sizen'] = '9 4'
+                deleteButtonLabel['focusareacolor1'] = '000F'
+                deleteButtonLabel.setCallback(self.__commentDeleteCallback, comment['commentTuple'][0])
+                footBarFrame.addChild(deleteButtonLabel)
+            
+        return (commentFrame, consumedHeight)
