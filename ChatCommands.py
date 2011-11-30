@@ -187,12 +187,12 @@ class ChatCommands(PluginInterface):
 			allRights = self.callFunction(('Acl', 'rightGetAll'))
 			positive = [(r[0], r[1][1], True) for r in allRights.items() if r[0] in userRights]
 			negative = [(r[0], r[1][1], False) for r in allRights.items() if r[0] not in userRights]
-			
+		
 			nickName = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 			
 			window = RightsWindow( nickName + '$z\'s rights')
 			window.setSize((80, 70))
-			window.setPos((40, 35))
+			window.setPos((-40, 35))
 			window.setSetRightCallback(('ChatCommands', 'cb_setRight'), args)
 			window.setRights(positive + negative)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
