@@ -481,6 +481,69 @@ class PagedWindow(Window):
         except KeyError:
             return
         
+class LinesWindow(PagedWindow):
+    """
+    \brief Defines a PagedWindow in lines
+    """
+
+    def setLines(self, lines, linesPerPage):
+        """
+        \brief Set the lines of this window, defining the pages
+        \param lines A list of a list of manialinkElements, one per line
+        """        
+        pages = []
+        i = 0
+        size = self.getSize()
+        for row in lines:
+            rowNumber = i % linesPerPage
+            pageNumber = i // linesPerPage
+            if rowNumber == 0:
+                pages.append([])
+            frame = Frame()
+            frame['sizen'] = '2 {:d}'.format(size[1] // linesPerPage)
+            frame['posn'] = '0 -{:d}'.format(size[1] * rowNumber/linesPerPage)
+            for e in row:
+                frame.addChild(e)
+            pages[pageNumber].append(frame)
+            i += 1
+        self.setPages(pages)
+        
+class TableWindow(LinesWindow):
+    """
+    \brief A window in which content is ordered in rows and columns on 
+        multiple pages
+    """
+    def setTable(self, rows, linesPerPage, columnWidths, headLine = None):
+        """
+        \brief Create the table from the input data
+        \param rows A list of columns (each field is a list of ManialinkElements)
+        """
+        if headLine != None:
+                linesPerPage += 1
+                headLineML = []
+                x = 0
+                for i in xrange(len(columnWidths)):
+                    lbl = Label()
+                    lbl['text'] = str(headLine[i])
+                    lbl['posn'] = str(x) + ' 0'
+                    x += columnWidths[i]
+                    headLineML.append(lbl)
+        lines = []
+        for r in rows:
+            #insert headline on each new page
+            if headLine != None and len(lines) % linesPerPage == 0:
+                lines.append(headLineML)
+            line = []
+            i = 0
+            x = 0
+            for c in columnWidths:
+                r[i]['posn'] = str(x) + ' 0'
+                line.append(r[i])
+                x += c
+                i += 1
+            lines.append(line)
+        self.setLines(lines)
+        
 class CommentOutput(PagedWindow):
     """
     \brief Prints some comments on the screen
@@ -493,10 +556,10 @@ class CommentOutput(PagedWindow):
         """
         super(CommentOutput, self).__init__(title)
         
-        self.__commentVoteCallback = (None, None) #The callback on comment votes
-        self.__commentEditCallback = (None, None) #The callback for editing comments
-        self.__commentDeleteCallback = (None, None) #The callback for deleting comments
-        self.__commentAnswerCallback = (None, None) #The callback for answering to comments
+        self.__commentVoteCallback = None #The callback on comment votes
+        self.__commentEditCallback = None #The callback for editing comments
+        self.__commentDeleteCallback = None #The callback for deleting comments
+        self.__commentAnswerCallback = None #The callback for answering to comments
         
         self.setPages([])
         
@@ -633,7 +696,8 @@ class CommentOutput(PagedWindow):
         votesFrame['posn'] = '{:d} {:d} 1'.format(width - 16, -3)
         commentFrame.addChild(votesFrame)
         
-        if comment['votable'] and not deleted:
+        if (comment['votable'] and not deleted 
+            and self.__commentVoteCallback != None):
             voteDown = Quad()
             voteDown['valign'] = 'center'
             voteDown['posn'] = '0 0 1'
@@ -650,7 +714,8 @@ class CommentOutput(PagedWindow):
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
         
-        if comment['votable'] and not deleted:
+        if (comment['votable'] and not deleted
+            and self.__commentVoteCallback != None):
             voteUp = Quad()
             voteUp['valign'] = 'center'
             voteUp['posn'] = '9 0 1'
@@ -685,7 +750,7 @@ class CommentOutput(PagedWindow):
         footBarFrame.addChild(dateLabel)
         
         if not deleted:
-            if comment['answerable']:
+            if comment['answerable'] and self.__commentAnswerCallback != None:
                 answerButtonLabel = Label()
                 answerButtonLabel['text'] = 'Answer'
                 answerButtonLabel['valign'] = 'bottom'
@@ -695,7 +760,7 @@ class CommentOutput(PagedWindow):
                 answerButtonLabel.setCallback(self.__commentAnswerCallback, comment['commentTuple'][0])
                 footBarFrame.addChild(answerButtonLabel)
             
-            if comment['editable']:
+            if comment['editable'] and self.__commentEditCallback != None:
                 editButtonLabel = Label()
                 editButtonLabel['text'] = 'Edit'
                 editButtonLabel['valign'] = 'bottom'
@@ -706,7 +771,7 @@ class CommentOutput(PagedWindow):
                 footBarFrame.addChild(editButtonLabel)
                 
             
-            if comment['deletable']:
+            if comment['deletable'] and self.__commentDeleteCallback != None:
                 deleteButtonLabel = Label()
                 deleteButtonLabel['text'] = 'Delete'
                 deleteButtonLabel['valign'] = 'bottom'
@@ -717,3 +782,78 @@ class CommentOutput(PagedWindow):
                 footBarFrame.addChild(deleteButtonLabel)
             
         return (commentFrame, consumedHeight)
+    
+class RightsWindow(TableWindow):
+    def __init__(self, title):
+        """
+        \brief Initialize rights window
+        \param title The title of the window
+        """
+        super(RightsWindow, self).__init__(title)
+        self.__setRightCallback = None #The callback for setting a specific right
+        self.__setRightCallbackArgs = None #Additional arguments for the callback
+        self.__editable = False #Should this right list be editable (clickable)
+        
+    @staticmethod
+    def setRightCallbackSignature(entries, login, rightName, value, *userArgs):
+        """
+        \brief The signature of the rightCallback
+        \param entries Should be emtpy
+        \param login The login of the managing player
+        \param rightName The name of the right to change
+        \param value The value to change the right to
+        \param *userArgs Additional arguments defined by setRightCallback
+        """
+        
+    def setSetRightCallback(self, callback, args):
+        """
+        \brief Set the setRightCallback and its args
+        \param callback The new callback
+        \param args Userdefined arguments to the callback
+        """
+        self.__setRightCallback = callback
+        self.__setRightCallbackArgs = args
+        
+    def setEditable(self, editable):
+        """
+        \brief Set wether the rights should be editable
+        \param editable Defines wether the list should be editable
+        """
+        self.__editable = editable
+        
+    def setRights(self, rights):
+        """
+        \brief Set content of the window
+        \param rights The list of rights of (rightName, description, hasRight)
+        """
+        rows = []
+        size = self.getSize()
+        for right in rights:
+            row = []
+            rightEnabled = Quad()
+            rightEnabled['sizen'] = '5 5'
+            rightEnabled['posn'] = '1 1'
+            rightEnabled['style'] = 'Icons64x64_1'
+            if right[2]:
+                rightEnabled['substyle'] = 'LvlGreen'
+            else:
+                rightEnabled['substyle'] = 'LvlRed'
+            if self.__editable:
+                rightEnabled.setCallback(self.__setRightCallback,
+                                         right[0],
+                                         not right[2], 
+                                         *self.__setRightCallbackArgs)
+            row.append(rightEnabled)
+            
+            rightName = Label()
+            rightName['text'] = right[0]
+            rightName['sizen'] = '{:d} 2'.format((size[0] - 8) * 0.2)
+            row.append(rightName)
+            
+            rightDescription = Label()
+            rightDescription['text'] = right[1]
+            rightDescription['sizen'] = '{:d} 2'.format((size[0] - 8) * 0.8)
+            row.append(rightDescription)
+            
+        self.setTable(rows, size[0] // 3, (7, int(size[0] * 0.2), int(size[0] * 0.8)), 
+                      ('Enabled', 'Right-name', 'Description'))

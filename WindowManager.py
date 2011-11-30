@@ -112,9 +112,7 @@ class WindowManager(PluginInterface):
 		window.setName(name)
 		window.setSize(size)
 		window.setPos(pos)
-		self.__addWindow(login, name, window, useOldState)
-		ml = window.getManialink()
-		self.displayMl(ml, name, login)
+		self.displayWindow(login, name, window, useOldState)
 
 	def displayLinesWindow(self, login, name, title, size, pos, rows, rowsPerPage, useOldState = False):
 		"""
@@ -127,21 +125,12 @@ class WindowManager(PluginInterface):
 		\param rowsPerPage The number of rows to display per page
 		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
-		pages = []
-		i = 0
-		for row in rows:
-			rowNumber = i % rowsPerPage
-			pageNumber = i // rowsPerPage
-			if rowNumber == 0:
-				pages.append([])
-			frame = Frame()
-			frame['sizen'] = '2 %d' % (size[1] // rowsPerPage, )
-			frame['posn'] = '0 -%d' % (size[1] * rowNumber/rowsPerPage, )
-			for e in row:
-				frame.addChild(e)
-			pages[pageNumber].append(frame)
-			i += 1
-		self.displayPagedWindow(login, name, title, size, pos, pages, useOldState)
+		window = LinesWindow(title)
+		window.setName(name)
+		window.setSize(size)
+		window.setPos(pos)
+		window.setLines(rows, rowsPerPage)
+		self.displayWindow(login, name, window, useOldState)
 
 	def displayTableWindow(self, login, name, title, size, pos, rows, rowsPerPage, 
 						columnWidths, headLine = None, useOldState = False):
@@ -158,32 +147,12 @@ class WindowManager(PluginInterface):
 		\param headLine The headlines of each column
 		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
-		if headLine != None:
-			rowsPerPage += 1
-			headLineML = []
-			x = 0
-			for i in xrange(len(columnWidths)):
-				lbl = Label()
-				lbl['text'] = str(headLine[i])
-				lbl['posn'] = str(x) + ' 0'
-				x += columnWidths[i]
-				headLineML.append(lbl)
-				
-		lines = []
-		for r in rows:
-			#insert headline on each new page
-			if headLine != None and len(lines) % rowsPerPage == 0:
-				lines.append(headLineML)
-			line = []
-			i = 0
-			x = 0
-			for c in columnWidths:
-				r[i]['posn'] = str(x) + ' 0'
-				line.append(r[i])
-				x += c
-				i += 1
-			lines.append(line)
-		self.displayLinesWindow(login, name, title, size, pos, lines, rowsPerPage, useOldState)
+		window = TableWindow(title)
+		window.setName(name)
+		window.setSize(size)
+		window.setPos(pos)
+		window.setTable(rows, rowsPerPage, columnWidths, headLine)
+		self.displayWindow(login, name, window, useOldState)
 
 	def displayTableStringsWindow(self, login, name, title, size, pos, rows, 
 								rowsPerPage, columnWidths, headLine = None, useOldState = False):
