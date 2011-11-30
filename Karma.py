@@ -67,6 +67,7 @@ class Karma(PluginInterface):
                     `FType` int NOT NULL,
                     `UserId` int NOT NULL,
                     `Created` datetime,
+                    `Deleted` BOOLEAN NOT NULL DEFAULT '0',
                     PRIMARY KEY (`Id`)
                 );
             """)
@@ -274,12 +275,12 @@ class Karma(PluginInterface):
         """
         \brief Get one comment
         \param The id of the comment to fetch
-        \return (commentId, text, userName, date, objectType, objectId) 
+        \return (commentId, text, userName, date, objectType, objectId, deleted) 
         """
         cursor = self.__getCursor()
         cursor.execute("""
         SELECT `karma_comments`.`Id`, `Text`, `users`.`name` as `userName`, `Created`, 
-                `karma_types`.`Name` as `Type`, `FKey`
+                `karma_types`.`Name` as `Type`, `karma_comments`.`FKey`, `karma_comments`.`Deleted`
         FROM `karma_comments` 
         JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         JOIN `karma_types` ON `karma_comments`.`FType` = `karma_types`.`Id`
@@ -287,12 +288,18 @@ class Karma(PluginInterface):
         `karma_comments`.`Id` = %s
         """, (commentId, ))
         comment = cursor.fetchone()
-        comment = (comment['Id'], 
-                   comment['Text'], 
+        if comment['Deleted']:
+            text = ''
+        else:
+            text = comment['Text']
+            
+        comment = [comment['Id'], 
+                   text, 
                    comment['userName'],                   
                    comment['Created'], 
                    comment['Type'], 
-                   comment['FKey'])
+                   comment['FKey'],
+                   comment['Deleted']]
         return comment
     
     def addComment(self, objectType, objectId, commentText, userName, flag = False):
@@ -346,14 +353,76 @@ class Karma(PluginInterface):
         cursor.close()
         self.__connection.commit()
         
+    def __cleanupDeletedComment(self, commentId):
+        """
+        \brief Finally delete comments
+        \param commentId The comment to delete
+        
+        Comments are marked for deletion when they are 
+        deleted. Only if there is no answer to the comment
+        it is allowed to delete the comment itself
+        """
+        cursor = self.__getCursor()
+        
+        #Select a comment on this comment
+        cursor.execute("""
+        SELECT `commentId`
+        FROM `karma_comments`
+        WHERE `FType` = %s AND
+        `FKey` = %s
+        LIMIT 1
+        """, (self.__commentTypeId, commentId))
+        
+        #Is there no comment referring to this?
+        if cursor.fetchone() == None:
+            #then delete this one
+            cursor.execute("""
+            DELETE FROM `karma_comments`
+            WHERE `Id` = %s AND
+            `Deleted` = '1'
+            """, (commentId,))
+        
+        self.__connection.commit()
+        
     def deleteComment(self, commentId):
         """
         \brief Delete the comment with the given Id
         \param commentId The id of the comment to delete
         """
         cursor = self.__getCursor()
+        
+        #get the comment
         cursor.execute("""
-        DELETE FROM `karma_comments` WHERE `Id` = %s
+        SELECT * 
+        FROM `karma_comments`
+        WHERE `Id` = %s
+        """, (commentId, ))
+        comment = cursor.fetchone()
+
+        cursor.execute("""
+            UPDATE `karma_comments`
+            SET `Deleted` = 1
+            WHERE `Id` = %s
+        """, (commentId, ))
+        cursor.close()
+        self.__connection.commit()
+        #Clean up this comment if it is necessary
+        self.__cleanupDeletedComment(commentId)
+        #was this comment an answer to another comment?
+        if comment['FType'] == self.__commentTypeId:
+            #try to clean it up (maybe it was deleted too?)
+            self.__cleanupDeletedComment(comment['FKey'])
+        
+    def undeleteComment(self, commentId):
+        """
+        \brief Reset the deletion of the comment
+        \param commentId The id of the comment to undelete
+        """
+        cursor = self.__getCursor()
+        cursor.execute("""
+            UPDATE `karma_comments`
+            SET `Deleted` = 0
+            WHERE `Id` = %s
         """, (commentId, ))
         cursor.close()
         self.__connection.commit()
@@ -375,7 +444,8 @@ class Karma(PluginInterface):
         
         cursor = self.__getCursor()
         cursor.execute("""
-        SELECT `karma_comments`.`Id` as `Id`, `Text`, `users`.`name` as `userName`, `Created` 
+        SELECT `karma_comments`.`Id` as `Id`, `Text`, 
+        `users`.`name` as `userName`, `Created`, `Deleted` 
         FROM `karma_comments` JOIN `users` ON `karma_comments`.`UserId` = `users`.`id`
         WHERE
         `karma_comments`.`FKey` = %s AND
@@ -383,13 +453,15 @@ class Karma(PluginInterface):
         ORDER BY `karma_comments`.`Id` DESC
         """, (objectId, objectTypeId))
         #get the output format
-        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], []] 
+        comments = [[row['Id'], row['Text'], row['userName'], row['Created'], [], [], row['Deleted']] 
                     for row in cursor.fetchall()]
-        cursor.close()
+        cursor.close() 
         
         for c in comments:
             c[4] = self.getVotes('Karma.comment', c[0])
             c[5] = self.__getCommentsOnComment(c[0])
+            if c[6]:#is deleted
+                c[1] = ''
             
         return comments
         
@@ -413,9 +485,13 @@ class Karma(PluginInterface):
                     for row in cursor.fetchall()]
         cursor.close()
         
+        
+        
         for c in comments:
             c[4] = self.getVotes('Karma.comment', c[0])
             c[5] = self.__getCommentsOnComment(c[0])
+            if c[6]:#is deleted
+                c[1] = ''
             
         return comments
         
