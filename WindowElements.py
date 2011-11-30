@@ -828,6 +828,10 @@ class RightsWindow(TableWindow):
         """
         rows = []
         size = self.getSize()
+        buttonSize = 10
+        nameSize = 0.3
+        descriptionSize = 1 - nameSize 
+        
         for right in rights:
             row = []
             rightEnabled = Quad()
@@ -847,15 +851,20 @@ class RightsWindow(TableWindow):
             
             rightName = Label()
             rightName['text'] = right[0]
-            rightName['sizen'] = '{:d} 4'.format(int((size[0] - 8) * 0.2))
+            rightName['sizen'] = '{:d} 4'.format(
+                                    int((size[0] - buttonSize) * nameSize))
             rightName['autonewline'] = '1'
             row.append(rightName)
             
             rightDescription = Label()
             rightDescription['text'] = right[1]
-            rightDescription['sizen'] = '{:d} 4'.format(int((size[0] - 8) * 0.8))
+            rightDescription['sizen'] = '{:d} 4'.format(
+                                int((size[0] - buttonSize) * descriptionSize))
             rightDescription['autonewline'] = '1'
             row.append(rightDescription)
             rows.append(row)
-        self.setTable(rows, size[0] // 6 - 1, (7, int(size[0] * 0.2), int(size[0] * 0.8)), 
+        self.setTable(rows, size[0] // 8, 
+                      (buttonSize, 
+                        int(size[0] * nameSize), 
+                        int(size[0] * descriptionSize)), 
                       ('Enabled', 'Right-name', 'Description'))
