@@ -49,9 +49,10 @@ class Acl(PluginInterface):
 			cursor.execute(
 			"""CREATE TABLE IF NOT EXISTS `groups`(
 				`id` int NOT NULL auto_increment,
-				`name` text,
-				`level` int,
-				`description` text,
+				`name` text NOT NULL,
+				`level` int NOT NULL,
+				`description` text NOT NULL,
+				`default` ENUM("true", "false") NOT NULL DEFAULT "false",
 				PRIMARY KEY (`id`)
 			);
 			""")
@@ -181,6 +182,15 @@ class Acl(PluginInterface):
 		except KeyError:
 			self.callMethod(('Logger', 'log'), 'Acl error: right ' + rightName + ' unknown in request from ' + str(self.questioner()))
 			return None
+		
+	def getDefaultGroups(self):
+		"""
+		\brief Get a list of all default group names
+		\return list of groupnames
+		"""
+		cursor = self.__getCursor()
+		cursor.execute("SELECT `name` FROM `groups` WHERE `default`='true'")
+		return [r['name'] for r in cursor.fetchall()]
 
 	def userHasRight(self, userName, rightName):
 		"""
@@ -337,10 +347,17 @@ class Acl(PluginInterface):
 			return []
 
 		cursor = self.__getCursor()
-		cursor.execute('SELECT `groups`.`name` as `name` FROM `usersToGroups` INNER JOIN `groups` ON `groupId` = `groups`.`id` WHERE `userId`=%s ORDER BY `level` DESC',(int(userId),))
+		cursor.execute("""
+			SELECT `groups`.`name` as `name` 
+			FROM `usersToGroups` 
+			RIGHT JOIN `groups` ON `groupId` = `groups`.`id` 
+			WHERE `userId`=%s OR `default`='true' ORDER BY `level` DESC
+		""",(int(userId),))
 		groupList = cursor.fetchall()
 
-		return [i['name'] for i in groupList]
+		groupList = [i['name'] for i in groupList]
+	
+		return groupList
 
 	def userGetLevel(self, userName):
 		"""
