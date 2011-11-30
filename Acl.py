@@ -71,7 +71,8 @@ class Acl(PluginInterface):
 				`id` int NOT NULL auto_increment,
 				`groupId` int NOT NULL,
 				`userId` int NOT NULL,
-				PRIMARY KEY (`id`)
+				PRIMARY KEY (`id`),
+				UNIQUE KEY `groupUser` (`groupId`, `userId`)
 			);
 			""")
 		if not 'groupsToRights' in tables:
@@ -80,7 +81,8 @@ class Acl(PluginInterface):
 				`id` int NOT NULL auto_increment,
 				`groupId` int NOT NULL,
 				`rightId` int NOT NULL,
-				PRIMARY KEY (`id`)
+				PRIMARY KEY (`id`),
+				UNIQUE KEY `groupRight` (`groupId`, `rightId`)
 			);
 			""")
 		if not 'usersToRights' in tables:
@@ -89,7 +91,8 @@ class Acl(PluginInterface):
 				`id` int NOT NULL auto_increment,
 				`userId` int NOT NULL,
 				`rightId` int NOT NULL,
-				PRIMARY KEY (`id`)
+				PRIMARY KEY (`id`),
+				UNIQUE KEY `userRight` (`userId`, `rightId`)
 			);
 			""")
 		cursor.close()
@@ -379,7 +382,42 @@ class Acl(PluginInterface):
 		
 		return None
 			
-
+	def userGetDirectRights(self, userName):
+		"""
+		\brief Get a list of all rights a user has directly 
+			(not via group membership)
+		\return List of right names or None if the user does not exist
+		"""
+		userId = self.getIdFromUserName(userName)
+		if userId == None:
+			return None
+		
+		#fetch all rights that are directly assigned to the user
+		cursor = self.__getCursor()
+		cursor.execute("""
+			SELECT `name`
+			FROM `rights`
+			JOIN `usersToRights` ON `rights`.`id` = `usersToRights`.`rightId`
+			WHERE `usersToRights`.`userId` = %s
+		""", (userId, ))
+		return [r['name'] for r in cursor.fetchall()]
+			
+	def userGetRights(self, userName):
+		"""
+		\brief Get a list of all rights a user has
+		\return List of right names none if user does not exist 
+		"""
+		rights = self.userGetDirectRights(userName)
+		if rights == None:
+			return None
+		
+		#fetch all rights from the groups
+		groups = self.userGetGroups(userName)
+		for groupName in groups:
+			rights.extend(self.groupGetRights(groupName))
+		
+		#return the list of rights
+		return list(set(rights))
 
 	def groupExists(self, groupName):
 		"""
@@ -562,6 +600,32 @@ class Acl(PluginInterface):
 		cursor.close()
 		self.connection.commit()
 		return True
+	
+	def groupGetRights(self, groupName):
+		"""
+		\brief Get all rights of a group
+		\param groupName The group whose rights to fetch
+		"""
+		groupId = self.getIdFromGroupName(groupName)
+		if groupId == None:
+			return None
+		
+		cursor = self.__getCursor()
+		cursor.execute("""
+			SELECT `name` 
+			FROM `rights`
+			JOIN `groupsToRights` ON `rights`.`id` = `groupsToRights`.`rightId`
+			WHERE `groupsToRights`.`groupId` = %s
+		""", (groupId, ))
+		return [r['name'] for r in cursor.fetchall()]
+		
+	
+	def rightGetAll(self):
+		"""
+		\brief Return the right dictionary
+		\return A mapping from all rightnames to their id and description
+		"""
+		return self.rights
 
 	def rightExists(self, rightName):
 		"""
