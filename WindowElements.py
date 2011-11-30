@@ -805,7 +805,7 @@ class RightsWindow(TableWindow):
         \param *userArgs Additional arguments defined by setRightCallback
         """
         
-    def setSetRightCallback(self, callback, args):
+    def setSetRightCallback(self, callback, args = ()):
         """
         \brief Set the setRightCallback and its args
         \param callback The new callback
