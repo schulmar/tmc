@@ -204,8 +204,12 @@ class ChatCommands(PluginInterface):
 						'ChatCommands.userRights', window, True)
 		elif args[0] == 'rightadd':
 			self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Granted right ' + args[1] + ' to player ' + args[1], login)
 		elif args[1] == 'rightremove':
 			self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Revoked right ' + args[1] + ' from player ' + args[1], login)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Unknown command /player ' + 
 					str(args), login)
@@ -221,9 +225,9 @@ class ChatCommands(PluginInterface):
 		\param the player to manage
 		"""
 		if value:
-			self.chat_player(login, 'rightadd', rightName, value, player)
+			self.chat_player(login, 'rightadd ' +  rightName + ' ' + player)
 		else:
-			self.chat_player(login, 'rightremove', rightName, value, player)
+			self.chat_player(login, 'rightremove ' +  rightName + ' ' +  player)
 		self.chat_player(login, 'rights ' + player)
 
 	def chat_test(self, login, args):
