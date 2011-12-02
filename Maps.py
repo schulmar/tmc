@@ -106,6 +106,8 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'jukebox', ('Maps', 'chat_jukebox'),
 					'Jukebox mapmanagement. Type /jukebox help for more information')
 		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload',
+					'Upload maps directly to the server via HTTP connection.')
 		self.callMethod(('TmChat', 'registerChatCommand'), 'upload', ('Maps', 'chat_upload'), 
 					'Upload a map file to the server from within the game.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload', 
