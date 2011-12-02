@@ -519,6 +519,9 @@ class TableWindow(LinesWindow):
         """
         \brief Create the table from the input data
         \param rows A list of columns (each field is a list of ManialinkElements)
+        \param linesPerPage The number of lines to display per page
+        \param columnWidths The width for each column of the table
+        \param headLine The headline for the table
         """
         if headLine != None:
                 linesPerPage += 1
@@ -545,6 +548,32 @@ class TableWindow(LinesWindow):
                 i += 1
             lines.append(line)
         self.setLines(lines, linesPerPage)
+        
+class TableStringsWindow(TableWindow):
+    def setTableStrings(self, strings, linesPerPage, columnWidths, headLine = None):
+        """
+        \brief Create the table from the input data
+        \param rows A list of columns (each field is a list of ManialinkElements)
+        \param linesPerPage The number of lines to display per page
+        \param columnWidths The width for each column of the table
+        \param headLine The headline for the table
+        """
+        lines = []
+        size = self.getSize()
+        for r in strings:
+            line = []
+            i = 0
+            for c in columnWidths:
+                lbl = Label()
+                if isinstance(r[i], unicode): 
+                    lbl['text'] = r[i].encode('utf-8')
+                else:
+                    lbl['text'] = str(r[i])
+                lbl['sizen'] = str(c) + ' ' + str(size[1] // linesPerPage)
+                line.append(lbl)
+                i += 1        
+            lines.append(line)
+        self.setTable(lines, linesPerPage, columnWidths, headLine)
         
 class CommentOutput(PagedWindow):
     """
