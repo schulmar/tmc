@@ -231,7 +231,7 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You have insufficient rights to grant rights to users.', login)
-		elif args[1] == 'rightremove':
+		elif args[0] == 'rightremove':
 			if self.callFunction(('Acl', 'userHasRight'), login,
 								'ChatCommands.userRemoveRight'):
 				self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
@@ -394,7 +394,7 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You have insufficient rights to grant rights to users.', login)
-		elif args[1] == 'rightremove':
+		elif args[0] == 'rightremove':
 			if self.callFunction(('Acl', 'userHasRight'), login,
 								'ChatCommands.groupRemoveRight'):
 				self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
