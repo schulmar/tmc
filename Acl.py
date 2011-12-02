@@ -453,7 +453,9 @@ class Acl(PluginInterface):
 		"""
 		if not self.groupExists(groupName):
 			cursor = self.__getCursor()
-			cursor.execute('INSERT INTO `groups` (`name`, `level`) VALUES (%s, %s, %s)', (str(groupName), int(level), str(description)))
+			cursor.execute('''
+				INSERT INTO `groups` (`name`, `level`, `description`) VALUES (%s, %s, %s)
+			''', (str(groupName), int(level), str(description)))
 			cursor.close()
 			self.connection.commit()
 			self.__loadGroups()
