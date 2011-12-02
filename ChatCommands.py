@@ -42,6 +42,10 @@ class ChatCommands(PluginInterface):
 				'Change a right of a user.')
 		registerChatCommand('player', 'chat_player', 'Manage one player, type /player help for more information')
 		
+		rightAdd('ChatCommands.groupDisplay',
+				'Display all groups that are defined.')
+		registerChatCommand('group', 'chat_group', 'Manage user groups. type /group help for more information')
+		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
 
 	def chat_echo(self, login, args):
@@ -229,6 +233,57 @@ class ChatCommands(PluginInterface):
 		else:
 			self.chat_player(login, 'rightremove ' +  player + ' ' +  rightName)
 		self.chat_player(login, 'rights ' + player)
+		
+	def chat_group(self, login, args):
+		"""
+		\brief Recieves chatcommands concerning groups
+		\param login The login of the invoking player
+		\param args the additional args passed by the player
+		"""
+		if args == None:
+			args = 'display'
+			
+		args = args.split()
+		
+		subcommands = {
+					'help' : 'display all subcommands and their description',
+					'display' : 'display all known groups'
+					}
+		
+		if args == 'help':
+			if len(args) == 2:
+				try:
+					description = subcommands[args[1]]
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Help for subcommand /group ' + args[1]
+								+ ': ' + description, login)
+				except KeyError:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Unknown subcommand /group ' + args[1], login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Available subcommands for /group: ' + 
+								str(subcommands.keys()), 
+								login)
+		if args == 'display':
+			groups = self.callFunction(('Acl', 'groupGetAll'))
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.groupDisplay'):
+				if len(groups) > 0:
+					window = TableStringsWindow('All user groups')
+					window.setSize((80, 70))
+					window.setPos((-40, 35))
+					window.setTableStrings(groups, 15, 
+						(5, 15, 50, 5, 5), 
+						('Id', 'Name', 'Description', 'Level', 'default'))
+				else:
+					self.callMethod(('TmConnector', 
+									'ChatSendServerMessageToLogin'),
+									'There are no groups to view', login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient permissions to view the groups.', 
+						login)
 
 	def chat_test(self, login, args):
 		"""
