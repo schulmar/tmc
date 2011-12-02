@@ -319,11 +319,54 @@ class ChatCommands(PluginInterface):
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.groupDisplay'):
 				if len(groups) > 0:
-					window = TableStringsWindow('All user groups')
+					window = TableWindow('All user groups')
 					window.setSize((80, 60))
 					window.setPos((-40, 35))
 					window.setIcon('Icons128x128_1', 'Buddies')
-					window.setTableStrings(groups, 15, (3, 15, 5, 45, 10), 
+					lines = []
+					for g in groups:
+						line = []
+					#idLabel
+						idLabel = Label()
+						idLabel['text'] = g[0]
+						idLabel['sizen'] = '3 2'
+						idLabel['posn'] = '1 0'
+						idLabel.setCallback(('ChatCommands', 'cb_chatRemoveGroup'),
+										g[1])
+						line.append(idLabel)
+						
+					#nameLabel
+						nameLabel = Label()
+						nameLabel['text'] = g[1]
+						nameLabel['sizen'] = '14 2'
+						line.append(nameLabel)
+						
+					#levelLabel
+						levelLabel = Label()
+						levelLabel['text'] = g[2]
+						levelLabel['sizen'] = '4 2'
+						line.append(levelLabel)
+						
+					#descriptionLabel
+						descriptionLabel = Label()
+						descriptionLabel['text'] = g[3]
+						descriptionLabel['sizen'] = '44 2'
+						line.append(descriptionLabel)
+						
+					#defaultLabel
+						defaultLabel = Label()
+						defaultLabel['sizen'] = '8 2'
+						if g[4]:
+							defaultLabel['text'] = 'yes'
+							defaultLabel.setCallback(('ChatCommands', 'cb_setGroupDefault'),
+													g[1],'no')
+						else:
+							defaultLabel['text'] = 'no'
+							defaultLabel.setCallback(('ChatCommands', 'cb_setGroupDefault'), 
+													g[1], 'yes')
+						line.append(defaultLabel)
+					lines.append(line)
+					window.setTable(lines, 15, (3, 15, 5, 45, 10), 
 						('Id', 'Name', 'Level', 'Description', 'default'))
 					self.callMethod(('WindowManager', 'displayWindow'),	login, 
 								'ChatCommands.groupsList', window)
@@ -466,6 +509,22 @@ class ChatCommands(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 					'Unknown subcommand /group ' + args[0], 
 					login)	
+
+	def cb_chatRemoveGroup(self, entries, login, groupName):
+		"""
+		\brief Callback for remove from group list display
+		"""
+		self.chat_group(login, 'remove ' + groupName)
+
+	def cb_setGroupDefault(self, entries, login, groupName, isDefault):
+		"""
+		\brief Set a group as (non)default group
+		\param entries Should be emtpy
+		\param login The login of the invoking player
+		\param groupName The group to (un)set default
+		\param isDefault The value to set default to
+		"""
+		self.chat_group(login, 'default ' + isDefault)
 
 	def cb_removeGroup(self, entries, login, answer, groupName):
 		"""
