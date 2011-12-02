@@ -343,6 +343,9 @@ class ChatCommands(PluginInterface):
 		\param answer The answer the player gave to the dialog
 		\param groupName The name of the group to delete
 		"""
+		#hide the dialog window
+		self.callMethod(('WindowManager', 'hideWindow'), login, 
+					'ChatCommands.deleteGroupDialog')
 		if answer:
 			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.removeGroup'):
 				self.callMethod(('Acl', 'groupRemove'), groupName)
