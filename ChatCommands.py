@@ -245,12 +245,11 @@ class ChatCommands(PluginInterface):
 			
 		args = args.split()
 		
-		subcommands = {
-					'help' : 'display all subcommands and their description',
-					'display' : 'display all known groups'
+		subcommands = {	'help' : 'display all subcommands and their description',
+						'display' : 'display all known groups'
 					}
 		
-		if args == 'help':
+		if args[0] == 'help':
 			if len(args) == 2:
 				try:
 					description = subcommands[args[1]]
@@ -265,7 +264,7 @@ class ChatCommands(PluginInterface):
 								'Available subcommands for /group: ' + 
 								str(subcommands.keys()), 
 								login)
-		if args == 'display':
+		if args[0] == 'display':
 			groups = self.callFunction(('Acl', 'groupGetAll'))
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.groupDisplay'):
