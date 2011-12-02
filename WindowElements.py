@@ -812,7 +812,7 @@ class CommentOutput(PagedWindow):
         
         karmaLabel = Label()
         karmaLabel['valign'] = 'center'
-        karmaLabel['text'] = '{:d}%'.format(comment['karma'])
+        karmaLabel['text'] = '{:d}% ({:d})'.format(comment['karma'], len(comment['commentTuple'][4]))
         karmaLabel['posn'] = '{:d} {:d} 1'.format(6, 0)
         karmaLabel['sizen'] = '4 2'
         votesFrame.addChild(karmaLabel)
