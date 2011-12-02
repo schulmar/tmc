@@ -443,12 +443,12 @@ class Acl(PluginInterface):
 		"""
 		return groupName in self.groups
 
-	def groupAdd(self, groupName, level = 0, description = ''):
+	def groupAdd(self, groupName, description = '', level = 0):
 		"""
 		\brief Add a new group(Name) to the system
 		\param groupName The name of the new group
-		\param level The level of the new group
 		\param description A description of the group 
+		\param level The level of the new group
 		\return True if the group was created, False if it already existed
 		"""
 		if not self.groupExists(groupName):
