@@ -32,8 +32,6 @@ class TmChat(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Error: Chat command ' + parts[0] + ' unnknown', login)
 			return False
 
-
-
 	def registerChatCommand(self, name, callback, description = 'No description'):
 		if name in self.commands:
 			callback = self.commands[name]
