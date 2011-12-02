@@ -115,7 +115,11 @@ class ChatCommands(PluginInterface):
 		args = args.split()
 		commands = {'addgrp' 		: ('... addgrp <player> <group>', 'Add player to a group'),
 					'removegrp' 	: ('... removegrp <player> <group>', 'Remove player from a group'),
-					'rights'		: ('... rights <player>', 'Manage the rights of a player')}
+					'rights'		: ('... rights <player>', 'Manage the rights of a player'),
+					'rightadd'		: ('... rightadd <player> <right>', 
+											'Grant a right to a player'),
+					'rightremove'	: ('... rightremove <player> <right>', 
+											'Revoke a right from a player')}
 	#display help for players
 		if args[0] == 'help':
 			if len(args) == 1:
@@ -274,7 +278,11 @@ class ChatCommands(PluginInterface):
 		subcommands = {	'help' 		: 'display all subcommands and their description',
 						'display' 	: 'display all known groups',
 						'add' 		: 'Add a new group (/group add <newGroupName> <description>)',
-						'remove' 	: 'Remove an existing group (/group remove <existingGroupName>)' 
+						'remove' 	: 'Remove an existing group (/group remove <existingGroupName>)' ,
+						'rightremove' : 
+							'Revoke a right from a group (/group rightremove <groupName> <rightName>)',
+						'rightadd' 	: 
+							'Grant a right to a group (/group rightadd <groupName> <rightName>)'
 					}
 		
 		if args[0] == 'help':
@@ -385,7 +393,7 @@ class ChatCommands(PluginInterface):
 			window.setRights(positive + negative)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.groupRights', window, True)
-		elif args[0] == 'rightadd':	
+		elif args[0] == 'rightadd' or args[0] == 'grant':	
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.groupAddRight'):
 				self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
@@ -394,7 +402,7 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You have insufficient rights to grant rights to users.', login)
-		elif args[0] == 'rightremove':
+		elif args[0] == 'rightremove' or args[0] == 'revoke':
 			if self.callFunction(('Acl', 'userHasRight'), login,
 								'ChatCommands.groupRemoveRight'):
 				self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
