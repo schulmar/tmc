@@ -1,6 +1,5 @@
 from PluginInterface import *
 from Manialink import *
-import os
 from WindowElements import *
 
 """
@@ -60,6 +59,8 @@ class ChatCommands(PluginInterface):
 				'Grant a right to a group.')
 		rightAdd('ChatCommands.groupRemoveRight',
 				'Revoke a right from a group.')
+		rightAdd('ChatCommands.changeGroupDefault',
+				'Set the default state of a group')
 		registerChatCommand('group', 'chat_group', 'Manage user groups. type /group help for more information')
 		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
@@ -292,7 +293,10 @@ class ChatCommands(PluginInterface):
 						'rightremove' : 
 							'Revoke a right from a group (/group rightremove <groupName> <rightName>)',
 						'rightadd' 	: 
-							'Grant a right to a group (/group rightadd <groupName> <rightName>)'
+							'Grant a right to a group (/group rightadd <groupName> <rightName>)',
+						'default'	:
+							'Manage if any user is in this group by default ' +
+							'(/group default <groupName> <isDefault>)'
 					}
 		
 		if args[0] == 'help':
@@ -403,6 +407,33 @@ class ChatCommands(PluginInterface):
 			window.setRights(rights)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.groupRights', window, True)
+		elif args[0] == 'default':
+			if not self.callFunction(('Acl', 'userHasRight'), login, 
+									'ChatCommands.changeGroupDefault'):
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'You have insufficient rights to set' + 
+							' the default state of groups.' , login)
+				return False
+			if len(args) != 3:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'/group default needs exactly two parameters' + 
+							' (<groupName>, <isDefault>)', login)
+				return False
+			if self.callFunction(('Acl', 'groupExists'), args[1]):
+				if args[2] == 'yes':
+					self.callMethod(('Acl', 'groupSetDefault'), args[1], True)
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Group ' + args[1] +
+								' is now a default group.', login)
+				elif args[2] == 'no':
+					self.callMethod(('Acl', 'groupSetDefault'), args[1], False)
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Group ' + args[1] +
+								' is not default group (anymore).', login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Group ' + args[1] + ' does not exist.', login)
+				
 		elif args[0] == 'rightadd' or args[0] == 'grant':	
 			if len(args) != 3:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
