@@ -278,9 +278,10 @@ class ChatCommands(PluginInterface):
 					window = TableStringsWindow('All user groups')
 					window.setSize((80, 70))
 					window.setPos((-40, 35))
-					window.setTableStrings(groups, 15, 
-						(5, 15, 50, 5, 5), 
+					window.setTableStrings(groups, 15, (5, 15, 50, 5, 5), 
 						('Id', 'Name', 'Description', 'Level', 'default'))
+					self.callMethod(('WindowManager', 'displayWindow'),	login, 
+								'ChatCommands.groupsList', window)
 				else:
 					self.callMethod(('TmConnector', 
 									'ChatSendServerMessageToLogin'),
