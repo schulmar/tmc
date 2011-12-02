@@ -468,9 +468,9 @@ class ChatCommands(PluginInterface):
 		\param groupName The group to manage
 		"""
 		if value:
-			self.chat_player(login, 'rightadd ' + groupName + ' ' +  rightName)
+			self.chat_group(login, 'rightadd ' + groupName + ' ' +  rightName)
 		else:
-			self.chat_player(login, 'rightremove ' +  groupName + ' ' +  rightName)
+			self.chat_group(login, 'rightremove ' +  groupName + ' ' +  rightName)
 		self.chat_group(login, 'rights ' + groupName)
 		
 	def chat_test(self, login, args):
