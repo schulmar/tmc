@@ -518,7 +518,7 @@ class ChatCommands(PluginInterface):
 		\param login THe login of the calling player
 		\param groupName The group whose rights to manage
 		"""
-		self.callMethod(('WindowManager', 'closeWindow'),
+		self.callMethod(('WindowManager', 'closeWindow'), {},
 					login, 'ChatCommands.groupsList')
 		self.chat_group(login, 'rights ' + groupName)
 
