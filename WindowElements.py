@@ -113,7 +113,7 @@ class YesNoDialog(Widget):
         \param args Additional arguments that should be passed to the callback
         """
         self.__callback = callback
-        self.__callbackAgs = args
+        self.__callbackArgs = args
         
     def getManialink(self):
         """
