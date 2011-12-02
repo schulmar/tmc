@@ -596,8 +596,13 @@ class Acl(PluginInterface):
 		if groupId == None or rightId == None:
 			return False
 
-		cursor.execute('SELECT `id` FROM `groupsToRights` WHERE `groupId`=%s AND `rightId`=%s', (int(groupId), int(rightId)))
-
+		cursor.execute('''
+			INSERT IGNORE INTO `groupsToRights` (`groupId`, `rightId`) 
+			VALUES (%s, %s)
+		''', (int(groupId), int(rightId)))
+		cursor.close()
+		self.connection.commit()
+		
 		return True
 		
 	def groupRemoveRight(self, groupName, rightName):
@@ -614,7 +619,11 @@ class Acl(PluginInterface):
 		if groupId == None or rightId == None:
 			return False
 
-		cursor.execute('DELETE FROM `groupsToRights` WHERE `groupId`=%s AND `rightId`=%s', (int(groupId), int(rightId)))
+		cursor.execute('''
+			DELETE FROM `groupsToRights` 
+			WHERE `groupId`=%s AND 
+			`rightId`=%s
+		''', (int(groupId), int(rightId)))
 		cursor.close()
 		self.connection.commit()
 		return True
