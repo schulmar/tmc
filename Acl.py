@@ -419,6 +419,22 @@ class Acl(PluginInterface):
 		#return the list of rights
 		return list(set(rights))
 
+	def groupGetAll(self):
+		"""
+		\brief Get all groups
+		\return List of all groups 
+			[(groupId, groupName, groupLevel, description, isDefault)]
+			
+		The list is ordered by descending level 
+		"""
+		cursor = self.__getCursor()
+		cursor.execute("""
+			SELECT * FROM `groups`
+			ORDER BY `level` DESC
+		""")
+		return [(g['id'], g['name'], g['level'], g['description'], g['default'])
+				for g in cursor.fetchall()]
+
 	def groupExists(self, groupName):
 		"""
 		\brief Return wether a group with this name exists
