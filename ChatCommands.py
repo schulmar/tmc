@@ -339,6 +339,7 @@ class ChatCommands(PluginInterface):
 						nameLabel = Label()
 						nameLabel['text'] = g[1]
 						nameLabel['sizen'] = '14 2'
+						nameLabel.setCallback(('ChatCommands', 'cb_chatGroupRights'), g[1])
 						line.append(nameLabel)
 						
 					#levelLabel
@@ -509,6 +510,17 @@ class ChatCommands(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 					'Unknown subcommand /group ' + args[0], 
 					login)	
+
+	def cb_chatGroupRights(self, entries, login, groupName):
+		"""
+		\brief Convenience callback for the group rights
+		\param entries Should be emtpy
+		\param login THe login of the calling player
+		\param groupName The group whose rights to manage
+		"""
+		self.callMethod(('WindowManager', 'closeWindow'),
+					login, 'ChatCommands.groupsList')
+		self.chat_group(login, 'rights ' + groupName)
 
 	def cb_chatRemoveGroup(self, entries, login, groupName):
 		"""
