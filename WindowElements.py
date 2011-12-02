@@ -82,6 +82,77 @@ class Widget(object):
         """
         pass
             
+class YesNoDialog(Widget):
+    """
+    \brief A dialog that displays a question to the user, 
+            that can be answered with yes and no.
+    """       
+    def __init__(self, question):
+        """
+        \brief Initialize the dialog with the question to ask
+        """     
+        self.__question = question
+        self.__callback = None
+        self.__callbackArgs = None
+    
+    @staticmethod
+    def answerCallbackSignature(entries, login, yesNo, *args):
+        """
+        \brief The signature of the answer callback
+        \param entries Should be empty
+        \param login The login of the calling player
+        \param yesNo Was yes(True) or no(False) clicked
+        \param *args Additional arguments that were defined at setAnswerCallback
+        """    
+        
+    def setAnswerCallback(self, callback, *args):
+        """
+        \brief Set the callback
+        \param callback The new callback
+        \param args Additional arguments that should be passed to the callback
+        """
+        self.__callback = callback
+        self.__callbackAgs = args
+        
+    def getManialink(self):
+        """
+        \brief Get the manialink of this window
+        """
+        pos = self.getPos()
+        size = self.getSize()
+
+        mainFrame = Frame()
+        mainFrame['posn'] = '{:d} {:d} {:d}'.format(pos[0], pos[1], pos[2])
+        
+        bodyBgQuad = Quad()
+        bodyBgQuad['sizen'] = '{:d} {:d}'.format(*size)
+        bodyBgQuad['posn'] = '0 0 -1'
+        bodyBgQuad['style'] = 'Bgs1'
+        bodyBgQuad['substyle'] = 'BgWindow1'
+        mainFrame.addChild(bodyBgQuad)
+        
+        questionLabel = Label()
+        questionLabel['text'] = self.__question
+        questionLabel['sizen'] = '{:d} {:d}'.format(size[0] - 2, size[1] - 5)
+        questionLabel['posn'] = '1 -1'
+        mainFrame.addChild(questionLabel)
+        
+        yesButton = Label()
+        yesButton['text'] = 'Yes'
+        yesButton['sizen'] = '5 2'
+        yesButton['posn'] = '2 -{:d}'.format(size[1] - 5)
+        yesButton.setCallback(self.__callback, True, *self.__callbackAgs)
+        mainFrame.addChild(yesButton)
+        
+        noButton = Label ()
+        noButton['text'] = 'No'
+        noButton['sizen'] = '5 2'
+        noButton['posn'] = '8 -{:d}'.format(size[1] - 5)
+        noButton.setCallback(self.__callback, False, *self.__callbackArgs)
+        mainFrame.addChild(noButton)
+        
+        return mainFrame 
+        
 class CommentInput(Widget):
     """
     \brief A comment input dialog
