@@ -91,6 +91,7 @@ class YesNoDialog(Widget):
         """
         \brief Initialize the dialog with the question to ask
         """     
+        super(YesNoDialog, self).__init__()
         self.__question = question
         self.__callback = None
         self.__callbackArgs = None
