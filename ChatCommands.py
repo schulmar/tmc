@@ -251,7 +251,7 @@ class ChatCommands(PluginInterface):
 		
 		subcommands = {	'help' 		: 'display all subcommands and their description',
 						'display' 	: 'display all known groups',
-						'add' 		: 'Add a new group (/group add <newGroupName>)',
+						'add' 		: 'Add a new group (/group add <newGroupName> <description>)',
 						'remove' 	: 'Remove an existing group (/group remove <existingGroupName>)' 
 					}
 		
@@ -276,10 +276,11 @@ class ChatCommands(PluginInterface):
 								'ChatCommands.groupDisplay'):
 				if len(groups) > 0:
 					window = TableStringsWindow('All user groups')
-					window.setSize((80, 70))
+					window.setSize((80, 60))
 					window.setPos((-40, 35))
-					window.setTableStrings(groups, 15, (5, 15, 50, 5, 5), 
-						('Id', 'Name', 'Description', 'Level', 'default'))
+					window.setIcon('Icons128x128_1', 'Buddies')
+					window.setTableStrings(groups, 15, (3, 15, 5, 45, 10), 
+						('Id', 'Name', 'Level', 'Description', 'default'))
 					self.callMethod(('WindowManager', 'displayWindow'),	login, 
 								'ChatCommands.groupsList', window)
 				else:
@@ -292,13 +293,14 @@ class ChatCommands(PluginInterface):
 						login)
 		elif args[0] == 'add':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.addGroup'):
-				if len(args) != 2:
+				if len(args) < 3:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'Command /group add takes exactly one parameter (<newGroupName>)', 
+						'Command /group add takes exactly two parameters' + 
+						' (<newGroupName> <description>)', 
 						login)
 					return False
 				
-				self.callMethod(('Acl', 'groupAdd'), args[1])
+				self.callMethod(('Acl', 'groupAdd'), args[1], ' '.join(args[2:]))
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'Added new group ' + args[1] + ' to group list. You may'
 						+ ' now define the groups rights and add users to it.', 
