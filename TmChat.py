@@ -13,7 +13,7 @@ class TmChat(PluginInterface):
 
 	def PlayerChat(self, *args):
 		if len(args[2]) > 0:
-			text = args[2]
+			text = args[2].strip()
 			if text[0] == '/':
 				self.processCommand(args[1], text[1:])
 
