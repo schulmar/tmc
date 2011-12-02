@@ -355,7 +355,7 @@ class ChatCommands(PluginInterface):
 						
 					#defaultLabel
 						defaultLabel = Label()
-						defaultLabel['sizen'] = '8 2'
+						defaultLabel['sizen'] = '5 2'
 						if g[4]:
 							defaultLabel['text'] = 'yes'
 							defaultLabel.setCallback(('ChatCommands', 'cb_setGroupDefault'),
@@ -369,7 +369,7 @@ class ChatCommands(PluginInterface):
 					window.setTable(lines, 15, (3, 15, 5, 45, 10), 
 						('Id', 'Name', 'Level', 'Description', 'default'))
 					self.callMethod(('WindowManager', 'displayWindow'),	login, 
-								'ChatCommands.groupsList', window)
+								'ChatCommands.groupsList', window, True)
 				else:
 					self.callMethod(('TmConnector', 
 									'ChatSendServerMessageToLogin'),
@@ -515,6 +515,7 @@ class ChatCommands(PluginInterface):
 		\brief Callback for remove from group list display
 		"""
 		self.chat_group(login, 'remove ' + groupName)
+		self.chat_group(login, 'display')
 
 	def cb_setGroupDefault(self, entries, login, groupName, isDefault):
 		"""
@@ -524,7 +525,8 @@ class ChatCommands(PluginInterface):
 		\param groupName The group to (un)set default
 		\param isDefault The value to set default to
 		"""
-		self.chat_group(login, 'default ' + isDefault)
+		self.chat_group(login, 'default ' + groupName + ' ' + isDefault)
+		self.chat_group(login, 'display')
 
 	def cb_removeGroup(self, entries, login, answer, groupName):
 		"""
