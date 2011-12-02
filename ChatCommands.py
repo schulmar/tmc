@@ -211,8 +211,8 @@ class ChatCommands(PluginInterface):
 							'Unknown user ' + args[1], login)
 				return False
 			allRights = self.callFunction(('Acl', 'rightGetAll'))
-			positive = [(r[0], r[1][1], True) for r in allRights.items() if r[0] in userRights]
-			negative = [(r[0], r[1][1], False) for r in allRights.items() if r[0] not in userRights]
+			rights = [(r[1], r[2], (r[1] in userRights)) 
+						for r in allRights]
 		
 			nickName = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 			
@@ -223,7 +223,7 @@ class ChatCommands(PluginInterface):
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.userChangeRight'):
 				window.setEditable(True)
-			window.setRights(positive + negative)
+			window.setRights(rights)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.userRights', window, True)
 		elif args[0] == 'rightadd' or args[0] == 'grant':
@@ -390,8 +390,8 @@ class ChatCommands(PluginInterface):
 							'Unknown group ' + args[1], login)
 				return False
 			allRights = self.callFunction(('Acl', 'rightGetAll'))
-			positive = [(r[0], r[1][1], True) for r in allRights.items() if r[0] in groupRights]
-			negative = [(r[0], r[1][1], False) for r in allRights.items() if r[0] not in groupRights]
+			rights = [(r[1], r[2], (r[1] in groupRights)) 
+						for r in allRights]
 			
 			window = RightsWindow('Group ' +  args[1] + '$z\'s rights')
 			window.setSize((85, 70))
@@ -400,7 +400,7 @@ class ChatCommands(PluginInterface):
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.groupChangeRight'):
 				window.setEditable(True)
-			window.setRights(positive + negative)
+			window.setRights(rights)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.groupRights', window, True)
 		elif args[0] == 'rightadd' or args[0] == 'grant':	

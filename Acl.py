@@ -643,6 +643,7 @@ class Acl(PluginInterface):
 			FROM `rights`
 			JOIN `groupsToRights` ON `rights`.`id` = `groupsToRights`.`rightId`
 			WHERE `groupsToRights`.`groupId` = %s
+			ORDER BY `name` ASC
 		""", (groupId, ))
 		return [r['name'] for r in cursor.fetchall()]
 		
@@ -652,7 +653,14 @@ class Acl(PluginInterface):
 		\brief Return the right dictionary
 		\return A mapping from all rightnames to their id and description
 		"""
-		return self.rights
+		cursor = self.__getCursor()
+		cursor.execute('''
+			SELECT *
+			FROM `rights`
+			ORDER BY `name` ASC
+		''')
+		return [(r['id'], r['name'], r['description'])
+				for r in cursor.fetchall()] 
 
 	def rightExists(self, rightName):
 		"""
