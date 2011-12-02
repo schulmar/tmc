@@ -142,7 +142,7 @@ class YesNoDialog(Widget):
         yesButton['text'] = 'Yes'
         yesButton['sizen'] = '5 2'
         yesButton['posn'] = '2 -{:d}'.format(size[1] - 5)
-        yesButton.setCallback(self.__callback, True, *self.__callbackAgs)
+        yesButton.setCallback(self.__callback, True, *self.__callbackArgs)
         mainFrame.addChild(yesButton)
         
         noButton = Label ()
