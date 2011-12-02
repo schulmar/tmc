@@ -48,6 +48,18 @@ class ChatCommands(PluginInterface):
 				'Add a new group to the group list.')
 		rightAdd('ChatCommands.removeGroup',
 				'Remove an existing group from the right list.')
+		rightAdd('ChatCommands.groupDisplayRights',
+				'Display the rights of a group.')
+		rightAdd('ChatCommands.groupChangeRight',
+				'Change the rights of a group.')
+		rightAdd('ChatCommands.userAddRight',
+				'Grant a right to an user.')
+		rightAdd('ChatCommands.userRemoveRight',
+				'Revoke a right from an user.')
+		rightAdd('ChatCommands.groupAddRight',
+				'Grant a right to a group.')
+		rightAdd('ChatCommands.groupRemoveRight',
+				'Revoke a right from a group.')
 		registerChatCommand('group', 'chat_group', 'Manage user groups. type /group help for more information')
 		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
@@ -181,7 +193,7 @@ class ChatCommands(PluginInterface):
 		elif args[0] == 'rights':
 			if len(args) != 2:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-							'/player remove needs exactly one parameter', login)
+							'/player rights needs exactly one parameter (<playerLogin>)', login)
 				return False
 			if (login != args[1] and not
 				self.callFunction(('Acl', 'userHasRight'), login, 
@@ -211,13 +223,23 @@ class ChatCommands(PluginInterface):
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.userRights', window, True)
 		elif args[0] == 'rightadd':
-			self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
-			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Granted right ' + args[1] + ' to player ' + args[1], login)
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.userAddRight'):
+				self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Granted right ' + args[2] + ' to player ' + args[1], login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You have insufficient rights to grant rights to users.', login)
 		elif args[1] == 'rightremove':
-			self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
-			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
-						'Revoked right ' + args[1] + ' from player ' + args[1], login)
+			if self.callFunction(('Acl', 'userHasRight'), login,
+								'ChatCommands.userRemoveRight'):
+				self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Revoked right ' + args[2] + ' from player ' + args[1], login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You have insufficient rights to revoke rights from users', login)
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Unknown command /player ' + 
 					str(args), login)
@@ -309,7 +331,7 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to add new groups.', 
 						login)	
-		elif args[0] == 'remove':
+		elif args[0] == 'remove' or args[0] == 'delete':
 			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.removeGroup'):
 				if len(args) != 2:
 					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
@@ -333,6 +355,58 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to remove groups.', 
 						login)	
+		elif args[0] == 'rights':
+			if len(args) != 2:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'/group rights needs exactly one parameter (<groupName>)', login)
+				return False
+			if (login != args[1] and not
+				self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.groupDisplayRights')):
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'You don\'t have sufficient rights to display the rights of groups!', login)
+				return False
+			groupRights = self.callFunction(('Acl', 'groupGetRights'), args[1])
+			if groupRights == None:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Unknown group ' + args[1], login)
+				return False
+			allRights = self.callFunction(('Acl', 'rightGetAll'))
+			positive = [(r[0], r[1][1], True) for r in allRights.items() if r[0] in groupRights]
+			negative = [(r[0], r[1][1], False) for r in allRights.items() if r[0] not in groupRights]
+			
+			window = RightsWindow( args[1] + '$z\'s rights')
+			window.setSize((85, 70))
+			window.setPos((-40, 35))
+			window.setSetRightCallback(('ChatCommands', 'cb_setGroupRight'), (args[1], ))
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.groupChangeRight'):
+				window.setEditable(True)
+			window.setRights(positive + negative)
+			self.callMethod(('WindowManager', 'displayWindow'), login, 
+						'ChatCommands.groupRights', window, True)
+		elif args[0] == 'rightadd':	
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.groupAddRight'):
+				self.callMethod(('Acl', 'userAddRight'), args[1], args[2])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Granted right ' + args[2] + ' to group ' + args[1], login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You have insufficient rights to grant rights to users.', login)
+		elif args[1] == 'rightremove':
+			if self.callFunction(('Acl', 'userHasRight'), login,
+								'ChatCommands.groupRemoveRight'):
+				self.callMethod(('Acl', 'userRemoveRight'), args[1], args[2])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+							'Revoked right ' + args[2] + ' from group ' + args[1], login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You have insufficient rights to revoke rights from groups.', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+					'Unknown subcommand /group ' + args[0], 
+					login)	
 
 	def cb_removeGroup(self, entries, login, answer, groupName):
 		"""
@@ -356,6 +430,21 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'You have insufficient rights to remove groups.', 
 						login)	
+	def cb_setGroupRight(self, entries, login, rightName, value, groupName):
+		"""
+		\brief Change the right of a group
+		\param entries Should be emtpy
+		\param login The login of the managing player
+		\param rightName The right to change
+		\param value Should the right be granted or revoked
+		\param groupName The group to manage
+		"""
+		if value:
+			self.chat_player(login, 'rightadd ' + groupName + ' ' +  rightName)
+		else:
+			self.chat_player(login, 'rightremove ' +  groupName + ' ' +  rightName)
+		self.chat_group(login, 'rights ' + groupName)
+		
 	def chat_test(self, login, args):
 		"""
 		\brief A test function for arbitrary funictionality
