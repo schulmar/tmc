@@ -169,22 +169,12 @@ class WindowManager(PluginInterface):
 		\param headLine The headlines of each column
 		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
-		lines = []
-		for r in rows:
-			line = []
-			i = 0
-			for c in columnWidths:
-				lbl = Label()
-				if isinstance(r[i], unicode): 
-					lbl['text'] = r[i].encode('utf-8')
-				else:
-					lbl['text'] = str(r[i])
-				lbl['sizen'] = str(c) + ' ' + str(size[1] // rowsPerPage)
-				line.append(lbl)
-				i += 1		
-			lines.append(line)
-		self.displayTableWindow(login, name, title, size, pos, lines, 
-							rowsPerPage, columnWidths, headLine, useOldState)
+		window = TableStringsWindow(title)
+		window.setName(name)
+		window.setSize(size)
+		window.setPos(pos)
+		window.setTableStrings(rows, rowsPerPage, columnWidths, headLine)
+		self.displayWindow(login, name, window, useOldState)
 
 	#args = (windowName, pageNumber)
 	def changePage(self, entries, login, name, pageNumber):
