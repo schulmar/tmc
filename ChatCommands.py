@@ -245,8 +245,10 @@ class ChatCommands(PluginInterface):
 			
 		args = args.split()
 		
-		subcommands = {	'help' : 'display all subcommands and their description',
-						'display' : 'display all known groups'
+		subcommands = {	'help' 		: 'display all subcommands and their description',
+						'display' 	: 'display all known groups',
+						'add' 		: 'Add a new group (/group add <newGroupName>)',
+						'remove' 	: 'Remove an existing group (/group remove <existingGroupName>)' 
 					}
 		
 		if args[0] == 'help':
@@ -264,7 +266,7 @@ class ChatCommands(PluginInterface):
 								'Available subcommands for /group: ' + 
 								str(subcommands.keys()), 
 								login)
-		if args[0] == 'display':
+		elif args[0] == 'display':
 			groups = self.callFunction(('Acl', 'groupGetAll'))
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.groupDisplay'):
@@ -281,9 +283,69 @@ class ChatCommands(PluginInterface):
 									'There are no groups to view', login)
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'You have insufficient permissions to view the groups.', 
+						'You have insufficient rights to view the groups.', 
 						login)
+		elif args[0] == 'add':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.addGroup'):
+				if len(args) != 2:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Command /group add takes exactly one parameter (<newGroupName>)', 
+						login)
+					return False
+				
+				self.callMethod(('Acl', 'groupAdd'), args[1])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Added new group ' + args[1] + ' to group list. You may'
+						+ ' now define the groups rights and add users to it.', 
+						login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient rights to add new groups.', 
+						login)	
+		elif args[0] == 'remove':
+			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.removeGroup'):
+				if len(args) != 2:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Command /group remove takes exactly one parameter (<existingGroupName>)', 
+						login)
+					return False
+				
+				if self.callFunction(('Acl', 'groupExists'), args[1]):
+					window = YesNoDialog('Do you really want to delete the group ' 
+										+ args[1] + '?')
+					window.setSize((30, 10))
+					window.setPos((-15, 10))
+					window.setAnswerCallback(('ChatCommands', 'cb_removeGroup'),
+											 args[1])
+					self.callMethod(('WindowManager', 'displayWindow'), login,
+								'ChatCommands.deleteGroupDialog', window) 
+				else:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Error: No such group ' + args[1], login)			
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient rights to remove groups.', 
+						login)	
 
+	def cb_removeGroup(self, entries, login, answer, groupName):
+		"""
+		\brief The callback that gets called when deleting a group
+			was approved/rejected
+		\param entries Should be empty
+		\param login The login of the calling player
+		\param answer The answer the player gave to the dialog
+		\param groupName The name of the group to delete
+		"""
+		if answer:
+			if self.callFunction(('Acl', 'userHasRight'), login, 'ChatCommands.removeGroup'):
+				self.callMethod(('Acl', 'groupRemove'), groupName)
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Group ' + groupName + ' successfully deleted', 
+								login)
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'You have insufficient rights to remove groups.', 
+						login)	
 	def chat_test(self, login, args):
 		"""
 		\brief A test function for arbitrary funictionality
