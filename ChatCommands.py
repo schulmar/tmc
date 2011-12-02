@@ -44,6 +44,10 @@ class ChatCommands(PluginInterface):
 		
 		rightAdd('ChatCommands.groupDisplay',
 				'Display all groups that are defined.')
+		rightAdd('ChatCommands.addGroup',
+				'Add a new group to the group list.')
+		rightAdd('ChatCommands.removeGroup',
+				'Remove an existing group from the right list.')
 		registerChatCommand('group', 'chat_group', 'Manage user groups. type /group help for more information')
 		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
