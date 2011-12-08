@@ -161,6 +161,24 @@ class Acl(PluginInterface):
 		except KeyError:
 			self.callMethod(('Logger', 'log'), 'Acl error: user ' + str(userName) + ' unknown in request from ' + str(self.questioner()))
 			return None
+		
+	def getUserNameFromId(self, userId):
+		"""
+		\brief Search the database for the username
+		\param userId The userId of the user to search
+		\return The userName if the userId was found or None
+		"""
+		cursor = self.__getCursor()
+		cursor.execute("""
+			SELECT `name`
+			FROM `users`
+			WHERE `userId` = %s
+		""", (userId, ))
+		userName = cursor.fetchone()
+		if userName != None:
+			return userName['name']
+		else:
+			return None
 
 	def getIdFromGroupName(self, groupName):
 		"""
