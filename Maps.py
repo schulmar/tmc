@@ -220,6 +220,13 @@ class Maps(PluginInterface):
 			return cursor.fetchone()['Id']
 		except KeyError:
 			return None
+		
+	def getCurrentMapId(self):
+		"""
+		\brief Get the database id of the current map
+		\return The id (int)
+		"""
+		return self.getMapIdFromUid(self.getCurrentMap()['UId'])
 	
 	def addMap(self, fileName, Data):
 		"""
