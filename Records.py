@@ -249,11 +249,11 @@ class Records(PluginInterface):
         """
         nick = self.callFunction(('Players', 'getPlayerNickname'), user)
         if oldRecord != None:
-            self.callMethod(('TmConnectorn', 'SendNotice'),
+            self.callMethod(('TmConnector', 'SendNotice'),
                    nick + ' $zgained the {:d}({:d}). local record'.format(
                    newRecord['rank'], oldRecord['rank']), 
                    user)
         else:
-            self.callMethod(('TmConnectorn', 'SendNotice'),
+            self.callMethod(('TmConnector', 'SendNotice'),
                    nick + ' $zgained the {:d}. local record'.format(newRecord['rank']), 
                    user)
