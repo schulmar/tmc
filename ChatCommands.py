@@ -390,7 +390,7 @@ class ChatCommands(PluginInterface):
 							defaultLabel.setCallback(('ChatCommands', 'cb_setGroupDefault'), 
 													g[1], 'yes')
 						line.append(defaultLabel)
-					lines.append(line)
+						lines.append(line)
 					window.setTable(lines, 15, (3, 15, 5, 45, 10), 
 						('Id', 'Name', 'Level', 'Description', 'default'))
 					self.callMethod(('WindowManager', 'displayWindow'),	login, 
