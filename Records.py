@@ -243,7 +243,7 @@ class Records(PluginInterface):
         cursor.close()
         self.connection.commit()
         
-    def onRecord(self, user, newRecord, oldRecord):
+    def onNewRecord(self, user, newRecord, oldRecord):
         """
         \brief Display an information on new records
         """
