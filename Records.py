@@ -44,7 +44,7 @@ class Records(PluginInterface):
                     `userId` int NOT NULL,
                     `mapId` int NOT NULL,
                     `rank` int NOT NULL,
-                    `updatedAt` timestamp,
+                    `updatedAt` timestamp NOT NULL,
                     PRIMARY KEY (`id`),
                     UNIQUE KEY `record` (`userId`, `mapId`)
                 );
@@ -94,7 +94,8 @@ class Records(PluginInterface):
         \param Login The login of the finishing player
         \param TimeOrScore The time of the finishing player (in milliseconds?)
         """
-        self.addRecord(Login, TimeOrScore)
+        if TimeOrScore != 0:
+            self.addRecord(Login, TimeOrScore)
                 
     def addRecord(self, login, time):
         """
@@ -115,7 +116,7 @@ class Records(PluginInterface):
         if oldRecord == None:
             cursor.execute("""
                 INSERT INTO `record_times`
-                (`time`, `userId`, `mapId` `updatedAt`)
+                (`time`, `userId`, `mapId`, `updatedAt`)
                 VALUES (%s, %s, %s, NOW())
             """, (time, userId, mapId))
             cursor.execute("""
