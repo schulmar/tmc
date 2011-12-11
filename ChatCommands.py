@@ -211,6 +211,11 @@ class ChatCommands(PluginInterface):
 		elif args[0] == 'groups':
 			if self.callFunction(('Acl', 'userHasRight'), login, 
 								'ChatCommands.playerDisplayGroups'):
+				if len(args) != 2:
+					self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Command /player groups takes exactly 1 parameter (<login>)', 
+							login)
+					return
 				groups = self.callFunction(('Acl', 'userGetGroups'), args[1])
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							str(groups), login)
