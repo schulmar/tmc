@@ -55,6 +55,7 @@ class Records(PluginInterface):
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerFinish', 'onPlayerFinish')
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'EndMap', 'onEndMap')
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
+        self.callMethod(('None', 'subscribeEvent'), 'Records', 'newRecord', 'onNewRecord')
         self.__retrieveCurrentMapId()
         self.__getCurrentRecords()
         
@@ -241,3 +242,11 @@ class Records(PluginInterface):
         """, (self.__currentMapId, ))
         cursor.close()
         self.connection.commit()
+        
+    def onRecord(self, user, newRecord, oldRecord):
+        """
+        \brief Display an information on new records
+        """
+        #nick = self.callFunction(('Players', 'getPlayerNickname'), user)
+        self.callMethod(('TmConnectorn', 'SendNotice'),
+                       'Gained the ' + newRecord['rank'] + '. local record' , user)
