@@ -619,6 +619,24 @@ class ChatCommands(PluginInterface):
 		"""
 		pass
 	
+	def recordsReactor(self, login):
+		"""
+		\brief Create the records reactor quad
+		"""
+		quad = Quad()
+		quad['actionkey'] = '2'
+		quad['posn'] = '-100 - 100'
+		quad['sizen'] = '0 0'
+		quad.setCallback(('ChatCommands', 'cb_recordsReactor'))
+		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'),
+					quad, 'ChatCommands.recordShortcut', login)
+		
+	def cb_recordsReactor(self, entries, login):
+		"""
+		\brief Display the records window to the player
+		"""
+		self.chat_records(login, None)
+	
 	def chat_records(self, login, args):
 		"""
 		\brief Chat function for displaying records
