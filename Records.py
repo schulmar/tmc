@@ -55,7 +55,7 @@ class Records(PluginInterface):
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerFinish', 'onPlayerFinish')
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'EndMap', 'onEndMap')
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
-        self.callMethod(('None', 'subscribeEvent'), 'Records', 'newRecord', 'onNewRecord')
+        self.callMethod((None, 'subscribeEvent'), 'Records', 'newRecord', 'onNewRecord')
         self.__retrieveCurrentMapId()
         self.__getCurrentRecords()
         
