@@ -40,6 +40,8 @@ class ChatCommands(PluginInterface):
 				'Add players to groups (that are below the calling players own highest level)')
 		rightAdd('ChatCommands.playerRemoveGroup', 
 				'Remove players from groups (that are below the calling players own highest level)')
+		rightAdd('ChatCommands.playerDisplayGroups', 
+				'Display all groups that a user is member of.')
 		rightAdd('ChatCommands.playerDisplayRights',
 				'Display the rights another player has.')
 		rightAdd('ChatCommands.playerChangeRight',
@@ -125,6 +127,8 @@ class ChatCommands(PluginInterface):
 		args = args.split()
 		commands = {'addgrp' 		: ('... addgrp <player> <group>', 'Add player to a group'),
 					'removegrp' 	: ('... removegrp <player> <group>', 'Remove player from a group'),
+					'groups'		: ('... groups <player>', 
+									'Display all groups of the player.'),
 					'rights'		: ('... rights <player>', 'Manage the rights of a player'),
 					'addright'		: ('... addright <player> <right>', 
 											'Grant a right to a player'),
@@ -204,6 +208,12 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 'Could not remove player ' 
 							+ args[1] + ' from group ' + args[2] + '. Did you spell everything correctly?')
 				return False
+		elif args[0] == 'groups':
+			if self.callFunction(('Acl', 'userHasRight'), login, 
+								'ChatCommands.playerDisplayGroups'):
+				groups = self.callFunction(('Acl', 'userGetGroups'), args[1])
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							str(groups), login)
 		elif args[0] == 'rights':
 			if len(args) != 2:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
