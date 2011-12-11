@@ -202,10 +202,7 @@ class Maps(PluginInterface):
 		\brief Get the dict of the map that is currently running
 		\return The map dict or None if an error occured
 		"""
-		try:
-			return self.__currentMaps[self.__currentMap]
-		except KeyError:
-			return None
+		return self.__currentMap
 	
 	def getMapIdFromUid(self, uid):
 		"""
@@ -657,7 +654,7 @@ class Maps(PluginInterface):
 		entry['posn'] = "2 -1"
 		entry['sizen'] = "15 3"
 		entry['name'] = "inputTrackFile"
-		entry['folder'] = "."
+		entry['folder'] = "Maps"
 		entry['default'] = "Pick Map"
 		frame.addChild(entry)
 		
