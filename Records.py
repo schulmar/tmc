@@ -71,8 +71,9 @@ class Records(PluginInterface):
         """
         cursor = self.__getCursor()
         cursor.execute("""
-            SELECT * 
+            SELECT `record_times`.*, `users`.`name` as name 
             FROM `record_times`
+            JOIN `users` ON `record_times`.`userId` = `users`.`id`
             WHERE `mapId` = %s
             ORDER BY `rank` ASC
         """, (self.__currentMapId, ))
