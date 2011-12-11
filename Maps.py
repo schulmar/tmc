@@ -32,8 +32,8 @@ class Maps(PluginInterface):
 		\param args Additional userdefined args 
 		"""
 		self.__currentMaps = []#List of the maps that currently run on the server
-		self.__currentMap = 0#The index of the current map in the list
-		self.__nextMap = 0#The index of the next map in the list
+		self.__currentMap = None#The current map
+		self.__nextMap = None #The next map
 		self.__mxPath = 'mania-exchange/'#The name of the folder into which mania-exchange maps will be downloaded
 		self.__connection = None#The database connection
 		self.__matchSettingsFileName = 'tracklist.txt' #The name of the matchsettings file
@@ -168,8 +168,8 @@ class Maps(PluginInterface):
 		\brief Retrieve the servers list of maps and save into local storage
 		"""
 		self.__currentMaps = self.callFunction(('TmConnector', 'GetMapList'), 10000, 0)
-		self.__currentMap = self.callFunction(('TmConnector', 'GetCurrentMapIndex'))
-		self.__nextMap = self.callFunction(('TmConnector', 'GetNextMapIndex'))
+		self.__currentMap = self.__currentMaps[self.callFunction(('TmConnector', 'GetCurrentMapIndex'))]
+		self.__nextMap = self.__currentMaps[self.callFunction(('TmConnector', 'GetNextMapIndex'))]
 		
 		dbInsertMaps = [(str(mapDict['UId']), 
 						str(mapDict['Name']), 
