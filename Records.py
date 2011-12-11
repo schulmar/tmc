@@ -230,10 +230,11 @@ class Records(PluginInterface):
         """
         cursor = self.__getCursor()
         cursor.execute("""
-            @row := 0;
+            @row := 1;
             UPDATE `record_times`
-            SET @row := @row + 1, rank = @row
-            WHERE `mapId` = %s
+            SET rank = @row
+            WHERE `mapId` = %s 
+            AND @row := @row + 1
             ORDER BY `time` ASC, `updatedAt` ASC
         """, (self.__currentMapId, ))
         cursor.close()
