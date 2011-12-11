@@ -126,9 +126,9 @@ class ChatCommands(PluginInterface):
 		commands = {'addgrp' 		: ('... addgrp <player> <group>', 'Add player to a group'),
 					'removegrp' 	: ('... removegrp <player> <group>', 'Remove player from a group'),
 					'rights'		: ('... rights <player>', 'Manage the rights of a player'),
-					'rightadd'		: ('... rightadd <player> <right>', 
+					'addright'		: ('... addright <player> <right>', 
 											'Grant a right to a player'),
-					'rightremove'	: ('... rightremove <player> <right>', 
+					'removeright'	: ('... removeright <player> <right>', 
 											'Revoke a right from a player')}
 	#display help for players
 		if args[0] == 'help':
@@ -236,10 +236,10 @@ class ChatCommands(PluginInterface):
 			window.setRights(rights)
 			self.callMethod(('WindowManager', 'displayWindow'), login, 
 						'ChatCommands.userRights', window, True)
-		elif args[0] == 'rightadd' or args[0] == 'grant':
+		elif args[0] == 'addright' or args[0] == 'grant':
 			if len(args) != 3:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'/player rightadd needs exacty 2 parameters ' + 
+							'/player addright needs exacty 2 parameters ' + 
 							'(<playerLogin>, <rightName>)')
 				return False
 			if self.callFunction(('Acl', 'userHasRight'), login, 
@@ -250,10 +250,10 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You have insufficient rights to grant rights to users.', login)
-		elif args[0] == 'rightremove' or args[0] == 'revoke':
+		elif args[0] == 'removeright' or args[0] == 'revoke':
 			if len(args) != 3:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'/player rightremove needs exacty 2 parameters ' + 
+							'/player removeright needs exacty 2 parameters ' + 
 							'(<playerLogin>, <rightName>)')
 				return False
 			if self.callFunction(('Acl', 'userHasRight'), login,
@@ -279,9 +279,9 @@ class ChatCommands(PluginInterface):
 		\param the player to manage
 		"""
 		if value:
-			self.chat_player(login, 'rightadd ' + player + ' ' +  rightName)
+			self.chat_player(login, 'grant ' + player + ' ' +  rightName)
 		else:
-			self.chat_player(login, 'rightremove ' +  player + ' ' +  rightName)
+			self.chat_player(login, 'revoke ' +  player + ' ' +  rightName)
 		self.chat_player(login, 'rights ' + player)
 		
 	def chat_group(self, login, args):
@@ -299,10 +299,10 @@ class ChatCommands(PluginInterface):
 						'display' 	: 'display all known groups',
 						'add' 		: 'Add a new group (/group add <newGroupName> <description>)',
 						'remove' 	: 'Remove an existing group (/group remove <existingGroupName>)' ,
-						'rightremove' : 
-							'Revoke a right from a group (/group rightremove <groupName> <rightName>)',
-						'rightadd' 	: 
-							'Grant a right to a group (/group rightadd <groupName> <rightName>)',
+						'removeright' : 
+							'Revoke a right from a group (/group removeright <groupName> <rightName>)',
+						'addright' 	: 
+							'Grant a right to a group (/group addright <groupName> <rightName>)',
 						'default'	:
 							'Manage if any user is in this group by default ' +
 							'(/group default <groupName> <isDefault>)'
@@ -487,10 +487,10 @@ class ChatCommands(PluginInterface):
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 								'Group ' + args[1] + ' does not exist.', login)
 				
-		elif args[0] == 'rightadd' or args[0] == 'grant':	
+		elif args[0] == 'addright' or args[0] == 'grant':	
 			if len(args) != 3:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'/group rightadd needs exacty 2 parameters ' + 
+							'/group addright needs exacty 2 parameters ' + 
 							'(<groupName>, <rightName>)')
 				return False
 			if self.callFunction(('Acl', 'userHasRight'), login, 
@@ -501,10 +501,10 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You have insufficient rights to grant rights to groups.', login)
-		elif args[0] == 'rightremove' or args[0] == 'revoke':
+		elif args[0] == 'removeright' or args[0] == 'revoke':
 			if len(args) != 3:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-							'/group rightadd needs exacty 2 parameters ' + 
+							'/group removeright needs exacty 2 parameters ' + 
 							'(<groupNamp>, <rightName>)')
 				return False
 			if self.callFunction(('Acl', 'userHasRight'), login,
@@ -581,9 +581,9 @@ class ChatCommands(PluginInterface):
 		\param groupName The group to manage
 		"""
 		if value:
-			self.chat_group(login, 'rightadd ' + groupName + ' ' +  rightName)
+			self.chat_group(login, 'grant ' + groupName + ' ' +  rightName)
 		else:
-			self.chat_group(login, 'rightremove ' +  groupName + ' ' +  rightName)
+			self.chat_group(login, 'revoke ' +  groupName + ' ' +  rightName)
 		self.chat_group(login, 'rights ' + groupName)
 		
 	def chat_test(self, login, args):
