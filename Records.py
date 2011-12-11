@@ -79,6 +79,13 @@ class Records(PluginInterface):
         self.__locals = cursor.fetchall()
         return self.__locals
     
+    def getLocals(self):
+        """
+        \brief Get the local records of the current track
+        \return The record list
+        """
+        return self.__locals
+    
     def onPlayerFinish(self, PlayerUid, Login, TimeOrScore):
         """
         \brief PlayerFinish callback
