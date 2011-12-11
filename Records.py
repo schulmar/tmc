@@ -250,5 +250,5 @@ class Records(PluginInterface):
         nick = self.callFunction(('Players', 'getPlayerNickname'), user)
         self.callMethod(('TmConnector', 'SendNotice'),
                nick + ' $zgained the {:d}. local record ({:d}:{:02.3f})'.format(
-                        newRecord['rank'], newRecord['time'] // 60000, (newRecord['time'] % 60000) / 1000), 
+                        newRecord['rank'], newRecord['time'] // 60000, (newRecord['time'] % 60000) / 1000.0), 
                user)
