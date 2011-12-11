@@ -665,7 +665,7 @@ class ChatCommands(PluginInterface):
 		nick = self.callFunction(('Players', 'getPlayerNickname'), login)
 		if args == None:
 			self.callMethod(('TmConnector', 'ChatSendServerMessage'),
-						'[' + nick +  '$z$g] $iGood game all!', login)
+						'[' + nick +  '$z$g] $iGood game all!')
 		else:
 			nick2 = self.callFunction(('Players', 'getPlayerNickname'), args.strip())
 			if nick2 != '':
