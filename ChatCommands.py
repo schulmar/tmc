@@ -615,6 +615,6 @@ class ChatCommands(PluginInterface):
 			window = TableStringsWindow('Local records on ' + mapInstance['Name'])
 			window.setSize((50, 70))
 			window.setPos((-25, 40))
-			window.setTableStrings(strings, 20, (5, 5, 35), ('Rank', 'Time', 'Name'))
+			window.setTableStrings(strings, 15, (5, 10, 30), ('Rank', 'Time', 'Name'))
 			self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.Records',
 						window)
