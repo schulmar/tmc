@@ -251,9 +251,9 @@ class Records(PluginInterface):
         if oldRecord != None:
             self.callMethod(('TmConnectorn', 'SendNotice'),
                    nick + ' $zgained the {:d}({:d}). local record'.format(
-                                        newRecord['rank'], oldRecord['rank']), 
+                   newRecord['rank'], oldRecord['rank']), 
                    user)
         else:
-        self.callMethod(('TmConnectorn', 'SendNotice'),
+            self.callMethod(('TmConnectorn', 'SendNotice'),
                    nick + ' $zgained the {:d}. local record'.format(newRecord['rank']), 
                    user)
