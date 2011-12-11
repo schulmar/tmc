@@ -15,6 +15,11 @@ class ChatCommands(PluginInterface):
 		\param args additional args for startup
 		"""
 		super(ChatCommands, self).__init__(pipes)
+		self.__adminEmail = None #The admin email address
+		try:
+			self.__adminEmail = args['admin-email']
+		except KeyError:
+			pass
 	
 	def initialize(self, args):
 		"""
@@ -66,6 +71,8 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
 		
 		registerChatCommand('records', 'chat_records', 'Display the list of local records')
+		
+		registerChatCommand('contact', 'chat_contact', 'Display the contact address of the server admin.')
 
 	def chat_echo(self, login, args):
 		"""
@@ -618,3 +625,18 @@ class ChatCommands(PluginInterface):
 			window.setTableStrings(strings, 15, (5, 10, 30), ('Rank', 'Time', 'Name'))
 			self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.Records',
 						window)
+			
+	def chat_contact(self, login, args):
+		"""
+		\brief Print out the contact address of the admin
+		\param login The login of the calling player
+		\param args Additional arguments
+		"""
+		if self.__adminEmail != None:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'Contact the admin under $l' + 
+						str(self.__adminEmail) + '$l', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'It seems the admin forgot the contact email address.',
+						login)
