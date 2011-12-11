@@ -78,6 +78,8 @@ class ChatCommands(PluginInterface):
 		
 		registerChatCommand('gg', 'chat_gg', 'Congratulate other players')
 
+		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'recordsReactor') 
+
 	def chat_echo(self, login, args):
 		"""
 		\brief The echo chat command returns the message inserted
@@ -619,7 +621,7 @@ class ChatCommands(PluginInterface):
 		"""
 		pass
 	
-	def recordsReactor(self, login):
+	def recordsReactor(self, login, isSpectator):
 		"""
 		\brief Create the records reactor quad
 		"""
