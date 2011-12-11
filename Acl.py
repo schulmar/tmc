@@ -286,7 +286,7 @@ class Acl(PluginInterface):
 
 		cursor = self.__getCursor()
 		cursor.execute('SELECT `id` FROM `usersToGroups` WHERE `userId`=%s AND `groupId`=%s', (userId, groupId))
-		if cursor.fetch() == None:
+		if cursor.fetchone() == None:
 			cursor.execute('INSERT INTO `usersToGroups` (`userId`, `groupId`) VALUES (%s, %s)', (userId, groupId))
 
 		return True
