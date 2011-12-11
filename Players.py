@@ -13,7 +13,12 @@ class Players(PluginInterface):
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'onPlayerConnect')
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerDisonnect', 'onPlayerDisconnect') 
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'EndMap', 'onEndMap')
-		self.callMethod(('TmChat', 'registerChatCommand'), 'players', ('Players', 'chat_players'), 'Commands concerning players. Type /players help to see available commands')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'players', 
+					('Players', 'chat_players'), 
+					'Commands concerning players. Type /players help to see available commands')
+		self.callMethod(('Acl', 'rightAdd'), 'Players.stayOnServer', 
+					'Is the player allowed to stay on the server on connection?')
+		
 
 	def __getCursor(self):
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -47,6 +52,11 @@ class Players(PluginInterface):
 		This function should update the list of players that are currently online
 		"""	
 		self.callFunction(('Acl', 'userAdd'), login)
+		if not self.callFunction(('Acl', 'userHasRight'), login, 'Players.stayOnServer'):
+			self.callMethod(('TmConnector', 'Kick'),  login, 
+						'This server is in closed mode. ' + 
+						'To be able to join it, apply at $ltestdrive@bynobody.dyndns.org$l')
+			return		
 		self.__gatherPlayerInformation(login)
 		info = self.playerList[login]
 		cursor = self.__getCursor()
