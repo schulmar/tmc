@@ -249,4 +249,5 @@ class Records(PluginInterface):
         """
         #nick = self.callFunction(('Players', 'getPlayerNickname'), user)
         self.callMethod(('TmConnectorn', 'SendNotice'),
-                       'Gained the ' + newRecord['rank'] + '. local record' , user)
+                   'Gained the {:d}. local record'.format(newRecord['rank']), 
+                   user)
