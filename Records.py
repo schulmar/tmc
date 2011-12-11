@@ -119,11 +119,12 @@ class Records(PluginInterface):
                 (`time`, `userId`, `mapId`, `updatedAt`)
                 VALUES (%s, %s, %s, NOW())
             """, (time, userId, mapId))
+            self.__updateRankingsInDatabase()
             cursor.execute("""
                 SELECT *
                 FROM `record_times`
-                WHERE LAST_INSERT_ID() = `id`
-            """)
+                WHERE `userId` = %s AND `mapId` = %s
+            """, (userId, mapId))
             newRecord = cursor.fetchone()
             self.signalEvent('newRecord', 
                              login, 
@@ -134,15 +135,16 @@ class Records(PluginInterface):
         else:
             if oldRecord['time'] > time:
                 cursor.execute("""
-                    INSERT INTO `record_times`
-                    (`time`, `userId`, `mapId` `updatedAt`)
-                    VALUES (%s, %s, %s, NOW());
+                    UPDATE `record_times`
+                    SET `time` = %s, `updatedAt` = NOW()
+                    WHERE `userId` = %s AND `mapId` = %s
                 """, (time, userId, mapId))
+                self.__updateRankingsInDatabase()
                 cursor.execute("""
                     SELECT *
                     FROM `record_times`
-                    WHERE LAST_INSERT_ID() = `id`
-                """)
+                    WHERE `userId` = %s AND `mapId` = %s
+                """, (userId, mapId))
                 newRecord = cursor.fetchone()
                 self.signalEvent('newRecord', login, newRecord, oldRecord)
                 self.signalEvent('recordListChanged',
@@ -206,7 +208,7 @@ class Records(PluginInterface):
         \param MatchContinuesOnNextMap ???
         \param RestartMap Will the same map be played again?
         """
-        self.__updateRankingsInDatabase()
+        #self.__updateRankingsInDatabase()
         
     def onBeginMap(self, Map, WarmUp, MatchContinuation):
         """
