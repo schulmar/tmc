@@ -329,10 +329,10 @@ class Maps(PluginInterface):
 		\param NextMapIndex The index of the next map in the maplist
 		\param isListModified Denotes if the list was modified or if only the curmap/nextmap indices changed
 		"""
-		self.__currentMap = CurMapIndex
-		self.__nextMap = NextMapIndex
 		if isListModified:
 			self.__getMapListFromServer()
+		self.__currentMap = self.__currentMaps[CurMapIndex]
+		self.__nextMap = self.__currentMaps[NextMapIndex]
 			
 	def chat_removethis(self, login, params):
 		"""
