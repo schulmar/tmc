@@ -75,6 +75,8 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('records', 'chat_records', 'Display the list of local records')
 		
 		registerChatCommand('contact', 'chat_contact', 'Display the contact address of the server admin.')
+		
+		registerChatCommand('gg', 'chat_gg', 'Congratulate other players')
 
 	def chat_echo(self, login, args):
 		"""
@@ -655,3 +657,20 @@ class ChatCommands(PluginInterface):
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 						'It seems the admin forgot the contact email address.',
 						login)
+			
+	def chat_gg(self, login, args):
+		"""
+		\brief Congratulate other players
+		"""
+		nick = self.callFunction(('Players', 'getPlayerNickname'), login)
+		if args == None:
+			self.callMethod(('TmConnector', 'ChatSendServerMessage'),
+						'[' + nick +  '$z$g] $iGood game all!', login)
+		else:
+			nick2 = self.callFunction(('Players', 'getPlayerNickname'), args.strip())
+			if nick2 != '':
+				self.callMethod(('TmConnector', 'ChatSendServerMessage'),
+						'[' + nick +  '$z$g] $iGood game ' + nick2 + '$z$g!')
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Unknown user "' + args + "'", login)	
