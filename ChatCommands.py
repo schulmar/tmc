@@ -170,7 +170,7 @@ class ChatCommands(PluginInterface):
 				return False
 
 			if self.callFunction(('Acl', 'userAddGroup'), args[1], args[2]):
-				nick = self.callFunction(('Players', 'getPlayerNickName'), args[1])
+				nick = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 							'Added player ' + nick + ' to group ' + args[2], login)
 				return True
@@ -200,7 +200,7 @@ class ChatCommands(PluginInterface):
 				return False
 
 			if self.callFunction(('Acl', 'userRemoveGroup'), args[1], args[2]):
-				nick = self.callFunction(('Players', 'getPlayerNickName'), args[1])
+				nick = self.callFunction(('Players', 'getPlayerNickname'), args[1])
 				self.callMethod(('TmConnector', 'ChatSendServeMessageToLogin'), 'User ' + nick + 
 							' was successfully removed from group ' + args[2], login)
 				return True
