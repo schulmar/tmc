@@ -256,7 +256,7 @@ class Maps(PluginInterface):
 		f = urllib.urlopen('http://tm.mania-exchange.com/tracks/download/' + str(mxId))
 		content = f.read()
 		f.close() 
-		f = urllib.urlopen('http://tm.mania-exchange.com//api/tracks/get_track_info/id/' + str(mxId) + '?format=json')
+		f = urllib.urlopen('http://tm.mania-exchange.com/api/tracks/get_track_info/id/' + str(mxId) + '?format=json')
 		info = f.read()
 		f.close()
 		info = json.loads(info)
