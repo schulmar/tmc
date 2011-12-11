@@ -246,7 +246,7 @@ class Acl(PluginInterface):
 		
 		groupList = self.userGetGroups(userName)
 		for g in groupList:
-			if self.groupHasRight(g):
+			if self.groupHasRight(g, rightName):
 				return True
 
 		return False
