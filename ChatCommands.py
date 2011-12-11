@@ -64,6 +64,8 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('group', 'chat_group', 'Manage user groups. type /group help for more information')
 		
 		registerChatCommand('test', 'chat_test', 'Miscellaneous command for general testing purpose')
+		
+		registerChatCommand('records', 'chat_records', 'Display the list of local records')
 
 	def chat_echo(self, login, args):
 		"""
@@ -592,3 +594,27 @@ class ChatCommands(PluginInterface):
 		self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.commentTest', ci)
 		"""
 		pass
+	
+	def chat_records(self, login, args):
+		"""
+		\brief Chat function for displaying records
+		\param login The asking player
+		\param args Additional arguments
+		"""
+		records = self.callFunction(('Records', 'getLocals'))
+		mapInstance = self.callFunction(('Maps', 'getCurrentMap'))
+		if len(records) == 0:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+						'Currently there are no local records on this map.', login)
+		else:
+			strings = [(
+						r['rank'],
+						'{:d}:{:2.3f}'.format(r['time'] // 60000, (r['time'] % 60000) / 1000.0),
+						self.callFunction(('Players', 'getPlayerNickname'), r['name'])
+					) for r in records]
+			window = TableStringsWindow('Local records on ' + mapInstance['Name'])
+			window.setSize((50, 70))
+			window.setPos((-25, 40))
+			window.setTableStrings(strings, 20, (5, 5, 35), ('Rank', 'Time', 'Name'))
+			self.callMethod(('WindowManager', 'displayWindow'), login, 'ChatCommands.Records',
+						window)
