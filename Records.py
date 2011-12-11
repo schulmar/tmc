@@ -43,7 +43,7 @@ class Records(PluginInterface):
                     `time` int NOT NULL,
                     `userId` int NOT NULL,
                     `mapId` int NOT NULL,
-                    `rank` int NOT NULL,
+                    `rank` int NOT NULL DEFAULT '-1',
                     `updatedAt` timestamp NOT NULL,
                     PRIMARY KEY (`id`),
                     UNIQUE KEY `record` (`userId`, `mapId`)
@@ -234,7 +234,7 @@ class Records(PluginInterface):
         cursor.execute("""
             SET @row := 0;
             UPDATE `record_times`
-            SET @row := @row + 1, rank = @row
+            SET rank = @row := @row + 1
             WHERE `mapId` = %s 
             ORDER BY `time` ASC, `updatedAt` ASC
         """, (self.__currentMapId, ))
