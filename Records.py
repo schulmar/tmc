@@ -56,6 +56,7 @@ class Records(PluginInterface):
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'EndMap', 'onEndMap')
         self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'BeginMap', 'onBeginMap')
         self.__retrieveCurrentMapId()
+        self.__getCurrentRecords()
         
     def __getCursor(self):
         """
