@@ -247,7 +247,13 @@ class Records(PluginInterface):
         """
         \brief Display an information on new records
         """
-        #nick = self.callFunction(('Players', 'getPlayerNickname'), user)
+        nick = self.callFunction(('Players', 'getPlayerNickname'), user)
+        if oldRecord != None:
+            self.callMethod(('TmConnectorn', 'SendNotice'),
+                   nick + ' $zgained the {:d}({:d}). local record'.format(
+                                        newRecord['rank'], oldRecord['rank']), 
+                   user)
+        else:
         self.callMethod(('TmConnectorn', 'SendNotice'),
-                   'Gained the {:d}. local record'.format(newRecord['rank']), 
+                   nick + ' $zgained the {:d}. local record'.format(newRecord['rank']), 
                    user)
