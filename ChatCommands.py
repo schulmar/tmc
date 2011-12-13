@@ -550,8 +550,8 @@ class ChatCommands(PluginInterface):
 			if self.callFunction(('Acl', 'groupExists'), args[1]):
 				self.callMethod(('Acl', 'groupSetLevel'), args[1], level)
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-						'Set the level of group ' + args[1] + ' to ' + 
-						self.callFunction(('Acl', 'groupGetLevel'), args[1]), 
+						'Set the level of group {} to {:d}'.format(args[1], 
+						self.callFunction(('Acl', 'groupGetLevel'), args[1])), 
 						login)
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
