@@ -726,8 +726,3 @@ class ChatCommands(PluginInterface):
 			else:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'Unknown user "' + args + "'", login)	
-				
-	def chat_browse(self, login, args):
-		"""
-		\brief Browse the directly uploaded files
-		"""
