@@ -154,3 +154,8 @@ class DirectMapUpload(PluginInterface):
                         <label text="You have insufficient rights to directly upload maps to this server!"/>
                     </manialink>
                     """
+                    
+    def chat_browse(self, login, args):
+        """
+        \brief Browse the directly uploaded files
+        """
