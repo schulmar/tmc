@@ -68,9 +68,9 @@ class Players(PluginInterface):
 			message = groups[0] + ': '
 
 		message += info['NickName']
-		message += '$1E1 Nation$z: ' + str(info['Path'].split('|')[1])
-		message += '$1E1 Ladder$z: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
-		self.callMethod(('TmConnector', 'ChatSendServerMessage'), message)
+		message += '$z$g$1E1 Nation$z$g: ' + str(info['Path'].split('|')[1])
+		message += '$z$g$1E1 Ladder$z$g: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
+		self.callMethod(('TmConnector', 'SendNotice'), message, login)
 		
 	def onPlayerDisconnect(self, login):
 		"""
