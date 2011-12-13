@@ -1,6 +1,7 @@
 import BaseHTTPServer
 import urlparse
 from PluginInterface import *
+from Manialink import *
 import random
 import string
 import time
@@ -25,6 +26,14 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		data = self.rfile.read(int(self.headers.getheader('content-length')))
 		manialink = self.server.plugin.dataRecieved(token, entries, data)
 		self.wfile.write(manialink)
+		
+	def do_GET(self):
+		ml = Manialink()
+		label = Label()
+		label['text'] = 'This is the HTTP Plugin!'
+		ml.addChild(label)
+		xml = '<?xml version="1.0" encoding="utf-8" ?>' + ml.getXML() 
+		self.wfile.write(xml)
 
 class Http(PluginInterface):
 	"""
