@@ -372,7 +372,8 @@ class Acl(PluginInterface):
 			SELECT `groups`.`name` as `name` 
 			FROM `usersToGroups` 
 			RIGHT JOIN `groups` ON `groupId` = `groups`.`id` 
-			WHERE `userId` = %s OR `default` = 1 ORDER BY `level` DESC
+			WHERE `userId` = %s OR `default` = 1 
+			ORDER BY `level` DESC
 		""",(int(userId),))
 		groupList = cursor.fetchall()
 
