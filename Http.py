@@ -32,7 +32,10 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		label = Label()
 		label['text'] = 'This is the HTTP Plugin!'
 		ml.addChild(label)
-		xml = '<?xml version="1.0" encoding="utf-8" ?>' + ml.getXML() 
+		xml = '<?xml version="1.0" encoding="utf-8" ?>' + ml.getXML()
+		self.send_response(200)
+		self.send_header('Content-Type', 'text/xml')
+		self.end_headers() 
 		self.wfile.write(xml)
 
 class Http(PluginInterface):
