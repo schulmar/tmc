@@ -105,7 +105,7 @@ class Records(PluginInterface):
         \param login The login of the player
         \param time The time of the record
         """
-        mapId = self.callFunction(('Maps', 'getCurrentMapId'))
+        mapId = self.__currentMapId
         userId = self.callFunction(('Acl', 'getIdFromUserName'), login)
         cursor = self.__getCursor()
         cursor.execute("""
