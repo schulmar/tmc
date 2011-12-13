@@ -70,7 +70,7 @@ class Players(PluginInterface):
 		message += info['NickName']
 		message += '$z$g$1E1 Nation$z$g: ' + str(info['Path'].split('|')[1])
 		message += '$z$g$1E1 Ladder$z$g: ' + str(info['LadderStats']['PlayerRankings'][0]['Ranking'])
-		self.callMethod(('TmConnector', 'SendNotice'), message, login)
+		self.callMethod(('TmConnector', 'SendNotice'), message, login, 2)
 		
 	def onPlayerDisconnect(self, login):
 		"""
