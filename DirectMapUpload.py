@@ -189,7 +189,7 @@ class DirectMapUpload(PluginInterface):
             
             publishLabel = Label()
             publishLabel['text'] = 'publish'
-            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), False, m)
+            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, m)
             line.append(publishLabel)
             
             lines.append(line)
@@ -202,7 +202,7 @@ class DirectMapUpload(PluginInterface):
             
             unpublishLabel = Label()
             unpublishLabel['text'] = 'unpublish'
-            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), False, m) 
+            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), None, m) 
             line.append(unpublishLabel)
             
             lines.append(line)
@@ -223,14 +223,20 @@ class DirectMapUpload(PluginInterface):
         \param yes Is this already confirmed
         \param fileName The file to delete
         """
-        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == None:
+            self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+            confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
+            confirm.setSize((40, 20))
+            confirm.setPos((-20, 10))
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
+            return 
+        
         if yes == True:
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                             'Tried to delete ' + fileName, login)
         else:
-            confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
-            confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
-            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
+            pass
         
     def cb_publishMap(self, entries, login, yes, fileName):
         """
@@ -240,14 +246,20 @@ class DirectMapUpload(PluginInterface):
         \param yes Is this already confirmed
         \param fileName The file to publish
         """
-        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == None:
+            self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+            confirm = YesNoDialog('Do you really want to publish ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_publishMap'), fileName)
+            confirm.setSize((40, 20))
+            confirm.setPos((-20, 10))
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
+            return
+        
         if yes == True:
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to publish ' + fileName, login)
         else:
-            confirm = YesNoDialog('Do you really want to publish ' + os.path.basename(fileName))
-            confirm.setAnswerCallback(('DirectMapUpload', 'cb_publishMap'), fileName)
-            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
+            pass
         
     def cb_unpublishMap(self, entries, login, yes, fileName):
         """
@@ -257,11 +269,17 @@ class DirectMapUpload(PluginInterface):
         \param yes Is this already confirmed
         \param fileName The file to unpublishr
         """
-        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == None:
+            self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+            confirm = YesNoDialog('Do you really want to unpublish ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_unpublishMap'), fileName)
+            confirm.setSize((40, 20))
+            confirm.setPos((-20, 10))
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
+            return 
+        
         if yes == True:
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to unpublish ' + fileName, login)
         else:
-            confirm = YesNoDialog('Do you really want to unpublish ' + os.path.basename(fileName))
-            confirm.setAnswerCallback(('DirectMapUpload', 'cb_unpublishMap'), fileName)
-            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
+            pass
