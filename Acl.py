@@ -148,7 +148,7 @@ class Acl(PluginInterface):
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
-		self.connecton.ping()
+		self.connection.ping()
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def getIdFromUserName(self, userName):
