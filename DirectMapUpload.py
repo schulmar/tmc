@@ -172,7 +172,8 @@ class DirectMapUpload(PluginInterface):
                             login)
             return False
         
-        files = os.listdir(personalMapPath).sort()
+        files = os.listdir(personalMapPath)
+        files.sort()
         
         mapRotationFileNames = set([i['FileName'] for i in self.callFunction(('TmConnector', 'GetMapList'), 100000, 0)])
         
@@ -200,6 +201,7 @@ class DirectMapUpload(PluginInterface):
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
+        window.setTable(lines, 20, (20, ), ('Map name', ))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
