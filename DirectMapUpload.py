@@ -165,7 +165,7 @@ class DirectMapUpload(PluginInterface):
         mapPath = (os.path.dirname(self.callFunction(
                                     ('TmConnector', 'GetMapsDirectory')))
                         + os.path.sep)
-        personalMapPath = mapPath + self.__directUploadPath + os.path.sep + login
+        personalMapPath = mapPath + self.__directUploadPath + os.path.sep + login + os.path.sep
         if not os.path.isdir(personalMapPath):
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
                             'You do not have an upload path to browse!', 
@@ -184,17 +184,17 @@ class DirectMapUpload(PluginInterface):
         for m in myMapsOutRotation:
             line = []
             nameLabel = Label()
-            nameLabel['text'] = os.path.basename(m)
+            nameLabel['text'] = m
             line.append(nameLabel)
             
             publishLabel = Label()
             publishLabel['text'] = 'publish'
-            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, m)
+            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, personalMapPath + m)
             line.append(publishLabel)
             
             deleteLabel = Label()
             deleteLabel['text'] = 'delete'
-            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, m)
+            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, personalMapPath + m)
             line.append(deleteLabel)
             
             lines.append(line)
@@ -237,8 +237,8 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
             confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
-            confirm.setSize((40, 20))
-            confirm.setPos((-20, 10))
+            confirm.setSize((40, 10))
+            confirm.setPos((-20, 5))
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
             return 
         
@@ -277,8 +277,8 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
             confirm = YesNoDialog('Do you really want to publish ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_publishMap'), fileName)
-            confirm.setSize((40, 20))
-            confirm.setPos((-20, 10))
+            confirm.setSize((40, 10))
+            confirm.setPos((-20, 5))
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
             return
         
@@ -301,8 +301,8 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
             confirm = YesNoDialog('Do you really want to unpublish ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_unpublishMap'), fileName)
-            confirm.setSize((40, 20))
-            confirm.setPos((-20, 10))
+            confirm.setSize((40, 10))
+            confirm.setPos((-20, 5))
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
             return 
         
