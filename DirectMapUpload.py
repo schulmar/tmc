@@ -187,6 +187,11 @@ class DirectMapUpload(PluginInterface):
             nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
             
+            publishLabel = Label()
+            publishLabel['text'] = 'publish'
+            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), m)
+            line.append(publishLabel)
+            
             lines.append(line)
             
         for m in myMapsInRotation:
@@ -195,13 +200,18 @@ class DirectMapUpload(PluginInterface):
             nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
             
+            unpublishLabel = Label()
+            unpublishLabel['text'] = 'unpublish'
+            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), m) 
+            line.append(unpublishLabel)
+            
             lines.append(line)
         
         nick = self.callFunction(('Players', 'getPlayerNickname'), login)
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 20, (20, ), ('filename', ))
+        window.setTable(lines, 10, (20, 10), ('filename', 'Maprotation'))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
@@ -209,13 +219,19 @@ class DirectMapUpload(PluginInterface):
         """
         \brief Delete the map file from disk (and remove it from the map list
         """
+        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                        'Tried to delete ' + fileName, login)
         
     def cb_publishMap(self, entries, login, fileName):
         """
         \brief Add a map to the map rotation
         """
+        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                        'Tried to publish ' + fileName, login)
         
     def cb_unpublishMap(self, entries, login, fileName):
         """
         \brief Remove a map from the map rotation
         """
+        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                        'Tried to unpublish ' + fileName, login)
