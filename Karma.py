@@ -36,7 +36,7 @@ class Karma(PluginInterface):
         
         Creates the database structure
         """
-        self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
+        self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
         #get a default cursor for database layout setup
         cursor = self.__connection.cursor()
         cursor.execute('SHOW TABLES')

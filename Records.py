@@ -31,7 +31,7 @@ class Records(PluginInterface):
         
         The args should contain 'user', 'password', 'db'
         """ 
-        self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
+        self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
         cursor = self.connection.cursor()
         cursor.execute("SHOW TABLES")
         tables = [i[0] for i in cursor.fetchall()]

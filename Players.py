@@ -7,7 +7,7 @@ class Players(PluginInterface):
 		super(Players, self).__init__(pipes)
 
 	def initialize(self, args):
-		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
+		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
 		self.__checkTables()
 		self.__loadCurrentPlayers()
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'onPlayerConnect')
