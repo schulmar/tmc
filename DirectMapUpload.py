@@ -159,3 +159,58 @@ class DirectMapUpload(PluginInterface):
         """
         \brief Browse the directly uploaded files
         """
+        mapPath = (os.path.dirname(self.callFunction(
+                                    ('TmConnector', 'GetMapsDirectory')))
+                        + os.path.sep)
+        personalMapPath = mapPath + self.__directUploadPath + os.path.sep + login
+        if not os.path.isdir(personalMapPath):
+            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+                            'You do not have an upload path to browse!', 
+                            login)
+            return False
+        
+        files = os.listdir(personalMapPath).sort()
+        
+        mapRotationFileNames = set([i['FileName'] for i in self.callFunction(('TmConnector', 'GetMapList'), 100000, 0)])
+        
+        myMapsInRotation = filter(lambda i: i in mapRotationFileNames, files)
+        myMapsOutRotation = filter(lambda i: i not in mapRotationFileNames, files)
+        
+        lines = []
+        for m in myMapsOutRotation:
+            line = []
+            nameLabel = Label()
+            nameLabel['text'] = self.callFunction(('TmConnector', 'GetMapInfo'), m)
+            line.append(nameLabel)
+            
+            lines.append(line)
+            
+        for m in myMapsInRotation:
+            line = []
+            nameLabel = Label()
+            nameLabel['text'] = self.callFunction(('TmConnector', 'GetMapInfo'), m)
+            line.append(nameLabel)
+            
+            lines.append(line)
+        
+        nick = self.callFunction(('Players', 'getPlayerNickname'), login)
+        window = TableWindow(nick + '$z$g\'s uploaded maps')
+        window.setSize((80, 60))
+        window.setPos((-40, 30))
+        
+        self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
+        
+    def cb_deleteMap(self, entries, login, fileName):
+        """
+        \brief Delete the map file from disk (and remove it from the map list
+        """
+        
+    def cb_publishMap(self, entries, login, fileName):
+        """
+        \brief Add a map to the map rotation
+        """
+        
+    def cb_unpublishMap(self, entries, login, fileName):
+        """
+        \brief Remove a map from the map rotation
+        """
