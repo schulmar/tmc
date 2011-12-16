@@ -132,12 +132,21 @@ class DirectMapUpload(PluginInterface):
             if self.callFunction(('TmConnector', 'AddMap'), relPath + fileName):
                 info = self.callFunction(('TmConnector', 'GetMapInfo'), relPath + fileName)
                 self.callMethod(('TmConnector', 'RemoveMap'), relPath + fileName)
-                return """
-                <?xml version="1.0" encoding="utf-8" ?>
-                <manialink>
-                    <label text="Thank you for uploading this map!"/>
-                </manialink>
-                """
+                if info['Author'] != login:
+                    os.remove(mapPath + relPath + fileName)
+                    return """
+                    <?xml version="1.0" encoding="utf-8" ?>
+                    <manialink>
+                        <label text="You can only upload maps where the author is identical to your login"/>
+                    </manialink>
+                    """
+                else:
+                    return """
+                    <?xml version="1.0" encoding="utf-8" ?>
+                    <manialink>
+                        <label text="Thank you for uploading this map!"/>
+                    </manialink>
+                    """
             else:
                 os.remove(mapPath + relPath + fileName)
                 return """
