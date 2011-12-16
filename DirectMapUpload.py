@@ -192,6 +192,11 @@ class DirectMapUpload(PluginInterface):
             publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, m)
             line.append(publishLabel)
             
+            deleteLabel = Label()
+            deleteLabel['text'] = 'delete'
+            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, m)
+            line.append(deleteLabel)
+            
             lines.append(line)
             
         for m in myMapsInRotation:
@@ -205,13 +210,18 @@ class DirectMapUpload(PluginInterface):
             unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), None, m) 
             line.append(unpublishLabel)
             
+            deleteLabel = Label()
+            deleteLabel['text'] = 'delete'
+            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, m)
+            line.append(deleteLabel)    
+            
             lines.append(line)
         
         nick = self.callFunction(('Players', 'getPlayerNickname'), login)
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 10, (20, 10), ('filename', 'Maprotation'))
+        window.setTable(lines, 10, (20, 10, 10), ('filename', 'Maprotation', 'file'))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
