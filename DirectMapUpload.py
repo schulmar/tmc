@@ -232,9 +232,26 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
             return 
         
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.deleteConfirm')
         if yes == True:
-            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-                            'Tried to delete ' + fileName, login)
+            myPath = (os.path.dirname(self.callFunction(
+                                    ('TmConnector', 'GetMapsDirectory')))
+                        + os.path.sep + self.__directUploadPath + os.path.sep
+                        + login)
+            if os.path.samefile(myPath, os.path.dirname(fileName)):
+                self.cb_unpublishMap(entries, login, True, fileName)
+                if os.remove(fileName):
+                    self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                    'Successfully deleted file ' + 
+                                    os.path.basename(fileName),
+                                    login)
+                else:
+                    self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                    'Error while deleting file {} try again later'.
+                                    format(os.path.basename(fileName)),
+                                    login)
+            else:
+                pass
         else:
             pass
         
@@ -255,6 +272,7 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
             return
         
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.publishConfirm')
         if yes == True:
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to publish ' + fileName, login)
@@ -278,6 +296,7 @@ class DirectMapUpload(PluginInterface):
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
             return 
         
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.unpublishConfirm')
         if yes == True:
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to unpublish ' + fileName, login)
