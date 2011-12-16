@@ -48,7 +48,7 @@ class Maps(PluginInterface):
 		
 		Setup the database connection create tables if necessary...
 		""" 
-		self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
+		self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.__connection.cursor()
 		cursor.execute("SHOW TABLES")
 		tables = [i[0] for i in cursor.fetchall()]
