@@ -832,6 +832,7 @@ class CommentOutput(PagedWindow):
         textLabel['text'] = comment['commentTuple'][1]
         textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
         textLabel['posn'] = '2 -6 1'
+        textLabel['autonewline'] = '1'
         commentFrame.addChild(textLabel)
         
         footBarFrame = Frame()
