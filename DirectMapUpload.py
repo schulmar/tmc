@@ -189,7 +189,7 @@ class DirectMapUpload(PluginInterface):
             
             publishLabel = Label()
             publishLabel['text'] = 'publish'
-            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), m)
+            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), False, m)
             line.append(publishLabel)
             
             lines.append(line)
@@ -202,7 +202,7 @@ class DirectMapUpload(PluginInterface):
             
             unpublishLabel = Label()
             unpublishLabel['text'] = 'unpublish'
-            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), m) 
+            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublish'), False, m) 
             line.append(unpublishLabel)
             
             lines.append(line)
@@ -215,23 +215,53 @@ class DirectMapUpload(PluginInterface):
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
-    def cb_deleteMap(self, entries, login, fileName):
+    def cb_deleteMap(self, entries, login, yes, fileName):
         """
         \brief Delete the map file from disk (and remove it from the map list
+        \param entries Should be empty
+        \param login The login of the calling player
+        \param yes Is this already confirmed
+        \param fileName The file to delete
         """
-        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-                        'Tried to delete ' + fileName, login)
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == True:
+            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                            'Tried to delete ' + fileName, login)
+        else:
+            confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
+            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
         
-    def cb_publishMap(self, entries, login, fileName):
+    def cb_publishMap(self, entries, login, yes, fileName):
         """
         \brief Add a map to the map rotation
+        \param entries Should be empty
+        \param login The login of the calling player
+        \param yes Is this already confirmed
+        \param fileName The file to publish
         """
-        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == True:
+            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to publish ' + fileName, login)
+        else:
+            confirm = YesNoDialog('Do you really want to publish ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_publishMap'), fileName)
+            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
         
-    def cb_unpublishMap(self, entries, login, fileName):
+    def cb_unpublishMap(self, entries, login, yes, fileName):
         """
         \brief Remove a map from the map rotation
+        \param entries Should be empty
+        \param login The login of the calling player
+        \param yes Is this already confirmed
+        \param fileName The file to unpublishr
         """
-        self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+        self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
+        if yes == True:
+            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                         'Tried to unpublish ' + fileName, login)
+        else:
+            confirm = YesNoDialog('Do you really want to unpublish ' + os.path.basename(fileName))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_unpublishMap'), fileName)
+            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
