@@ -32,7 +32,7 @@ class Acl(PluginInterface):
 		\brief Create database tables and load users, groups and rights
 		\param args contains the same args as in constructor
 		"""
-		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
+		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.connection.cursor()
 		cursor.execute("SHOW TABLES")
 		tables = [i[0] for i in cursor.fetchall()]
@@ -148,6 +148,7 @@ class Acl(PluginInterface):
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
+		self.connecton.ping()
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def getIdFromUserName(self, userName):

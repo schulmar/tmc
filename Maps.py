@@ -153,6 +153,7 @@ class Maps(PluginInterface):
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
+		self.__connection.ping()
 		return self.__connection.cursor(MySQLdb.cursors.DictCursor)
 	
 	def __getMapListFromServer(self):

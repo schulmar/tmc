@@ -1,13 +1,33 @@
 from PluginInterface import *
 import MySQLdb
 
+"""
+\file Players.py
+\brief Contains the Players plugin
+"""
+
 class Players(PluginInterface):
+	"""
+	\class Players
+	\brief Manages players on the server
+	"""
 	def __init__(self, pipes, args):
+		"""
+		\brief Construct the players plugin
+		\param pipes The communication pipes to the PluginManager
+		\param args Additional startup argmuntes
+		"""
 		self.playerList = {}
 		super(Players, self).__init__(pipes)
 
 	def initialize(self, args):
-		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'], reconnect = 1)
+		"""
+		\brief Initialize the plugin
+		\param args Additional startup args
+		
+		This plugin needs a database connection
+		"""
+		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		self.__checkTables()
 		self.__loadCurrentPlayers()
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'onPlayerConnect')
@@ -21,9 +41,16 @@ class Players(PluginInterface):
 		
 
 	def __getCursor(self):
+		"""
+		\brief Get a cursor for this connection
+		\return The dict cursor
+		"""
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def __checkTables(self):
+		"""
+		\brief Check the database integrity of this plugin
+		"""
 		cursor = self.__getCursor()
 		cursor.execute('SHOW COLUMNS FROM `users`')		
 		columns = [c['Field'] for c in cursor.fetchall()]
@@ -39,6 +66,9 @@ class Players(PluginInterface):
 		self.connection.commit()
 
 	def __loadCurrentPlayers(self):
+		"""
+		\brief Load the current Playerlist
+		"""
 		result = self.callFunction(('TmConnector', 'GetPlayerList'), 1000, 0)
 		for player in result:
 			self.onPlayerConnect(player['Login'], False)
@@ -97,6 +127,14 @@ class Players(PluginInterface):
 
 
 	def onEndMap(self, Rankings, Map, WasWarmUp, MatchContinuesOnNextMap, restartMap):
+		"""
+		\brief Handle the end map
+		\param Rankings The rankings of this round
+		\param Map The mapInfo of the ending map
+		\param WasWarmup Is this just the end of the warmup phase
+		\param MatchContinuesOnNextMap Will the map be changed?
+		\param restartMap Is this map restartet
+		"""
 		if (not WasWarmUp):
 			cursor = self.__getCursor()
 			for rank in Rankings:
