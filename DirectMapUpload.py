@@ -250,12 +250,13 @@ class DirectMapUpload(PluginInterface):
                         + login)
             if os.path.samefile(myPath, os.path.dirname(fileName)):
                 self.cb_unpublishMap(entries, login, True, fileName)
-                if os.remove(fileName):
+                try:
+                    os.remove(fileName)
                     self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                                     'Successfully deleted file ' + 
                                     os.path.basename(fileName),
                                     login)
-                else:
+                except:
                     self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                                     'Error while deleting file {} try again later'.
                                     format(os.path.basename(fileName)),
