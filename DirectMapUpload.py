@@ -131,14 +131,13 @@ class DirectMapUpload(PluginInterface):
                     
             if self.callFunction(('TmConnector', 'AddMap'), relPath + fileName):
                 info = self.callFunction(('TmConnector', 'GetMapInfo'), relPath + fileName)
+                self.callMethod(('TmConnector', 'RemoveMap'), relPath + fileName)
                 return """
                 <?xml version="1.0" encoding="utf-8" ?>
                 <manialink>
                     <label text="Thank you for uploading this map!"/>
                 </manialink>
                 """
-                self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-                            '$zAdded map ' + info['Name'] + ' $zto list!', login)
             else:
                 os.remove(mapPath + relPath + fileName)
                 return """
@@ -173,6 +172,13 @@ class DirectMapUpload(PluginInterface):
             return False
         
         files = os.listdir(personalMapPath)
+        
+        if len(files) == 0:
+            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+                            'You have no uploaded files yet!', 
+                            login)
+            return False
+        
         files.sort()
         
         mapRotationFileNames = set([i['FileName'] for i in self.callFunction(('TmConnector', 'GetMapList'), 100000, 0)])
@@ -285,8 +291,14 @@ class DirectMapUpload(PluginInterface):
         
         self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.publishConfirm')
         if yes == True:
-            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-                        'Tried to publish ' + fileName, login)
+            if self.callFunction(('TmConnector', 'AddMap'), fileName):
+                self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                'Successfully added file to map rotation!', login)
+            else:
+                self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                'Could not add file to map rotation.' + 
+                                'Is this a map file?', 
+                                login)
         else:
             pass
         
@@ -309,7 +321,14 @@ class DirectMapUpload(PluginInterface):
         
         self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.unpublishConfirm')
         if yes == True:
-            self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
-                        'Tried to unpublish ' + fileName, login)
+            if self.callFunction(('TmConnector', 'RemoveMap'), fileName):
+                self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                'Successfully removed map from rotation',
+                                login)
+            else:
+                self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+                                'Could not remove map from rotation!' +
+                                '(Maybe it was not in the rotation?)',
+                                login)
         else:
             pass
