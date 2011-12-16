@@ -102,18 +102,18 @@ class PluginInterface(object):
 					except AttributeError:
 						print('Unknown method ' + self.__class__.__name__ + '.'
 							 + job.name + str(job.getArgs()))
-					self.__questioner = job.questioner
+					self.__questioner = str(job.questioner)
 					try:
 						method(*job.getArgs())
 					except TypeError:
 						print('Used wrong arguments in method call ' 
 							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs()) 
-							+ ' from ' + job.questioner)
+							+ ' from ' + str(job.questioner))
 						raise
 					except:
 						print('Exception in method call ' 
 							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs()) 
-							+ ' from ' + job.questioner)
+							+ ' from ' + str(job.questioner))
 						raise
 				elif isinstance(job, Event):
 					pass
