@@ -184,7 +184,7 @@ class DirectMapUpload(PluginInterface):
         for m in myMapsOutRotation:
             line = []
             nameLabel = Label()
-            nameLabel['text'] = self.callFunction(('TmConnector', 'GetMapInfo'), m)
+            nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
             
             lines.append(line)
@@ -192,7 +192,7 @@ class DirectMapUpload(PluginInterface):
         for m in myMapsInRotation:
             line = []
             nameLabel = Label()
-            nameLabel['text'] = self.callFunction(('TmConnector', 'GetMapInfo'), m)
+            nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
             
             lines.append(line)
@@ -201,7 +201,7 @@ class DirectMapUpload(PluginInterface):
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 20, (20, ), ('Map name', ))
+        window.setTable(lines, 20, (20, ), ('filename', ))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
