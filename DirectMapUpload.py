@@ -31,6 +31,9 @@ class DirectMapUpload(PluginInterface):
         self.callMethod(('TmChat', 'registerChatCommand'), 'upload', 
                         ('DirectMapUpload', 'chat_upload'), 
                         'Upload a map file to the server from within the game.')
+        self.callMethod(('TmChat', 'registerChatCommand'), 'browse', 
+                        ('DirectMapUpload', 'chat_browse'),
+                        'Browse your directly uploaded maps.')
     
     def chat_upload(self, login, param):
         """
