@@ -230,7 +230,7 @@ class DirectMapUpload(PluginInterface):
         else:
             confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
-            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
         
     def cb_publishMap(self, entries, login, yes, fileName):
         """
@@ -247,7 +247,7 @@ class DirectMapUpload(PluginInterface):
         else:
             confirm = YesNoDialog('Do you really want to publish ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_publishMap'), fileName)
-            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.publishConfirm', confirm)
         
     def cb_unpublishMap(self, entries, login, yes, fileName):
         """
@@ -264,4 +264,4 @@ class DirectMapUpload(PluginInterface):
         else:
             confirm = YesNoDialog('Do you really want to unpublish ' + os.path.basename(fileName))
             confirm.setAnswerCallback(('DirectMapUpload', 'cb_unpublishMap'), fileName)
-            self.callMethod(('WindowManager', 'closeWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
+            self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.unpublishConfirm', confirm)
