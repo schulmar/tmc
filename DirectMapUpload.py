@@ -190,6 +190,8 @@ class DirectMapUpload(PluginInterface):
         
         files.sort()
         
+        files = map(lambda i: personalMapPath + i, files)
+        
         mapRotationFileNames = set([i['FileName'] for i in self.callFunction(('TmConnector', 'GetMapList'), 100000, 0)])
         
         myMapsInRotation = filter(lambda i: os.path.relpath(i, mapPath) 
