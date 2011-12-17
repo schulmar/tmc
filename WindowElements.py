@@ -767,7 +767,7 @@ class CommentOutput(PagedWindow):
         if deleted:
             height = 0
         else:
-            height = comment['height']
+            height = len['commentTuple'][1] // width
         
         consumedHeight = 0
         
@@ -829,7 +829,7 @@ class CommentOutput(PagedWindow):
             votesFrame.addChild(voteUp)
         
         textLabel = Label()
-        textLabel['text'] = comment['commentTuple'][1]
+        textLabel['text'] = ' '.join(comment['commentTuple'][1].split('\n'))
         textLabel['sizen'] = '{:d} {:d}'.format(width - 2, height)
         textLabel['posn'] = '2 -6 1'
         textLabel['autonewline'] = '1'
