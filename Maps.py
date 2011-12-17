@@ -86,6 +86,10 @@ class Maps(PluginInterface):
 		self.callMethod(('TmChat', 'registerChatCommand'), 'skip', ('Maps', 'chat_skip'),
 					'Skip the current map')
 		
+		self.callMethod(('Acl', 'rightAdd'), 'Maps.restart', 'Restart the current map')
+		self.callMethod(('TmChat', 'registerChatCommand'), 'restart', ('Maps', 'chat_restart'),
+					'Restart the current map')
+		
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.saveMatchSettings', 'Save matchsettings to file.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.loadMatchSettings', 'Load matchsettings from file.')
 		self.callMethod(('Acl', 'rightAdd'), 'Maps.setMatchSettingsFileName', 
@@ -451,6 +455,24 @@ class Maps(PluginInterface):
 		else:
 			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
 						'You are not allowed to skip maps', login)
+			
+	def chat_restart(self, login, params):
+		"""
+		\brief Restart current map
+		\param login The calling login
+		\param params Additional parameters
+		"""
+		if self.callFunction(('Acl', 'userHasRight'), login, 'Maps.restart'):
+			if self.callFunction(('TmConnector', 'RestartMap')):
+				self.callMethod(('TmConnector', 'ChatSendServerMessage'),
+							self.callFunction(('Players', 'getPlayerNickname'), login)
+							+ ' $z$g restarted map.')
+			else:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+							'Could not restart map, try again later!', login)
+		else:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
+						'You are not allowed to restart maps', login)
 			
 	def onBeginMap(self, Map, isWarmUp, isMatchContinuation):
 		"""
