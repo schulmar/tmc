@@ -26,7 +26,7 @@ class DirectMapUpload(PluginInterface):
         \brief Initialize the instance
         \param args Additional startup arguments
         """
-        self.callMethod(('Acl', 'rightAdd'), 'Maps.directMapUpload',
+        self.callMethod(('Acl', 'rightAdd'), 'DirectMapUpload.directMapUpload',
             'Upload maps directly to the server via HTTP connection.')
         self.callMethod(('TmChat', 'registerChatCommand'), 'upload', 
                         ('DirectMapUpload', 'chat_upload'), 
@@ -41,7 +41,7 @@ class DirectMapUpload(PluginInterface):
         \param login The login of the calling player
         \param param Additional params, should be ignored
         """
-        if not self.callFunction(('Acl', 'userHasRight'), login, 'Maps.directMapUpload'):
+        if not self.callFunction(('Acl', 'userHasRight'), login, 'DirectMapUpload.directMapUpload'):
             self.callFunction(('TmConnector', 'ChatSendServerMessageToLogin'), 
                             'You have insufficient rights to directly upload maps to this server!', 
                             login)
