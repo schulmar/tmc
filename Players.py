@@ -45,6 +45,7 @@ class Players(PluginInterface):
 		\brief Get a cursor for this connection
 		\return The dict cursor
 		"""
+		self.connection.ping()
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def __checkTables(self):
