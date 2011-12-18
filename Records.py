@@ -31,6 +31,7 @@ class Records(PluginInterface):
         
         The args should contain 'user', 'password', 'db'
         """ 
+        self.__args = args
         self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
         cursor = self.connection.cursor()
         cursor.execute("SHOW TABLES")
@@ -64,7 +65,12 @@ class Records(PluginInterface):
         \brief A helper function that returns a dict cursor to the MySQLdb
         \return The dict cursor
         """
-        self.connection.ping()
+        try:
+            self.connection.ping()
+        except MySQLdb.OperationalError:
+            self.connection = MySQLdb.connect(user = self.__args['user'], 
+                                            passwd = self.__args['password'], 
+                                            db = self.__args['db'])
         return self.connection.cursor(MySQLdb.cursors.DictCursor)
     
     def __getCurrentRecords(self):

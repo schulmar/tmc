@@ -36,6 +36,7 @@ class Karma(PluginInterface):
         
         Creates the database structure
         """
+        self.__args = args #save the startup arguments containing the database login
         self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
         #get a default cursor for database layout setup
         cursor = self.__connection.cursor()
@@ -105,7 +106,12 @@ class Karma(PluginInterface):
         \brief A helper function that returns a dict cursor to the MySQLdb
         \return The dict cursor
         """
-        self.__connection.ping()
+        try:
+            self.__connection.ping()
+        except MySQLdb.OperationalError:
+            self.connection = MySQLdb.connect(user = self.__args['user'], 
+                                            passwd = self.__args['password'], 
+                                            db = self.__args['db'])
         return self.__connection.cursor(MySQLdb.cursors.DictCursor)
     
     def __loadTypes(self):

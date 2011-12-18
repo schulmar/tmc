@@ -27,6 +27,7 @@ class Players(PluginInterface):
 		
 		This plugin needs a database connection
 		"""
+		self.__args = args
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		self.__checkTables()
 		self.__loadCurrentPlayers()
@@ -45,7 +46,12 @@ class Players(PluginInterface):
 		\brief Get a cursor for this connection
 		\return The dict cursor
 		"""
-		self.connection.ping()
+		try:
+			self.connection.ping()
+		except MySQLdb.OperationalError:
+			self.connection = MySQLdb.connect(user = self.__args['user'], 
+											passwd = self.__args['password'], 
+											db = self.__args['db'])
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def __checkTables(self):

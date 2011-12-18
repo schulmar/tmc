@@ -48,6 +48,7 @@ class Maps(PluginInterface):
 		
 		Setup the database connection create tables if necessary...
 		""" 
+		self.__args = args #save the database login
 		self.__connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.__connection.cursor()
 		cursor.execute("SHOW TABLES")
@@ -157,7 +158,12 @@ class Maps(PluginInterface):
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
-		self.__connection.ping()
+		try:
+			self.__connection.ping()
+		except MySQLdb.OperationalError:
+			self.connection = MySQLdb.connect(user = self.__args['user'], 
+											passwd = self.__args['password'], 
+											db = self.__args['db'])
 		return self.__connection.cursor(MySQLdb.cursors.DictCursor)
 	
 	def __getMapListFromServer(self):

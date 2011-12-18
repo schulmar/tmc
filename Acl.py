@@ -18,6 +18,7 @@ class Acl(PluginInterface):
 		\param pipes The communication pipes to the manager
 		\param args Other arguments, up to now a dict where the key SuperAdmins contains a list of all superadmin names
 		"""
+		self.__args = None #Startup arguments
 		self.rights = {}
 		self.users = {}
 		self.groups = {}
@@ -32,6 +33,7 @@ class Acl(PluginInterface):
 		\brief Create database tables and load users, groups and rights
 		\param args contains the same args as in constructor
 		"""
+		self.__args = args
 		self.connection = MySQLdb.connect(user = args['user'], passwd = args['password'], db = args['db'])
 		cursor = self.connection.cursor()
 		cursor.execute("SHOW TABLES")
@@ -148,7 +150,12 @@ class Acl(PluginInterface):
 		\brief A helper function that returns a dict cursor to the MySQLdb
 		\return The dict cursor
 		"""
-		self.connection.ping()
+		try:
+			self.connection.ping()
+		except MySQLdb.OperationalError:
+			self.connection = MySQLdb.connect(user = self.__args['user'], 
+											passwd = self.__args['password'], 
+											db = self.__args['db'])
 		return self.connection.cursor(MySQLdb.cursors.DictCursor)
 
 	def getIdFromUserName(self, userName):
