@@ -91,7 +91,7 @@ class ChatCommandButton(Widget):
             textLabel['text'] = self.__text
             textLabel['halign'] = 'center'
             textLabel['valign'] = 'bottom'
-            textLabel['posn'] = '{:d} {:d} {:d}'.format(0, -3, 1)
+            textLabel['posn'] = '{:d} {:d} {:d}'.format(0, -4, 1)
             textLabel['sizen'] = '{:d} {:d}'.format(5, 2)
             frame.addChild(textLabel)
         
