@@ -679,23 +679,30 @@ class ChatCommands(PluginInterface):
 		UploadButton = ChatCommandButton('/upload')
 		UploadButton.setIcon(('Icons128x128_1', 'Upload'))
 		UploadButton.setText('Upload')
-		UploadButton.setPos((43, -40))
+		UploadButton.setPos((44, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.UploadButton', UploadButton)
 		
+		BrowseButton = ChatCommandButton('/browse')	
+		BrowseButton.setIcon(('Icons128x128_1', 'Browse'))
+		BrowseButton.setText('Browse')
+		BrowseButton.setPos((38, -40))
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.BrowseButton', BrowseButton)
+		
 		CommentsButton = ChatCommandButton('/map comments')
-		CommentsButton.setIcon(('Icons64x64_1', 'Inbox'))
+		CommentsButton.setIcon(('Icons128x128_1', 'Share'))
 		CommentsButton.setText('Read')
-		CommentsButton.setPos((37, -40))
+		CommentsButton.setPos((32, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.CommentsButton', CommentsButton)
 		
 		CommentButton = ChatCommandButton('/map comment')
-		CommentButton.setIcon(('Icons64x64_1', 'Outbox'))
+		CommentButton.setIcon(('Icons128x128_1', 'Inputs'))
 		CommentButton.setText('Write')
-		CommentButton.setPos((33, -40))
+		CommentButton.setPos((26, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.CommentButton', CommentButton)	
+					login, 'ChatCommands.CommentButton', CommentButton)
 							
 		
 	def cb_recordsReactor(self, entries, login):
