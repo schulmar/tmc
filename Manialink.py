@@ -326,7 +326,7 @@ class ManiaScript(XmlElement):
 		\brief Construct a script instance
 		"""
 		self.name = 'script'
-		super(ManiaScript, self).__init__()
+		super(ManiaScript, self).__init__([])
 		
 	def getXML(self):
 		"""
