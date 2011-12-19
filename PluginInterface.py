@@ -84,6 +84,13 @@ class PluginInterface(object):
 	def questioner(self):
 		return self.__questioner
 
+	def _getTarget(self, name):
+		"""
+		\brief Get the target of the call
+		\return The target function
+		"""
+		return getattr(self, name)
+
 	def __work(self):
 		while self.__running:
 			try:
@@ -98,7 +105,7 @@ class PluginInterface(object):
 					self.__running = False
 				elif isinstance(job, Method):
 					try:
-						method = getattr(self, job.name)
+						method = self._getTarget(job.name)
 					except AttributeError:
 						print('Unknown method ' + self.__class__.__name__ + '.'
 							 + job.name + str(job.getArgs()))
@@ -119,7 +126,7 @@ class PluginInterface(object):
 					pass
 				elif isinstance(job, Function):
 					try:
-						function = getattr(self, job.name)
+						function = self._getTarget(job.name)
 					except AttributeError:
 						print('Unknown function ' + self.__class__.__name__ + '.'
 							+ job.name + str(job.getArgs()))
