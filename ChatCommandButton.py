@@ -62,7 +62,7 @@ class ChatCommandButton(Widget):
         bgQuad['style'] = 'Bgs1'
         bgQuad['substyle'] = 'BgList'
         #bgQuad['posn'] = '{:d} {:d} {:d}'.format(0, 0, 0)
-        bgQuad['sizen'] = '{:d} {:d}'.format(5, 7)
+        bgQuad['sizen'] = '{:d} {:d}'.format(7, 8)
         cbName = self.getWindowManager().getCallbackAddress(
                                     self.getUser(), 
                                     self.getName(), 
@@ -73,7 +73,7 @@ class ChatCommandButton(Widget):
         logoQuad = Quad()
         logoQuad['halign'] = 'center'
         logoQuad['valign'] = 'center'
-        logoQuad['posn'] = '{:d} {:d} {:d}'.format(0, 1, 1)
+        logoQuad['posn'] = '{:d} {:d} {:d}'.format(0, 2, 1)
         logoQuad['sizen'] = '{:d} {:d}'.format(5, 5)
         if self.__style != None:
             logoQuad['style'] = self.__style[0]
