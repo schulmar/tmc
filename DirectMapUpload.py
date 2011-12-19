@@ -225,12 +225,14 @@ class DirectMapUpload(PluginInterface):
             
             unpublishLabel = Label()
             unpublishLabel['text'] = 'unpublish'
-            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublishMap'), None, m) 
+            unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublishMap'), 
+                                       None, relativePersonalMapPath + m) 
             line.append(unpublishLabel)
             
             deleteLabel = Label()
             deleteLabel['text'] = 'delete'
-            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, m)
+            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), 
+                                    None, relativePersonalMapPath + m)
             line.append(deleteLabel)    
             
             lines.append(line)
