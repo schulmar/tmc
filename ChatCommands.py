@@ -79,6 +79,10 @@ class ChatCommands(PluginInterface):
 		registerChatCommand('gg', 'chat_gg', 'Congratulate other players')
 
 		self.callMethod((None, 'subscribeEvent'), 'TmConnector', 'PlayerConnect', 'recordsReactor') 
+		
+		players = self.callFunction(('TmConnector', 'GetPlayerList'), 1000, 0)
+		for p in players:
+			self.recordsReactor(p['Login'], p['SpectatorStatus'])
 
 	def chat_echo(self, login, args):
 		"""
@@ -666,11 +670,18 @@ class ChatCommands(PluginInterface):
 					quad, 'ChatCommands.recordShortcut', login)
 		
 		RecordsButton = ChatCommandButton('/records')
-		RecordsButton.setIcon(('Icons128x128_1', 'Race'))
+		RecordsButton.setIcon(('Icons128x128_1', 'Rankings'))
 		RecordsButton.setText('Records')
 		RecordsButton.setPos((50, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.RecordsButton', RecordsButton)
+		
+		UploadButton = ChatCommandButton('/upload')
+		UploadButton.setIcon(('Icons128x128_1', 'Upload'))
+		UploadButton.setText('Records')
+		UploadButton.setPos((40, -40))
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.UploadButton', UploadButton)
 		
 	def cb_recordsReactor(self, entries, login):
 		"""
