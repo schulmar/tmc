@@ -60,9 +60,9 @@ class ChatCommandButton(Widget):
         bgQuad['valign'] = 'center'
         bgQuad['halign'] = 'center'
         bgQuad['style'] = 'Bgs1'
-        bgQuad['substyle'] = 'BgWindow3'
+        bgQuad['substyle'] = 'BgWindow1'
         #bgQuad['posn'] = '{:d} {:d} {:d}'.format(0, 0, 0)
-        bgQuad['sizen'] = '{:d} {:d}'.format(10, 10)
+        bgQuad['sizen'] = '{:d} {:d}'.format(7, 10)
         cbName = self.getWindowManager().getCallbackAddress(
                                     self.getUser(), 
                                     self.getName(), 
@@ -74,7 +74,7 @@ class ChatCommandButton(Widget):
         logoQuad['halign'] = 'center'
         logoQuad['valign'] = 'center'
         logoQuad['posn'] = '{:d} {:d} {:d}'.format(0, 1, 1)
-        logoQuad['sizen'] = '{:d} {:d}'.format(7, 7)
+        logoQuad['sizen'] = '{:d} {:d}'.format(5, 5)
         if self.__style != None:
             logoQuad['style'] = self.__style[0]
             logoQuad['substyle'] = self.__style[1]
@@ -92,7 +92,7 @@ class ChatCommandButton(Widget):
             textLabel['halign'] = 'center'
             textLabel['valign'] = 'bottom'
             textLabel['posn'] = '{:d} {:d} {:d}'.format(0, -5, 1)
-            textLabel['sizen'] = '{:d} {:d}'.format(12, 2)
+            textLabel['sizen'] = '{:d} {:d}'.format(6, 2)
             frame.addChild(textLabel)
         
         return frame
