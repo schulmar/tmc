@@ -316,3 +316,22 @@ class Include(XmlElement):
 		"""
 		self.name = 'include'
 		super(Include, self).__init__(['url'])
+		
+class ManiaScript(XmlElement):
+	"""
+	\brief The maniascript tag for interactive manialinks
+	"""
+	def __init__(self):
+		"""
+		\brief Construct a script instance
+		"""
+		self.name = 'script'
+		super(ManiaScript, self).__init__()
+		
+	def getXML(self):
+		"""
+		\brief Get the script
+		"""
+		xml = '<script><!--'
+		xml += self.content
+		xml += '--></script>'
