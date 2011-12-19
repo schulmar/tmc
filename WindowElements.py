@@ -17,6 +17,8 @@ class Widget(object):
         self.__name = None #The name of this widget
         self.__size = (0, 0) #The widgets size
         self.__pos = (0, 0, 0) #The widgets position
+        self.__user = None #The name of the user to display to
+        self.__windowManager #The WindowManager instance that handles this window
         
     def getName(self):
         """
@@ -63,6 +65,34 @@ class Widget(object):
         else:
             self.__pos = (int(pos[0]), int(pos[1]), int(pos[2]))
             
+    def getUser(self):
+        """
+        \brief Return the user of this widget
+        \return The name of the user
+        """
+        return self.__user
+    
+    def setUser(self, name):
+        """
+        \brief Set the name of the user that sees this window
+        \param name
+        """
+        self.__user = name
+            
+    def getWindowManager(self):
+        """
+        \brief Get the WindowManager instance that handles this window
+        \return The instance
+        """
+        return self.__windowManager
+    
+    def setWindowManager(self, wm):
+        """
+        \brief Set the WindowManager instance that handles this window
+        \param wm The WindowManager
+        """
+        self.__windowManager = wm
+        
     def getManialink(self):
         """
         \brief Get the manialink elements of this window
@@ -177,6 +207,9 @@ class CommentInput(Widget):
         self.__text = text #The initial text of the enty
         
     def getManialink(self):
+        """
+        \brief Get the manialink hierarchie
+        """
         pos = self.getPos()
         size = self.getSize()
 
@@ -972,3 +1005,5 @@ class RightsWindow(TableWindow):
                         int((size[0] - buttonSize) * nameSize), 
                         int((size[0] - buttonSize) * descriptionSize)), 
                       ('Enabled', 'Right-name', 'Description'))
+        
+from ChatCommandButton import ChatCommandButton
