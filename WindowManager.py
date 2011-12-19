@@ -94,6 +94,7 @@ class WindowManager(PluginInterface):
 		"""
 		window.setName(name)
 		window.setUser(login)
+		window.setWindowManager(self)
 		self.__addWindow(login, name, window, useOldState)
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
