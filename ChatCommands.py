@@ -665,6 +665,12 @@ class ChatCommands(PluginInterface):
 		self.callMethod(('ManialinkManager', 'displayManialinkToLogin'),
 					quad, 'ChatCommands.recordShortcut', login)
 		
+		RecordsButton = ChatCommandButton('/records')
+		RecordsButton.setIcon(('Icons128x128_1', 'Race'))
+		RecordsButton.setText('Records')
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.RecordsButton', RecordsButton)
+		
 	def cb_recordsReactor(self, entries, login):
 		"""
 		\brief Display the records window to the player
