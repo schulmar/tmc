@@ -683,6 +683,21 @@ class ChatCommands(PluginInterface):
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.UploadButton', UploadButton)
 		
+		CommentsButton = ChatCommandButton('/map comments')
+		CommentsButton.setIcon(('Icons64x64_1', 'Inbox'))
+		CommentsButton.setText('Read')
+		CommentsButton.setPos((37, -40))
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.CommentsButton', CommentsButton)
+		
+		CommentButton = ChatCommandButton('/map comment')
+		CommentButton.setIcon(('Icons64x64_1', 'Outbox'))
+		CommentButton.setText('Write')
+		CommentButton.setPos((33, -40))
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.CommentButton', CommentButton)	
+							
+		
 	def cb_recordsReactor(self, entries, login):
 		"""
 		\brief Display the records window to the player
