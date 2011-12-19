@@ -668,6 +668,7 @@ class ChatCommands(PluginInterface):
 		RecordsButton = ChatCommandButton('/records')
 		RecordsButton.setIcon(('Icons128x128_1', 'Race'))
 		RecordsButton.setText('Records')
+		RecordsButton.setPos((50, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.RecordsButton', RecordsButton)
 		
