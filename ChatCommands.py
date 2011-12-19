@@ -678,7 +678,7 @@ class ChatCommands(PluginInterface):
 		
 		UploadButton = ChatCommandButton('/upload')
 		UploadButton.setIcon(('Icons128x128_1', 'Upload'))
-		UploadButton.setText('Records')
+		UploadButton.setText('Upload')
 		UploadButton.setPos((40, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.UploadButton', UploadButton)
