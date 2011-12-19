@@ -335,3 +335,4 @@ class ManiaScript(XmlElement):
 		xml = '<script><!--'
 		xml += self.content
 		xml += '--></script>'
+		return xml
