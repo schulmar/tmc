@@ -129,7 +129,7 @@ class Manialink(XmlElement):
 		self.name = 'manialink'
 		super(Manialink, self).__init__(['id'])
 
-displayable = ['size', 'sizen', 'pos', 'posn', 'scale']
+displayable = ['size', 'sizen', 'pos', 'posn', 'scale', 'id']
 alignable = ['valign', 'halign']  
 linkable = ['url', 'manialink', 'maniazones', 'addplayerid']
 formatable = ['style', 'textsize', 'textcolor']
