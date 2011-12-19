@@ -2,22 +2,53 @@ from PluginInterface import *
 import os
 import re
 
+"""
+\file TmChat.pd
+\brief Contains the chat manager plugin
+"""
+
 class TmChat(PluginInterface):
+	"""
+	\brief The chat manager plugin
+	
+	This plugin handles chat commands
+	"""
 	def __init__(self, pipes, args):
+		"""
+		\brief Construct the plugin
+		\param pipes The communication pipes to the pluginManager
+		\param args Additional startup arguments
+		"""
 		self.commands = {}
 		super(TmChat, self).__init__(pipes)
 
 	def initialize(self, args):
+		"""
+		\brief Initialize the plugin
+		\param args Startup arguments (should be emtpy)
+		"""
 		self.callMethod((None , 'subscribeEvent'), 'TmConnector', 'PlayerChat', 'PlayerChat')
 		self.registerChatCommand('help', ('TmChat', 'chat_help'), 'List all available chat commands.')
 
-	def PlayerChat(self, *args):
-		if len(args[2]) > 0:
-			text = args[2].strip()
+	def PlayerChat(self, Uid, login, text, isRegisteredCmd):
+		"""
+		\brief Callback on player chat
+		\param Uid The player Uid
+		\param login The login of the player
+		\param text The text the player wrote
+		\param isRegisteredCmd Is this a registered command (leading /)
+		"""
+		if len(text) > 0:
+			text = text.strip()
 			if text[0] == '/':
-				self.processCommand(args[1], text[1:])
+				self.processCommand(login, text[1:])
 
 	def processCommand(self, login, text):
+		"""
+		\brief Finds the callback for the command
+		\param login The login of the calling player
+		\param text The text of the command
+		"""
 		parts = text.split(' ', 1)
 		if parts[0] in self.commands:
 			cb = self.commands[parts[0]][0]
@@ -33,6 +64,12 @@ class TmChat(PluginInterface):
 			return False
 
 	def registerChatCommand(self, name, callback, description = 'No description'):
+		"""
+		\brief Register a command callback
+		\param name The name of the chatcommand
+		\param callback The callback 
+		\param description A short description of the chat command
+		"""
 		if name in self.commands:
 			callback = self.commands[name]
 			self.callMethod(('Logger', 'log'), 'Plugin Chat: Could not register chat-command"' + name \
@@ -43,10 +80,19 @@ class TmChat(PluginInterface):
 								+ name + '"', 0)
 	
 	def unregisterChatCommand(self, name):
+		"""
+		\brief Unregister a registered chat command
+		\param name THe name of the command to unregister
+		"""
 		if name in self.commands:
 			del self.commands[name]
 
 	def chat_help(self, login, args):
+		"""
+		\brief Display a help text in the chat
+		\param login The player who needs help
+		\param args Additional args for help
+		"""
 		try:
 			args = args.strip()
 		except AttributeError:
