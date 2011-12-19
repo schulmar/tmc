@@ -173,7 +173,8 @@ class DirectMapUpload(PluginInterface):
         mapPath = (os.path.dirname(self.callFunction(
                                     ('TmConnector', 'GetMapsDirectory')))
                         + os.path.sep)
-        personalMapPath = mapPath + self.__directUploadPath + os.path.sep + login + os.path.sep
+        relativePersonalMapPath = self.__directUploadPath + os.path.sep + login + os.path.sep
+        personalMapPath = mapPath + relativePersonalMapPath
         if not os.path.isdir(personalMapPath):
             self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'), 
                             'You do not have an upload path to browse!', 
@@ -206,12 +207,12 @@ class DirectMapUpload(PluginInterface):
             
             publishLabel = Label()
             publishLabel['text'] = 'publish'
-            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, personalMapPath + m)
+            publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, relativePersonalMapPath + m)
             line.append(publishLabel)
             
             deleteLabel = Label()
             deleteLabel['text'] = 'delete'
-            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, personalMapPath + m)
+            deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, relativePersonalMapPath + m)
             line.append(deleteLabel)
             
             lines.append(line)
@@ -238,7 +239,7 @@ class DirectMapUpload(PluginInterface):
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 10, (50, 20, 10), ('filename', 'Maprotation', 'file'))
+        window.setTable(lines, 10, (50, 20, 10), ('Filename', 'Maprotation', 'File'))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
