@@ -18,7 +18,7 @@ class Widget(object):
         self.__size = (0, 0) #The widgets size
         self.__pos = (0, 0, 0) #The widgets position
         self.__user = None #The name of the user to display to
-        self.__windowManager #The WindowManager instance that handles this window
+        self.__windowManager = None #The WindowManager instance that handles this window
         
     def getName(self):
         """
