@@ -82,7 +82,7 @@ class ChatCommands(PluginInterface):
 		
 		players = self.callFunction(('TmConnector', 'GetPlayerList'), 1000, 0)
 		for p in players:
-			self.recordsReactor(p['Login'], p['SpectatorStatus'])
+			self.recordsReactor(p['Login'], p['IsSpectator'])
 
 	def chat_echo(self, login, args):
 		"""
