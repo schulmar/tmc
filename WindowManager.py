@@ -93,6 +93,7 @@ class WindowManager(PluginInterface):
 		\param useOldState Should be tried to use the state of the old window if there is one?
 		"""
 		window.setName(name)
+		window.setUser(login)
 		self.__addWindow(login, name, window, useOldState)
 		ml = window.getManialink()
 		self.displayMl(ml, name, login)
@@ -198,3 +199,34 @@ class WindowManager(PluginInterface):
 				self.log('error: ' + str(login) + ' has no window "' + str(name) + '" to change page on')
 		except KeyError:
 			self.log('error: ' + str(login) + ' has no windows to change page')
+			
+	def getCallbackAddress(self, login, windowName, functionName):
+		"""
+		\brief A method that will
+		\param login The login of the player that will see the window
+		\param windowName The name of the window
+		\param functionName The function of the window to call
+		"""
+		return ('WindowManager', (login, windowName, functionName))
+		
+	def _getTarget(self, name):
+		"""
+		\brief Get the target of the calls from other plugins
+		\param name The name of the target
+		"""
+		if isinstance(name, str):
+			return super(WindowManager, self)._getTarget(name)
+		else:
+			try:
+				#get the display
+				display = self.displays[name[0]]
+				try:
+					#get the window on the display
+					window = display[name[1]]
+					#return the function
+					return getattr(window, name[2])
+				except KeyError:
+					self.log('Unknown window ' + name[0] + ' for user ' + name[1])
+			except KeyError:
+				self.log('Unknown user ' + name[0])
+				
