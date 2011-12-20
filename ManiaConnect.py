@@ -81,16 +81,16 @@ class Client(HTTPClient):
     _logoutURL = 'https://ws.maniaplanet.com/oauth2/authorize/logout/'
     #The path to the oauth2 token
     _tokenPath = '/oauth2/token/'
-    #The persistance object
-    _persistance = None
+    #The persistance object constructor
+    _persistanceConstructor = None
     
     @staticmethod
-    def setPersistance(self, newPersistance):
+    def setPersistanceConstructor(self, newPersistance):
         """
         \brief Set the static persistance object
         \param newPersistance The new persistance object
         """
-        Client._persistance = newPersistance
+        Client._persistanceConstructor = newPersistance
         
     def __init__(self, userName = None, password = None):
         """
@@ -99,7 +99,8 @@ class Client(HTTPClient):
         \param password The password to login
         """
         super(Client, self).__init__(userName, password)
-        Client._persistance.init()
+        self._persistance = Client._persistanceConstructor()
+        self._persistance.init()
         
     def getLoginUrl(self, redirectURI, scope = None):
         """
