@@ -11,7 +11,7 @@ class HTTPClient(object):
     \brief The client will connect to the system and authenticate itself
     """
     __VERSION = '1.1' #The client version 
-    __USER_AGENT = 'maniaplanet-ws-sdk/' + HTTPClient.__VERSION #The useragent of this client
+    __USER_AGENT = 'maniaplanet-ws-sdk/' #The useragent of this client
     code = None #The code that was passed by the request
     
     def __init__(self, userName = None, password = None):
@@ -57,8 +57,9 @@ class HTTPClient(object):
             director.add_handler(handler)
         
         headers = dict({
-                  'Accept', self._accept,
-                  'Content-type', self._contentType
+                  'Accept' : self._accept,
+                  'Content-type' : self._contentType,
+                  'User-Agent' : self.__USER_AGENT + self.__VERSION
                   }.items() + self._headers.items())
                   
         request = urllib2.Request(url, data, headers)
