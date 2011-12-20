@@ -198,6 +198,10 @@ class Http(PluginInterface):
 											self.__ManiaConnect['password'])
 			session.code = sessionId
 			session.getLoginUrl(fullPath)
+			try:
+				del self.__session[sessionId]
+			except KeyError:
+				pass
 			self.__sessions[sessionId] = (expires, session) 
 			
 		try:
