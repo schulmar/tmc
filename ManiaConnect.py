@@ -66,8 +66,8 @@ class HTTPClient(object):
         try:
             result = director.open(request)
         except urllib2.HTTPError as e:
-            print(e)
-            raise
+            raise self._unserializeCallback(e.read())['error']
+            
         return self._unserializeCallback(result.read())
     
 class Client(HTTPClient):
@@ -178,8 +178,10 @@ class Client(HTTPClient):
                    'grant_type'     : 'authorization_code',
                    'code'           : authorizationCode
                                    })
-        
-        response = self.execute('POST', self._tokenPath, params)
+        try:
+            response = self.execute('POST', self._tokenPath, params)
+        except:
+            return None
         
         self._serializeCallback = serializeCallback  
         self._contentType = contentType
