@@ -7,6 +7,8 @@ import string
 import time
 import urllib2
 import math
+import ManiaConnect
+import Cookie
 
 """
 \file http.py
@@ -28,25 +30,18 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.wfile.write(manialink)
 		
 	def do_GET(self):
-		ml = Manialink()
-		label = Label()
-		label['text'] = 'This is the HTTP Plugin!'
-		ml.addChild(label)
-		xml = '<?xml version="1.0" encoding="utf-8" ?>' + ml.getXML()
+		content, session = self.server.plugin.handleGet(self.path)
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
-		self.end_headers() 
-		self.wfile.write(xml)
+		if session != None:
+			self.send_header('Set-Cookie', 'session=' + str(session))
+		self.end_headers()  
+		self.wfile.write(content)
 
 class Http(PluginInterface):
 	"""
 	\brief A class for uploads using the http protocol
 	"""
-	__httpd = None#the server instance
-	__address = None#the server address
-	__thread = None#the thread in which the http server will run
-	__usedTokens = {}#a dict that maps tokens to their callback
-	__expiration_time = 100#the time a token stays valid in seconds
 	
 	def __init__(self, pipes, args):
 		"""
@@ -55,6 +50,13 @@ class Http(PluginInterface):
 		\arrs Additional plugin start arguments
 		"""
 		super(Http, self).__init__(pipes)
+		self.__httpd = None#the server instance
+		self.__address = None#the server address
+		self.__thread = None#the thread in which the http server will run
+		self.__usedTokens = {}#a dict that maps tokens to their callback
+		self.__expiration_time = 100#the time a token stays valid in seconds
+		self.__registeredPaths = {} #Paths that were registered to callbacks
+		self.__sessions = {} #The sessions per user
 		
 	def initialize(self, args):
 		"""
@@ -64,6 +66,9 @@ class Http(PluginInterface):
 		The server needs: address : ip or domain name (leave empty for autodetection)
 						 port : the port (necessary)
 		"""
+		self.__ManiaConnect = {'username' : args['user'],
+								'password' : args['password']}
+		self.registerPath('/login/test/', ('Http', 'loginTest'))
 		try:
 			#read the address if given
 			self.__address = args['address']
@@ -110,6 +115,16 @@ class Http(PluginInterface):
 		#return the token to the caller
 		return (token, self.__address)
 	
+	@staticmethod
+	def dataRecievedCallbackSignature(entries, data, *userSpecifiedArguments):
+		"""
+		\brief The POST upload callback signature
+		\param entries The values of the form entries
+		\param data The data that were posted
+		\param userSpecifiedArguments Additional arguments that were defined
+			by the caller of getUploadToken
+		"""
+	
 	def dataRecieved(self, token, entries, data):
 		"""
 		\brief Calling the callback when data for the token were recieved
@@ -135,3 +150,96 @@ class Http(PluginInterface):
 				<manialink>
 					<label text="$f12$oError$o$fff: The token you used is not valid" />
 				</manialink>'''
+
+	def registerPath(self, path, callback, *args):
+		"""
+		\brief Register a path to handle
+		\param path The path to register for
+		\param callback The callback that should return the data
+		"""
+		if path in self.__registeredPaths:
+			self.log('Warning: Path ' + path + ' is already registered to ' + str(self.__registeredPaths[path][0]))
+			
+		self.__registeredPaths[path] = (callback, args)
+		
+	@staticmethod
+	def getCallbackSignature(entries, login, *additionalParams):
+		"""
+		\brief The signature for get Callbacks
+		\param entries The dictionary for the url query
+		\param login The login of the calling player
+		\param additionalParams Predefined params to send
+		"""
+		
+	def handleGet(self, path, sessionId):
+		"""
+		\brief Handle a get request
+		\param path The full URL
+		\param session The session that was used (or None)
+		"""
+		parsed = urlparse.urlparse(path)
+		query = urlparse.parse_qs(parsed.query)
+		if 'code' in query:
+			sessionId = query['code']
+			expires, session = (time.time() + self.__expiration_time,
+							ManiaConnect.Player(self.__ManiaConnect['username'],
+												self.__ManiaConnect['password']))
+			session.code = sessionId
+			self.__sessions[sessionId] = (expires, session) 
+			
+		try:
+			callback = self.__registeredPaths[parsed.path]
+		except KeyError:
+			return ('''
+			<?xml version="1.0" encoding="utf-8" ?>
+			<manialink>
+				<label text="$f12$oError$o$fff: The ressource you requested is not valid!" />
+			</manialink>
+			''', None)
+		try:
+			expires, session = self._sessions[sessionId]
+		except KeyError:
+			Player = ManiaConnect.Player(self.__ManiaConnect['username'],
+										self.__ManiaConnect['password'])
+			xml = '''
+				<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="$f12$oError$o$fff: Could not find your session, please authenticate again!" />
+					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
+				</manialink>
+			'''.format(Player.getLoginUrl(path))
+			return (xml, None)
+			
+		if expires < time.time():
+			del self.__sessions[sessionId]
+			Player = ManiaConnect.Player(self.__ManiaConnect['username'],
+										self.__ManiaConnect['password'])
+			xml = '''
+				<?xml version="1.0" encoding="utf-8" ?>
+				<manialink>
+					<label text="$f12$oError$o$fff: Your session has expired, please authenticate again!" />
+					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
+				</manialink>
+			'''.format(Player.getLoginURL(path))
+			return (xml, None)
+		else:	
+			#Refresh the session
+			self.__sessions[sessionId] = (time.time() + self.__expiration_time,
+										session)
+			return (self.callFunction(callback[0], session.getPlayer()['login'], 
+									urlparse.parse_qs(parsed.query), *callback[1])
+					, sessionId)
+		
+	def loginTest(self, entries, login):
+		"""
+		\brief A login test for the ManiaConnect API
+		\param entries The query dict
+		\login The login of the calling player
+		"""
+		return '''
+			<?xml version="1.0" encoding="utf-8" ?>
+			<manialink>
+				<label text="{0}" />
+				<label posn="0 -3" text ="Login: {1}" />
+			</manialink>
+		'''.format(str(entries), login)
