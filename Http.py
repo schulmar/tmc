@@ -197,7 +197,7 @@ class Http(PluginInterface):
 			session = ManiaConnect.Player(self.__ManiaConnect['username'],
 											self.__ManiaConnect['password'])
 			session.code = sessionId
-			
+			session.getLoginUrl(fullPath)
 			self.__sessions[sessionId] = (expires, session) 
 			
 		try:
