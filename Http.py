@@ -230,8 +230,10 @@ class Http(PluginInterface):
 			#Refresh the session
 			self.__sessions[sessionId] = (time.time() + self.__expiration_time,
 										session)
-			return (self.callFunction(callback[0], session.getPlayer()['login'], 
-									urlparse.parse_qs(parsed.query), *callback[1])
+			return (self.callFunction(callback[0], 
+									urlparse.parse_qs(parsed.query),
+									session.getPlayer()['login'],
+									*callback[1])
 					, sessionId)
 		
 	def loginTest(self, entries, login):
