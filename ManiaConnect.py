@@ -85,7 +85,7 @@ class Client(HTTPClient):
     _persistanceConstructor = None
     
     @staticmethod
-    def setPersistanceConstructor(self, newPersistance):
+    def setPersistanceConstructor(newPersistance):
         """
         \brief Set the static persistance object
         \param newPersistance The new persistance object
