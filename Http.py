@@ -8,7 +8,7 @@ import time
 import urllib2
 import math
 import ManiaConnect
-import Cookie
+from xml.sax.saxutils import escape
 
 """
 \file http.py
@@ -209,7 +209,7 @@ class Http(PluginInterface):
 					<label text="$f12$oError$o$fff: Could not find your session, please authenticate again!" />
 					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 				</manialink>
-			'''.format(self.__player.getLoginUrl(path))
+			'''.format(escape(self.__player.getLoginUrl(path)))
 			return (xml, None)
 			
 		if expires < time.time():
@@ -220,7 +220,7 @@ class Http(PluginInterface):
 					<label text="$f12$oError$o$fff: Your session has expired, please authenticate again!" />
 					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 				</manialink>
-			'''.format(self.__player.getLoginURL(path))
+			'''.format(escape(self.__player.getLoginURL(path)))
 			return (xml, None)
 		else:	
 			#Refresh the session
