@@ -199,7 +199,7 @@ class Http(PluginInterface):
 			session.code = sessionId
 			session.getLoginUrl(fullPath)
 			try:
-				del self.__session[sessionId]
+				del self.__sessions[sessionId]
 			except KeyError:
 				pass
 			self.__sessions[sessionId] = (expires, session) 
