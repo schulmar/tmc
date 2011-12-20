@@ -65,7 +65,7 @@ class HTTPClient(object):
         request = urllib2.Request(url, data, headers)
         
         result = director.open(request)
-        return result.read()
+        return self._unserializeCallback(result.read())
     
 class Client(HTTPClient):
     """
