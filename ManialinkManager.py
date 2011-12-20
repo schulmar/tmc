@@ -86,7 +86,7 @@ class ManialinkManager(PluginInterface):
 			display = self.displays[login]
 		except KeyError:
 			return False
-		mlid = display.removeManialink(mlName)
+		mlid = display.removeManialink(mlName, self)
 		if mlid > -1:
 			xml = '<?xml version="1.0" encoding="utf-8" ?><manialink id="' + str(mlid) + '"></manialink>'
 			self.callMethod(('TmConnector', 'SendDisplayManialinkPageToLogin'), login, xml, 0, False)
@@ -172,7 +172,7 @@ class Display:
 			self.ManialinkIdRange += 1
 		return mlid
 		
-	def removeManialink(self, name):
+	def removeManialink(self, name, mlMngr):
 		"""
 		\brief Remove the manialink from this display
 		\param name The name of the manialink to remove
@@ -194,10 +194,10 @@ class Display:
 						self.ManialinkIdRange = 1
 				return mlid
 			else:
-				self.callMethod(('Logger', 'log'), 'Manialink id ' + str(name) + ' for name ' + str(name) + ' not found for deletion')
+				mlMngr.callMethod(('Logger', 'log'), 'Manialink id ' + str(name) + ' for name ' + str(name) + ' not found for deletion')
 				return -1
 		else:
-			self.callMethod(('Logger', 'log'), 'Manialink name ' + str(name) + ' not found for deletion')
+			mlMngr.callMethod(('Logger', 'log'), 'Manialink name ' + str(name) + ' not found for deletion')
 			return -1
 
 	def getActionCallback(self, actionId):
