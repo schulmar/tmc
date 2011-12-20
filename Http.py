@@ -9,6 +9,7 @@ import urllib2
 import math
 import ManiaConnect
 from xml.sax.saxutils import escape
+from Cookie import BaseCookie
 
 """
 \file http.py
@@ -33,7 +34,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		print(self.headers)
 		content, session = self.server.plugin.handleGet(
 					 self.path
-					, None)
+					, BaseCookie(self.headers.getparam('Cookie'))['session'])
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		if session != None:
