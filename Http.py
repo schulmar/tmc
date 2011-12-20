@@ -191,7 +191,7 @@ class Http(PluginInterface):
 					+ ':' + str(self.__address[1]) + path)
 		parsed = urlparse.urlparse(path)
 		query = urlparse.parse_qs(parsed.query)
-		if 'code' in query and sessionId != None:
+		if 'code' in query and sessionId == None:
 			sessionId = query['code'][0]
 			expires = time.time() + self.__expiration_time,
 			session = ManiaConnect.Player(self.__ManiaConnect['username'],
