@@ -233,7 +233,7 @@ class Http(PluginInterface):
 					<label text="$f12$oError$o$fff: Your session has expired, please authenticate again!" />
 					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 				</manialink>
-			'''.format(escape(self.__player.getLoginURL(fullPath)))
+			'''.format(escape(self.__player.getLoginUrl(fullPath)))
 			return (xml, None)
 		else:	
 			player = session.getPlayer()
@@ -253,7 +253,7 @@ class Http(PluginInterface):
 						<label text="$f12$oError$o$fff: Authentification error! (Please never reload pages, that contain code= in their URL" />
 						<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 					</manialink>
-				'''.format(escape(self.__player.getLoginURL(fullPath)))
+				'''.format(escape(self.__player.getLoginUrl(fullPath)))
 				return (xml, None)				
 		
 	def loginTest(self, entries, login):
