@@ -70,6 +70,9 @@ class Http(PluginInterface):
 		self.__ManiaConnect = {'username' : args['user'],
 								'password' : args['password']}
 		self.registerPath('/login/test/', ('Http', 'loginTest'))
+		ManiaConnect.Client.setPersistanceConstructor(ManiaConnect.PersistanceDict)
+		self.__player = ManiaConnect.Player(self.__ManiaConnect['username'],
+										self.__ManiaConnect['password'])
 		try:
 			#read the address if given
 			self.__address = args['address']
@@ -200,28 +203,24 @@ class Http(PluginInterface):
 		try:
 			expires, session = self.__sessions[sessionId]
 		except KeyError:
-			Player = ManiaConnect.Player(self.__ManiaConnect['username'],
-										self.__ManiaConnect['password'])
 			xml = '''
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
 					<label text="$f12$oError$o$fff: Could not find your session, please authenticate again!" />
 					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 				</manialink>
-			'''.format(Player.getLoginUrl(path))
+			'''.format(self.__player.getLoginUrl(path))
 			return (xml, None)
 			
 		if expires < time.time():
 			del self.__sessions[sessionId]
-			Player = ManiaConnect.Player(self.__ManiaConnect['username'],
-										self.__ManiaConnect['password'])
 			xml = '''
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
 					<label text="$f12$oError$o$fff: Your session has expired, please authenticate again!" />
 					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
 				</manialink>
-			'''.format(Player.getLoginURL(path))
+			'''.format(self.__player.getLoginURL(path))
 			return (xml, None)
 		else:	
 			#Refresh the session
