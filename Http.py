@@ -198,7 +198,7 @@ class Http(PluginInterface):
 			</manialink>
 			''', None)
 		try:
-			expires, session = self._sessions[sessionId]
+			expires, session = self.__sessions[sessionId]
 		except KeyError:
 			Player = ManiaConnect.Player(self.__ManiaConnect['username'],
 										self.__ManiaConnect['password'])
