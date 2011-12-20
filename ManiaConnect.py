@@ -159,7 +159,7 @@ class Client(HTTPClient):
             self._persistance.setVariable('access_token', accessToken)
             return accessToken
         
-    def getAccesTokenFromCode(self, authorizationCode, redirectURI):
+    def getAccessTokenFromCode(self, authorizationCode, redirectURI):
         """
         \brief Get the access token from an authorizationCode
         \param authorizationCode ...
