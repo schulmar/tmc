@@ -245,18 +245,18 @@ class DirectMapUpload(PluginInterface):
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
-    def cb_deleteMap(self, entries, login, yes, fileName):
+    def cb_deleteMap(self, entries, login, yes, filePath):
         """
         \brief Delete the map file from disk (and remove it from the map list
         \param entries Should be empty
         \param login The login of the calling player
         \param yes Is this already confirmed
-        \param fileName The file to delete
+        \param filePath The path to the file to delete (relative to the maps folder)
         """
         if yes == None:
             self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.browse')
-            confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(fileName))
-            confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), fileName)
+            confirm = YesNoDialog('Do you really want to delete the file ' + os.path.basename(filePath))
+            confirm.setAnswerCallback(('DirectMapUpload', 'cb_deleteMap'), filePath)
             confirm.setSize((40, 10))
             confirm.setPos((-20, 5))
             self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.deleteConfirm', confirm)
@@ -267,19 +267,19 @@ class DirectMapUpload(PluginInterface):
             myPath = (os.path.dirname(self.callFunction(
                                     ('TmConnector', 'GetMapsDirectory')))
                         + os.path.sep + self.__directUploadPath + os.path.sep
-                        + login)
-            if os.path.samefile(myPath, os.path.dirname(fileName)):
-                self.cb_unpublishMap(entries, login, True, fileName)
+                        + login + os.path.sep)
+            if os.path.samefile(myPath, os.path.dirname(filePath)):
+                self.cb_unpublishMap(entries, login, True, filePath)
                 try:
-                    os.remove(fileName)
+                    os.remove(myPath + os.path.basename(filePath))
                     self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                                     'Successfully deleted file ' + 
-                                    os.path.basename(fileName),
+                                    os.path.basename(filePath),
                                     login)
                 except:
                     self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                                     'Error while deleting file {} try again later'.
-                                    format(os.path.basename(fileName)),
+                                    format(os.path.basename(filePath)),
                                     login)
             else:
                 pass
