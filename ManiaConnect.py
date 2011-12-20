@@ -98,7 +98,7 @@ class Client(HTTPClient):
         \param userName The username to login
         \param password The password to login
         """
-        super(Client, self).__init(userName, password)
+        super(Client, self).__init__(userName, password)
         Client._persistance.init()
         
     def getLoginUrl(self, redirectURI, scope = None):
