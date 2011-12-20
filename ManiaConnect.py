@@ -179,10 +179,8 @@ class Client(HTTPClient):
                    'grant_type'     : 'authorization_code',
                    'code'           : authorizationCode
                                    })
-        try:
-            response = self.execute('POST', self._tokenPath, params)
-        except Exception as e:
-            print(str(e))
+        
+        response = self.execute('POST', self._tokenPath, params)
         
         self._serializeCallback = serializeCallback  
         self._contentType = contentType
