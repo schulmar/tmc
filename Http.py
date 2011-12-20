@@ -31,10 +31,13 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		self.wfile.write(manialink)
 		
 	def do_GET(self):
-		print(self.headers)
+		try:
+			sessionId = BaseCookie(self.headers.getparam('Cookie'))['session']
+		except KeyError:
+			sessionId = None 
 		content, session = self.server.plugin.handleGet(
 					 self.path
-					, BaseCookie(self.headers.getparam('Cookie'))['session'])
+					, sessionId)
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		if session != None:
