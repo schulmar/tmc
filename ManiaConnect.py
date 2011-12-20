@@ -61,10 +61,13 @@ class HTTPClient(object):
                   'Content-type' : self._contentType,
                   'User-Agent' : self.__USER_AGENT + self.__VERSION
                   }.items() + self._headers.items())
-                  
-        request = urllib2.Request(url, data, headers)
-        
-        result = director.open(request)
+
+        request = urllib2.Request(url, data, headers)            
+        try:
+            result = director.open(request)
+        except urllib2.HTTPError as e:
+            print(e)
+            raise
         return self._unserializeCallback(result.read())
     
 class Client(HTTPClient):
