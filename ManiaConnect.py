@@ -48,7 +48,7 @@ class HTTPClient(object):
             raise ('Unknown method ' + method)
             return None
         
-        director = urllib2.OpenerDirector()
+        director = urllib2.build_opener()
         
         if self._enableAuth:
             manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
@@ -65,11 +65,7 @@ class HTTPClient(object):
         request = urllib2.Request(url, data, headers)
         
         result = director.open(request)
-        
-        if result.info()['http_code'] == 200:
-            return self._unserializeCallback(result.info().read())
-        
-        raise 'Invalid response code ' + str(result.info()['http_code'])
+        return result.read()
     
 class Client(HTTPClient):
     """
