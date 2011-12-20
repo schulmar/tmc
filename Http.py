@@ -224,7 +224,7 @@ class Http(PluginInterface):
 				</manialink>
 			'''.format(escape(self.__player.getLoginUrl(fullPath)))
 			return (xml, None)
-			
+		
 		if expires < time.time():
 			del self.__sessions[sessionId]
 			xml = '''
@@ -236,14 +236,25 @@ class Http(PluginInterface):
 			'''.format(escape(self.__player.getLoginURL(fullPath)))
 			return (xml, None)
 		else:	
-			#Refresh the session
-			self.__sessions[sessionId] = (time.time() + self.__expiration_time,
+			player = session.getPlayer()
+			if player != None:
+				#Refresh the session
+				self.__sessions[sessionId] = (time.time() + self.__expiration_time,
 										session)
-			return (self.callFunction(callback[0], 
-									urlparse.parse_qs(parsed.query),
-									session.getPlayer()['login'],
-									*callback[1])
-					, sessionId)
+				return (self.callFunction(callback[0], 
+										urlparse.parse_qs(parsed.query),
+										player['login'],
+										*callback[1])
+						, sessionId)
+			else:
+				xml = '''	
+					<?xml version="1.0" encoding="utf-8" ?>
+					<manialink>
+						<label text="$f12$oError$o$fff: Authentification error! (Please never reload pages, that contain code= in their URL" />
+						<label posn="0 -3" text ="Authenticate" manialink="{0}" />
+					</manialink>
+				'''.format(escape(self.__player.getLoginURL(fullPath)))
+				return (xml, None)				
 		
 	def loginTest(self, entries, login):
 		"""
