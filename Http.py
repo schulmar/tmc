@@ -183,7 +183,8 @@ class Http(PluginInterface):
 		\param path The full URL
 		\param session The session that was used (or None)
 		"""
-		fullPath = 'http://' + ':' .join(self.__address) + path
+		fullPath = ('http://' + str(self.__address[0]) 
+					+ ':' + self.__address[1] + path)
 		parsed = urlparse.urlparse(path)
 		query = urlparse.parse_qs(parsed.query)
 		if 'code' in query:
