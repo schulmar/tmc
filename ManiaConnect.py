@@ -183,8 +183,7 @@ class Client(HTTPClient):
         
         self._persistance.deleteVariable('redirect_uri')
         self._persistance.deleteVariable('code')
-        #TODO: is this correct or should this be a dictionary access?
-        return response.access_token
+        return response['access_token']
     
     def executeOAuth2(self, method, ressource, params = None):
         """
