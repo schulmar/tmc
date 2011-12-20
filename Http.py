@@ -31,7 +31,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		
 	def do_GET(self):
 		print(self.headers)
-		content, session = self.server.plugin.handleGet(self.path)
+		content, session = self.server.plugin.handleGet(self.path, None)
 		self.send_response(200)
 		self.send_header('Content-Type', 'text/xml')
 		if session != None:
