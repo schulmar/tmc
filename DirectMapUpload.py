@@ -28,12 +28,52 @@ class DirectMapUpload(PluginInterface):
         """
         self.callMethod(('Acl', 'rightAdd'), 'DirectMapUpload.directMapUpload',
             'Upload maps directly to the server via HTTP connection.')
-        self.callMethod(('TmChat', 'registerChatCommand'), 'upload', 
-                        ('DirectMapUpload', 'chat_upload'), 
-                        'Upload a map file to the server from within the game.')
+        #self.callMethod(('TmChat', 'registerChatCommand'), 'upload', 
+        #                ('DirectMapUpload', 'chat_upload'), 
+        #                'Upload a map file to the server from within the game.')
         self.callMethod(('TmChat', 'registerChatCommand'), 'browse', 
                         ('DirectMapUpload', 'chat_browse'),
                         'Browse your directly uploaded maps.')
+        self.callMethod(('Http', 'registerPath'), '/map/upload/', 
+                        ('DirectMapUpload', 'web_upload'))
+    
+    def web_upload(self, entries, login):
+        """
+        \brief Display the upload formular
+        \param entries (Do not matter)
+        \param login The login of the calling player
+        """
+        manialink = Manialink()
+        
+        #the label of the submit button
+        label = Label()
+        label['posn'] = '19 -1'
+        label['text'] = 'Upload!'
+        manialink.addChild(label)
+        #the submit butten background
+        quad = Quad()
+        quad['posn'] = '18 0'
+        quad['sizen'] = '9 4'
+        quad['style'] = 'Bgs1'
+        quad['substyle'] = 'PlayerCard'
+        ml = self.callFunction(('Http', 'getUploadToken'), 
+                               ('DirectMapUpload', 'directMapUpload'), 
+                               login)
+        quad['manialink'] = ('POST(http://' + str(ml[1][0]) + ':' + str(ml[1][1]) 
+                                + '?token=' + str(ml[0]) + 
+                                '&map=inputTrackFile,inputTrackFile)')
+        manialink.addChild(quad)
+        
+        #the entry
+        entry = FileEntry()
+        entry['posn'] = "2 -1"
+        entry['sizen'] = "15 3"
+        entry['name'] = "inputTrackFile"
+        entry['folder'] = "Maps"
+        entry['default'] = "Pick Map"
+        manialink.addChild(entry)
+        
+        return '<?xml version="1.0" encoding="utf-8" ?>' + manialink.getXML()
     
     def chat_upload(self, login, param):
         """
