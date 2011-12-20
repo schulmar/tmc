@@ -252,7 +252,7 @@ class Http(PluginInterface):
 <manialink>
 	<label posn="0 10" sizen="30 10" halign="center" autonewline="1" 
 	text="$f12$oError$o$fff: Authentification error! (Please never reload pages, that contain code= in their URL)" />
-	<label posn="0 -3" sizen="10 10" halign="center" text ="Authenticate" manialink="{0}" />
+	<label posn="0 -3" sizen="10 3" halign="center" text ="Authenticate" manialink="{0}" />
 </manialink>
 				'''.format(escape(self.__player.getLoginUrl(fullPath)))
 				return (xml, None)				
