@@ -73,7 +73,7 @@ class SlideWidget(Widget):
         mainFrame = Frame()
         mainFrame['id'] = 'mainFrame'
         
-        mainFrame['posn'] = '60 0 1'
+        mainFrame['posn'] = '60 10 1'
         
         bgQuad = Quad()
         bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, size[1])
@@ -116,6 +116,7 @@ main()
             {
                 case CGameManialinkScriptEvent::Type::MouseOver:
                 {
+                    log(Event.ControlId)
                     if(Event.ControlId == "mainFrame")
                     {
                         if(mainFrame.PosnX > 64 - windowWidth)
