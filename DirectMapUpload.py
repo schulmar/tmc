@@ -49,7 +49,7 @@ class DirectMapUpload(PluginInterface):
         instruction = Label()
         instruction['text'] = 'Please select the map you want to upload and click upload!'
         instruction['sizen'] = '30 3'
-        instruction['posn'] = '10 2'
+        instruction['posn'] = '0 4'
         manialink.addChild(instruction)
         
         #the label of the submit button
