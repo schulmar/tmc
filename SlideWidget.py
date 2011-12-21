@@ -102,16 +102,14 @@ class SlideWidget(Widget):
 Void mouseOver()
 {
     declare Integer windowWidth for CurrentTime;
-    declare CGameManialinkFrame mainFrame;
-    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    declare CGameManialinkFrame mainFrame <=> Page.MainFrame.Controls["mainFrame"];
     if(mainFrame.PosnX > 64 - windowWidth)
         mainFrame.PosnX -= 1; 
 }
 
 Void mouseNotOver()
 {
-    declare CGameManialinkFrame mainFrame;
-    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    declare CGameManialinkFrame mainFrame <=> Page.MainFrame.Controls["mainFrame"];
     if(mainFrame.PosnX < 62)
         mainFrame.PosnX += 1;
 }
