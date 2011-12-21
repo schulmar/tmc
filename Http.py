@@ -227,8 +227,8 @@ class Http(PluginInterface):
 			xml = '''
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
-					<label text="$f12$oError$o$fff: Could not find your session, please authenticate again!" />
-					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
+					<label text="Could not find your session, please authenticate!" />
+					<label posn="0 -3" sizen="10 2" text ="Authenticate" manialink="{0}" />
 				</manialink>
 			'''.format(escape(self.__player.getLoginUrl(fullPath.split('?')[0])))
 			return (xml, None)
@@ -238,8 +238,8 @@ class Http(PluginInterface):
 			xml = '''
 				<?xml version="1.0" encoding="utf-8" ?>
 				<manialink>
-					<label text="$f12$oError$o$fff: Your session has expired, please authenticate again!" />
-					<label posn="0 -3" text ="Authenticate" manialink="{0}" />
+					<label text="Your session has expired, please authenticate again!" />
+					<label posn="0 -3" sizen="10 2" text ="Authenticate" manialink="{0}" />
 				</manialink>
 			'''.format(escape(self.__player.getLoginUrl(fullPath.split('?')[0])))
 			return (xml, None)
