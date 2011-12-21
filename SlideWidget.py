@@ -59,6 +59,14 @@ class SlideWidget(Widget):
                 
                 self.__commandButtons.append(newButton)
             
+    def setUser(self, name):
+        """
+        \brief Set the user of this window
+        """
+        super(SlideWidget, self).setUser(name)
+        for b in self.__commandButtons.values():
+            b.setUser(name)
+            
     def addButton(self, button):
         """
         \brief Add a new button to the SlideWidget
