@@ -83,6 +83,16 @@ class SlideWidget(Widget):
         return self.getWindowManager().getCallbackAddress(login, 
                                           self.getName(), 
                                           windowName + '.' + functionName)
+        
+    def callMethod(self, *args):
+        self.getWindowManager().callMethod(*args)
+        
+    def callFunction(self, *args):
+        return self.getWindowManager().callFunction(*args)
+    
+    def signalEvent(self, *args):
+        self.getWindowManager().signalEvent(*args)
+    
     def __getattr__(self, name):
         """
         \brief Get the target of the calls from other plugins
