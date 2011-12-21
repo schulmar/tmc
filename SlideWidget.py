@@ -104,7 +104,6 @@ class SlideWidget(Widget):
         
         contentFrame = Frame()
         contentFrame['posn'] = '{:d} {:d} 1'.format(1, size[1] // 2 - 1)
-        mainFrame.addChild(contentFrame)
         
         x = 0
         y = 0
@@ -129,6 +128,8 @@ class SlideWidget(Widget):
             print(ml.getXML())
             
             contentFrame.addChild(buttonFrame)
+            
+        mainFrame.addChild(contentFrame)
         
         bgQuad = Quad()
         bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, size[1])
