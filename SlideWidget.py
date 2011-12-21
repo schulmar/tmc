@@ -21,6 +21,7 @@ class SlideWidget(Widget):
         \param args Additional startup arguments
         """
         super(SlideWidget, self).__init__()
+        self.__commandButtons = []
         
     def initialize(self, buttonList):
         """
@@ -74,6 +75,31 @@ class SlideWidget(Widget):
         mainFrame['id'] = 'mainFrame'
         
         mainFrame['posn'] = '60 10 1'
+        
+        contentFrame = Frame()
+        contentFrame['posn'] = '{:d} {:d} 1'.format(size[0] // 2 + 1, size[1] // 2 - 1)
+        mainFrame.addChild(contentFrame)
+        
+        x = 0
+        y = 0
+        
+        
+        
+        for c in self.__commandButtons:
+            buttonSize = c.getSize()
+            
+            buttonFrame = Frame()
+            buttonFrame['posn'] = '{:d} {:d}'.format(x + buttonSize[0] // 2, 
+                                                     y + buttonSize[1] // 2)
+            
+            y += buttonSize[1]
+            if -y > size[1]:
+                y = 0
+                x += buttonSize[0] 
+            
+            buttonFrame.addChild(c.getManialink())
+            
+            contentFrame.addChild(buttonFrame)
         
         bgQuad = Quad()
         bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, size[1])
