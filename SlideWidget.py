@@ -138,7 +138,7 @@ main()
                 mainFrame.PosnX += 1;
         }
         yield;
-        sleep(20);
+        //sleep(20);
     }
 }
 '''
