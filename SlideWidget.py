@@ -72,8 +72,8 @@ class SlideWidget(Widget):
         \param login The login of the user to display to
         """
         return self.getWindowManager().getCallbackAddress(login, 
-                                                          windowName, 
-                                                          ('forwardCallback',
+                                                          self.getName(), 
+                                                          (windowName,
                                                            functionName))
     def __getattr__(self, name):
         """
