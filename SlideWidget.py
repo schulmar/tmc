@@ -1,5 +1,6 @@
 from WindowElements import *
 from ChatCommandButton import *
+from os import linesep
 
 """
 \file SlideWidget.py
@@ -80,17 +81,21 @@ class SlideWidget(Widget):
         mainFrame.addChild(bgQuad)
         
         ms = ManiaScript()
-        ms.setContent(self.getManiaScript().format(
-                windowWidth = size[0]
-        ))
+        variables = ['Integer windowWidth {:d}'.format(size[0])
+                     ]
+        ms.setContent(self.getManiaScript(variables))
         mainFrame.addChild(ms)
         
         return mainFrame
     
-    def getManiaScript(self):
-        return '''
-declare Integer windowWidth = {windowWidth}
-        
+    def getManiaScript(self, variables):
+        """
+        \brief Return the maniascript code with global variables
+        """
+        globalVariables = ''
+        for v in variables:
+            globalVariables += 'declare ' + v + ';' + linesep
+        return globalVariables + '''
 main() 
 {
     declare Boolean mouseWasOver; 
