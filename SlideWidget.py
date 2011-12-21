@@ -144,8 +144,10 @@ class SlideWidget(Widget):
             #print(ml.getXML())
             
             contentFrame.addChild(buttonFrame)
-        
-        size = (x + 10, size[1])
+        if x != 0:
+            size = (x + 10, size[1])
+        else:
+            size = (x + 10, y + 10)
             
         mainFrame.addChild(contentFrame)
         
