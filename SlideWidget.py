@@ -120,7 +120,7 @@ main()
                 }
                 case CGameManialinkScriptEvent::Type::MouseOut:
                 {
-                    mousOver = False;
+                    mouseOver = False;
                 }
                 default: 
                 {
