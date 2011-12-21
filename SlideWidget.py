@@ -147,7 +147,7 @@ class SlideWidget(Widget):
         if x != 0:
             size = (x + 10, size[1])
         else:
-            size = (x + 10, 10 - y)
+            size = (x + 10, 2 -y)
             
         mainFrame.addChild(contentFrame)
         
