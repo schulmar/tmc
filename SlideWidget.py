@@ -117,13 +117,10 @@ main()
             {
                 case CGameManialinkScriptEvent::Type::MouseOver:
                 {
-                    log(Event.ControlId);
-                    if(Event.ControlId == "mainFrame")
-                    {
+                        
                         if(mainFrame.PosnX > 64 - windowWidth)
                             mainFrame.PosnX -= 1; 
-                        mouseWasOver = True;
-                    }                    
+                        mouseWasOver = True;                    
                 }
                 default: 
                 {
