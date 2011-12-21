@@ -110,7 +110,6 @@ main()
     declare CGameManialinkFrame mainFrame <=> (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame); 
     while(True)
     {
-        mouseWasOver = False;
         foreach(Event in PendingEvents)
         {
             switch(Event.Type)
