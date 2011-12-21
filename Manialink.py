@@ -127,7 +127,7 @@ class Manialink(XmlElement):
 		\brief Construct one manialink element
 		"""
 		self.name = 'manialink'
-		super(Manialink, self).__init__(['id'])
+		super(Manialink, self).__init__(['id', ])
 
 displayable = ['size', 'sizen', 'pos', 'posn', 'scale', 'id', 'ScriptEvents']
 alignable = ['valign', 'halign']  
