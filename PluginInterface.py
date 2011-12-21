@@ -114,12 +114,12 @@ class PluginInterface(object):
 						method(*job.getArgs())
 					except TypeError:
 						print('Used wrong arguments in method call ' 
-							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs()) 
+							+ self.__class__.__name__ + '.' + str(job.name) + str(job.getArgs()) 
 							+ ' from ' + str(job.questioner))
 						raise
 					except:
 						print('Exception in method call ' 
-							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs()) 
+							+ self.__class__.__name__ + '.' + str(job.name) + str(job.getArgs()) 
 							+ ' from ' + str(job.questioner))
 						raise
 				elif isinstance(job, Event):
@@ -129,18 +129,18 @@ class PluginInterface(object):
 						function = self._getTarget(job.name)
 					except AttributeError:
 						print('Unknown function ' + self.__class__.__name__ + '.'
-							+ job.name + str(job.getArgs()))
+							+ str(job.name) + str(job.getArgs()))
 					self.__questioner = job.questioner
 					try:
 						value = function(*job.getArgs())
 					except TypeError:
 						print('Used wrong arguments in function call ' 
-							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs())
+							+ self.__class__.__name__ + '.' + str(job.name) + str(job.getArgs())
 							+ ' from ' + job.questioner)
 						raise
 					except:
 						print('Exception in function call ' 
-							+ self.__class__.__name__ + '.' + job.name + str(job.getArgs()) 
+							+ self.__class__.__name__ + '.' + str(job.name) + str(job.getArgs()) 
 							+ ' from ' + job.questioner)
 						raise
 					self.inPipe.send(Result(job, value))
