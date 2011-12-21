@@ -131,12 +131,12 @@ main()
         }
         if(mouseOver)
         {
-            if(mainFrame.PosnX > 64 - windowWidth)
+            if(mainFrame.PosnX > 160 - windowWidth)
                     mainFrame.PosnX -= 1;
         }
         else
         {
-            if(mainFrame.PosnX < 62)
+            if(mainFrame.PosnX < 160)
                 mainFrame.PosnX += 1;
         }
         yield;
