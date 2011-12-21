@@ -87,7 +87,7 @@ class SlideWidget(Widget):
         \brief Get the target of the calls from other plugins
         \param name The name of the target
         """
-        if not name.find('.'):
+        if not '.' in name:
                 return getattr(super(SlideWidget, self), name)
         try:
             splitList = name.split('.')
