@@ -21,7 +21,7 @@ class SlideWidget(Widget):
         \param args Additional startup arguments
         """
         super(SlideWidget, self).__init__()
-        self.__commandButtons = []
+        self.__commandButtons = {}
         
     def initialize(self, buttonList):
         """
@@ -64,9 +64,33 @@ class SlideWidget(Widget):
         \brief Add a new button to the SlideWidget
         \param button The new button
         """
-        self.__commandButtons.append(button)
+        self.__commandButtons[button.getName()] = button
          
-    def getManialink(self):
+    def getCallbackAddress(self, login, windowName, functionName):
+        """
+        \brief Get the callback address for the window
+        \param login The login of the user to display to
+        """
+        return self.getWindowManager().getCallbackAddress(login, 
+                                                          windowName, 
+                                                          ('forwardCallback',
+                                                           functionName))
+    def __getattr__(self, name):
+        """
+        \brief Get the target of the calls from other plugins
+        \param name The name of the target
+        """
+        try:
+            iter(name)
+            return getattr(self.__commandButtons[name[0]], name[1])
+        except TypeError:
+            raise AttributeError
+        except KeyError:
+            print('Trying to access non existing button ', name[0])
+            raise
+           
+        
+    def getManialink(self, wmMngr):
         """
         \brief Return the manialink hierarchie of this widget
         """
@@ -85,7 +109,7 @@ class SlideWidget(Widget):
         
         
         
-        for c in self.__commandButtons:
+        for c in self.__commandButtons.values():
             buttonSize = c.getSize()
             
             buttonFrame = Frame()
@@ -97,6 +121,7 @@ class SlideWidget(Widget):
                 y = 0
                 x += buttonSize[0] 
             
+            c.setWindowManager(self)
             buttonFrame.addChild(c.getManialink())
             
             contentFrame.addChild(buttonFrame)
