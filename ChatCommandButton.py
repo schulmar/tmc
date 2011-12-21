@@ -12,7 +12,7 @@ class ChatCommandButton(Widget):
     
     When this button is pressed, its assigned chatcommand will be triggered
     """
-    def __init__(self, commandLine):
+    def __init__(self, commandLine = None):
         """
         \brief Construct the button
         """
@@ -59,6 +59,7 @@ class ChatCommandButton(Widget):
         """
         \brief Get the manialink hierarchie
         """
+        self.setSize((6, 10))
         pos = self.getPos()
         frame = Frame()
         frame['posn'] = '{:d} {:d} {:d}'.format(*pos)
@@ -115,7 +116,8 @@ class ChatCommandButton(Widget):
         \param login The login of the calling player
         \param commandLine The chat command to execute
         """
-        self.getWindowManager().callMethod(('TmChat', 'PlayerChat'),
+        if commandLine != None:
+            self.getWindowManager().callMethod(('TmChat', 'PlayerChat'),
                     0, 
                     login,
                     commandLine,
