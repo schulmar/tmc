@@ -106,7 +106,7 @@ main()
 { 
     ''' +  globalVariables + '''
 
-    declare Boolean mouseWasOver;
+    declare Boolean mouseOver;
     declare CGameManialinkFrame mainFrame <=> (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame); 
     while(True)
     {
@@ -116,26 +116,32 @@ main()
             switch(Event.Type)
             {
                 case CGameManialinkScriptEvent::Type::MouseOver:
+                { 
+                    mouseOver = True;                    
+                }
+                case CGameManialinkScriptEvent::Type::MouseOut:
                 {
-                        
-                        if(mainFrame.PosnX > 64 - windowWidth)
-                            mainFrame.PosnX -= 1; 
-                        mouseWasOver = True;                    
+                    mousOver = False;
                 }
                 default: 
                 {
-                    log(Event.Type);
-                    log(Event.ControlId);
+                    //log(Event.Type);
+                    //log(Event.ControlId);
                 }
             }
         }
-        if(!mouseWasOver)
+        if(mouseOver)
+        {
+            if(mainFrame.PosnX > 64 - windowWidth)
+                    mainFrame.PosnX -= 1;
+        }
+        else
         {
             if(mainFrame.PosnX < 62)
                 mainFrame.PosnX += 1;
         }
         yield;
-        //sleep(20);
+        sleep(20);
     }
 }
 '''
