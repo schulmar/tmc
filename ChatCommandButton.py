@@ -21,6 +21,7 @@ class ChatCommandButton(Widget):
         self.__style = None #The logo on the button
         self.__image = None #The image on the button
         self.__text = None #The text of the button
+        self.__manialink = None #The manialink of the button
         
     def setIcon(self, style):
         """
@@ -40,6 +41,12 @@ class ChatCommandButton(Widget):
         else:
             self.__image = (image, image)
         
+    def setManialink(self, ml):
+        """
+        \brief Set the manialink of the button
+        \param ml The manialink address
+        """
+        self.__manialink = ml
         
     def setText(self, text):
         """
@@ -63,6 +70,8 @@ class ChatCommandButton(Widget):
         bgQuad['substyle'] = 'BgList'
         #bgQuad['posn'] = '{:d} {:d} {:d}'.format(0, 0, 0)
         bgQuad['sizen'] = '{:d} {:d}'.format(6, 10)
+        if self.__manialink != None:
+            bgQuad['manialink'] = self.__manialink
         cbName = self.getWindowManager().getCallbackAddress(
                                     self.getUser(), 
                                     self.getName(), 
@@ -82,7 +91,9 @@ class ChatCommandButton(Widget):
         if self.__image != None:
             logoQuad['image'] = self.__image[0]
             logoQuad['imagefocus'] = self.__image[1]
-            
+        
+        if self.__manialink != None:
+            logoQuad['manialink'] = self.__manialink
         logoQuad.setCallback(cbName, self.__commandLine)
         frame.addChild(logoQuad)
         
