@@ -106,7 +106,7 @@ class Http(PluginInterface):
 		
 		\return http://domain:port
 		"""
-		return 'http://' + self.__address[0] + ':' + self.__address[1]
+		return 'http://' + str(self.__address[0]) + ':' + str(self.__address[1])
 		
 	def getUploadToken(self, callback, *args):
 		"""
