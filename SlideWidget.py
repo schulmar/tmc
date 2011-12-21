@@ -80,23 +80,22 @@ class SlideWidget(Widget):
         \param login The login of the user to display to
         """
         return self.getWindowManager().getCallbackAddress(login, 
-                                                          self.getName(), 
-                                                          (windowName,
-                                                           functionName))
+                                          self.getName(), 
+                                          windowName + '.' + functionName)
     def __getattr__(self, name):
         """
         \brief Get the target of the calls from other plugins
         \param name The name of the target
         """
-        if isinstance(name, str):
+        if not name.find('.'):
                 return getattr(super(SlideWidget, self), name)
         try:
-            iter(name)
-            return getattr(self.__commandButtons[name[0]], name[1])
+            splitList = name.split('.')
+            return getattr(self.__commandButtons[splitList[0]], '.'.join(splitList[1:]))
         except TypeError:
             raise AttributeError
         except KeyError:
-            print('Trying to access non existing button ', name[0])
+            print('Trying to access non existing button ', splitList[0])
             raise
            
         
