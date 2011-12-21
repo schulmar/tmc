@@ -107,7 +107,7 @@ main()
     ''' +  globalVariables + '''
 
     declare Boolean mouseWasOver;
-    declare CGameManialinkControl mainFrame <=> Page.MainFrame.Controls["mainFrame"]; 
+    declare CGameManialinkFrame mainFrame <=> (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame); 
     while(True)
     {
         mouseWasOver = False;
