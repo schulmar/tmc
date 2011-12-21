@@ -707,6 +707,10 @@ class ChatCommands(PluginInterface):
 					login, 'ChatCommands.CommentButton', CommentButton)
 		
 		slideWidget = SlideWidget()
+		slideWidget.addButton(RecordsButton)
+		slideWidget.addButton(UploadButton)
+		slideWidget.addButton(CommentsButton)
+		slideWidget.addButton(CommentButton)
 		slideWidget.setSize((20, 60))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.SlideWidget', slideWidget)
