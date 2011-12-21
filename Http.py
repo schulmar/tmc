@@ -100,6 +100,14 @@ class Http(PluginInterface):
 		self.__thread.daemon = True
 		self.__thread.start()
 		
+	def getAddress(self):
+		"""
+		\brief Return the netloc of the server
+		
+		\return http://domain:port
+		"""
+		return 'http://' + self.__address[0] + ':' + self.__address[1]
+		
 	def getUploadToken(self, callback, *args):
 		"""
 		\brief Generates a valid token for direct http uploads
