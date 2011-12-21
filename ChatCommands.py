@@ -673,8 +673,8 @@ class ChatCommands(PluginInterface):
 		RecordsButton.setIcon(('Icons128x128_1', 'Rankings'))
 		RecordsButton.setText('Records')
 		RecordsButton.setPos((50, -40))
-		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.RecordsButton', RecordsButton)
+		#self.callMethod(('WindowManager', 'displayWindow'),
+		#			login, 'ChatCommands.RecordsButton', RecordsButton)
 		
 		UploadButton = ChatCommandButton('/upload')
 		UploadButton.setIcon(('Icons128x128_1', 'Upload'))
@@ -682,29 +682,29 @@ class ChatCommands(PluginInterface):
 		UploadButton.setPos((44, -40))
 		address = self.callFunction(('Http', 'getAddress'))
 		UploadButton.setManialink(address + '/map/upload/')
-		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.UploadButton', UploadButton)
+		#self.callMethod(('WindowManager', 'displayWindow'),
+		#			login, 'ChatCommands.UploadButton', UploadButton)
 		
 		BrowseButton = ChatCommandButton('/browse')	
 		BrowseButton.setIcon(('Icons128x128_1', 'Browse'))
 		BrowseButton.setText('Browse')
 		BrowseButton.setPos((38, -40))
-		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.BrowseButton', BrowseButton)
+		#self.callMethod(('WindowManager', 'displayWindow'),
+		#			login, 'ChatCommands.BrowseButton', BrowseButton)
 		
 		CommentsButton = ChatCommandButton('/map comments')
 		CommentsButton.setIcon(('Icons128x128_1', 'Share'))
 		CommentsButton.setText('Read')
 		CommentsButton.setPos((32, -40))
-		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.CommentsButton', CommentsButton)
+		#self.callMethod(('WindowManager', 'displayWindow'),
+		#			login, 'ChatCommands.CommentsButton', CommentsButton)
 		
 		CommentButton = ChatCommandButton('/map comment')
 		CommentButton.setIcon(('Icons128x128_1', 'Inputs'))
 		CommentButton.setText('Write')
 		CommentButton.setPos((26, -40))
-		self.callMethod(('WindowManager', 'displayWindow'),
-					login, 'ChatCommands.CommentButton', CommentButton)
+		#self.callMethod(('WindowManager', 'displayWindow'),
+		#			login, 'ChatCommands.CommentButton', CommentButton)
 		
 		slideWidget = SlideWidget()
 		slideWidget.addButton(RecordsButton)
