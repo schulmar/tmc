@@ -80,6 +80,7 @@ class SlideWidget(Widget):
         bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, size[1] // 2, 0)
         bgQuad['style'] = 'Bgs1'
         bgQuad['substyle'] = 'BgCardFolder'
+        bgQuad['ScriptEvents'] = '1'
         mainFrame.addChild(bgQuad)
         
         ms = ManiaScript()
