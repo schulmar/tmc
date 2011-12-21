@@ -126,15 +126,12 @@ class SlideWidget(Widget):
         x = 0
         y = 0
         
-        
-        i = 0
         for c in self.__commandButtons:
-            i += 1
             c.setWindowManager(self)
             buttonSize = c.getSize()
             #buttonFrame = Frame()
             buttonFrame = c.getManialink()
-            buttonFrame['posn'] = '{:d} {:d} 1'.format(x + buttonSize[0] // 2, 
+            buttonFrame['posn'] = '{:d} {:d} 1'.format(x + buttonSize[0], 
                                                      y - buttonSize[1] // 2)
             
             y -= buttonSize[1]
@@ -151,7 +148,7 @@ class SlideWidget(Widget):
         mainFrame.addChild(contentFrame)
         
         bgQuad = Quad()
-        bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, size[1])
+        bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, x + 5)
         bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, size[1] // 2, 0)
         bgQuad['style'] = 'Bgs1InRace'
         bgQuad['substyle'] = 'BgCardList'
