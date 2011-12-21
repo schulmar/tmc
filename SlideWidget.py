@@ -21,7 +21,7 @@ class SlideWidget(Widget):
         \param args Additional startup arguments
         """
         super(SlideWidget, self).__init__()
-        self.__commandButtons = {}
+        self.__commandButtons = []
         
     def initialize(self, buttonList):
         """
@@ -64,7 +64,7 @@ class SlideWidget(Widget):
         \brief Set the user of this window
         """
         super(SlideWidget, self).setUser(name)
-        for b in self.__commandButtons.values():
+        for b in self.__commandButtons:
             b.setUser(name)
             
     def addButton(self, button):
@@ -72,7 +72,8 @@ class SlideWidget(Widget):
         \brief Add a new button to the SlideWidget
         \param button The new button
         """
-        self.__commandButtons[button.getName()] = button
+        button.setName(str(len(self.__commandButtons)))
+        self.__commandButtons.append(button)    
          
     def getCallbackAddress(self, login, windowName, functionName):
         """
@@ -91,7 +92,7 @@ class SlideWidget(Widget):
                 return getattr(super(SlideWidget, self), name)
         try:
             splitList = name.split('.')
-            return getattr(self.__commandButtons[splitList[0]], '.'.join(splitList[1:]))
+            return getattr(self.__commandButtons[int(splitList[0])], '.'.join(splitList[1:]))
         except TypeError:
             raise AttributeError
         except KeyError:
@@ -116,8 +117,9 @@ class SlideWidget(Widget):
         y = 0
         
         
-        
-        for c in self.__commandButtons.values():
+        i = 0
+        for c in self.__commandButtons:
+            i += 1
             c.setWindowManager(self)
             buttonSize = c.getSize()
             #buttonFrame = Frame()
