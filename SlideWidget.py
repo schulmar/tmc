@@ -95,7 +95,7 @@ class SlideWidget(Widget):
         globalVariables = ''
         for v in variables:
             globalVariables += ('declare ' + v['name'] 
-                            + ' for CurrentTime = ' + v['value'] 
+                            + ' = ' + v['value'] 
                             + ';' + linesep)
         return '''
 
@@ -103,7 +103,8 @@ main()
 { 
     ''' +  globalVariables + '''
 
-    declare Boolean mouseWasOver; 
+    declare Boolean mouseWasOver;
+    declare CGameManialinkControl mainFrame <=> Page.MainFrame.Controls["mainFrame"]; 
     while(True)
     {
         mouseWasOver = False;
@@ -115,31 +116,20 @@ main()
                 {
                     if(Event.ControlId == "mainFrame")
                     {
-                        mouseOver();
+                        if(mainFrame.PosnX > 64 - windowWidth)
+                            mainFrame.PosnX -= 1; 
                         mouseWasOver = True;
                     }                    
                 }
             }
         }
         if(!mouseWasOver)
-            mouseNotOver();
+        {
+            if(mainFrame.PosnX < 62)
+                mainFrame.PosnX += 1;
+        }
         yield;
         sleep(20);
     }
-}
-
-Void mouseOver()
-{
-    declare Integer windowWidth for CurrentTime;
-    declare CGameManialinkControl mainFrame <=> Page.MainFrame.Controls["mainFrame"];
-    if(mainFrame.PosnX > 64 - windowWidth)
-        mainFrame.PosnX -= 1; 
-}
-
-Void mouseNotOver()
-{
-    declare CGameManialinkControl mainFrame <=> Page.MainFrame.Controls["mainFrame"];
-    if(mainFrame.PosnX < 62)
-        mainFrame.PosnX += 1;
 }
 '''
