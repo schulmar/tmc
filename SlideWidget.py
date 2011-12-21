@@ -81,7 +81,7 @@ class SlideWidget(Widget):
         mainFrame.addChild(bgQuad)
         
         ms = ManiaScript()
-        variables = ['Integer windowWidth = {:d}'.format(size[0])
+        variables = [{'name' : 'Integer windowWidth', 'value' : str(size[0])}
                      ]
         ms.setContent(self.getManiaScript(variables))
         mainFrame.addChild(ms)
@@ -94,10 +94,14 @@ class SlideWidget(Widget):
         """
         globalVariables = ''
         for v in variables:
-            globalVariables += 'declare ' + v + ' for CurrentTime;' + linesep
-        return globalVariables + '''
+            globalVariables += ('declare ' + v['name'] 
+                            + ' for CurrentTime = ' + v['value'] 
+                            + ';' + linesep)
+        return '''
 main() 
-{
+{ 
+    ''' +  globalVariables + '''
+
     declare Boolean mouseWasOver; 
     while(True)
     {
