@@ -145,7 +145,7 @@ class SlideWidget(Widget):
             
             contentFrame.addChild(buttonFrame)
         
-        size[0] = x + 10
+        size = (x + 10, size[1])
             
         mainFrame.addChild(contentFrame)
         
