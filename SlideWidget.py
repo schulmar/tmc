@@ -124,7 +124,9 @@ class SlideWidget(Widget):
                 x += buttonSize[0] 
             
             c.setWindowManager(self)
-            buttonFrame.addChild(c.getManialink())
+            ml = c.getManialink()
+            buttonFrame.addChild(ml)
+            print(ml.getXML())
             
             contentFrame.addChild(buttonFrame)
         
