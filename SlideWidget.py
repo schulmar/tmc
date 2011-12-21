@@ -184,7 +184,7 @@ main()
         }
         if(mouseOver)
         {
-            if(mainFrame.PosnX > 160 - windowWidth)
+            if(mainFrame.PosnX > 155 - windowWidth)
                     mainFrame.PosnX -= 1;
         }
         else
