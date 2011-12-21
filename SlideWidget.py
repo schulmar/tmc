@@ -80,6 +80,8 @@ class SlideWidget(Widget):
         \brief Get the target of the calls from other plugins
         \param name The name of the target
         """
+        if isinstance(name, str):
+                return getattr(super(SlideWidget, self), name)
         try:
             iter(name)
             return getattr(self.__commandButtons[name[0]], name[1])
@@ -90,7 +92,7 @@ class SlideWidget(Widget):
             raise
            
         
-    def getManialink(self, wmMngr):
+    def getManialink(self):
         """
         \brief Return the manialink hierarchie of this widget
         """
