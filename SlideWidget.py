@@ -94,7 +94,7 @@ class SlideWidget(Widget):
         """
         globalVariables = ''
         for v in variables:
-            globalVariables += 'declare ' + v + ';' + linesep
+            globalVariables += 'declare ' + v + ' for CurrentTime;' + linesep
         return globalVariables + '''
 main() 
 {
@@ -125,6 +125,7 @@ main()
 
 Void mouseOver()
 {
+    declare Integer windowWidth for CurrentTime;
     declare CGameManialinkFrame mainFrame;
     mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
     if(mainFrame.PosnX > 64 - windowWidth)
