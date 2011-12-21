@@ -709,6 +709,7 @@ class ChatCommands(PluginInterface):
 		slideWidget = SlideWidget()
 		slideWidget.addButton(RecordsButton)
 		slideWidget.addButton(UploadButton)
+		slideWidget.addButton(BrowseButton)
 		slideWidget.addButton(CommentsButton)
 		slideWidget.addButton(CommentButton)
 		slideWidget.setSize((20, 60))
