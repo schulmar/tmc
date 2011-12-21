@@ -705,6 +705,11 @@ class ChatCommands(PluginInterface):
 		CommentButton.setPos((26, -40))
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.CommentButton', CommentButton)
+		
+		slideWidget = SlideWidget()
+		slideWidget.setSize((20, 60))
+		self.callMethod(('WindowManager', 'displayWindow'),
+					login, 'ChatCommands.SlideWidget', slideWidget)
 							
 		
 	def cb_recordsReactor(self, entries, login):
