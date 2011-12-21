@@ -124,6 +124,11 @@ main()
                         mouseWasOver = True;
                     }                    
                 }
+                default: 
+                {
+                    log(Event.Type);
+                    log(Event.ControlId);
+                }
             }
         }
         if(!mouseWasOver)
