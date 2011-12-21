@@ -98,6 +98,24 @@ class SlideWidget(Widget):
                             + ' for CurrentTime = ' + v['value'] 
                             + ';' + linesep)
         return '''
+        
+Void mouseOver()
+{
+    declare Integer windowWidth for CurrentTime;
+    declare CGameManialinkFrame mainFrame;
+    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    if(mainFrame.PosnX > 64 - windowWidth)
+        mainFrame.PosnX -= 1; 
+}
+
+Void mouseNotOver()
+{
+    declare CGameManialinkFrame mainFrame;
+    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    if(mainFrame.PosnX < 62)
+        mainFrame.PosnX += 1;
+}
+
 main() 
 { 
     ''' +  globalVariables + '''
@@ -125,22 +143,4 @@ main()
         yield;
         sleep(20);
     }
-}
-
-Void mouseOver()
-{
-    declare Integer windowWidth for CurrentTime;
-    declare CGameManialinkFrame mainFrame;
-    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
-    if(mainFrame.PosnX > 64 - windowWidth)
-        mainFrame.PosnX -= 1; 
-}
-
-Void mouseNotOver()
-{
-    declare CGameManialinkFrame mainFrame;
-    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
-    if(mainFrame.PosnX < 62)
-        mainFrame.PosnX += 1;
-}
-        '''
+}'''
