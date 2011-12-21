@@ -72,7 +72,7 @@ class ManialinkManager(PluginInterface):
 		"""
 		self.__insertLogin(login)
 		display = self.displays[login]
-		display.addManialink(DOM, mlName)
+		display.addManialink(DOM, mlName, self)
 		xml = '<?xml version="1.0" encoding="utf-8" ?>' + display.getManialinkXml(mlName)
 		self.callMethod(('TmConnector', 'SendDisplayManialinkPageToLogin'), login, xml, 0, False)
 
@@ -130,17 +130,18 @@ class Display:
 		self.ManialinkIdRange = 1
 		self.ActionIdRange = 1
 
-	def addManialink(self, manialink, name):
+	def addManialink(self, manialink, name, mlMngr):
 		"""
 		\brief Add a new manialink to the display
 		\param manialink The manialink tree
 		\param name The name of the manialink
+		\param mlMngr The calling manialink manager instance
 		
 		If the name is already present the old manialink will be replaced 
 		"""
 		if name in self.ManialinkNames:
 			mlid = self.ManialinkNames[name]
-			self.removeManialink(name)
+			self.removeManialink(name, mlMngr)
 		else:
 			mlid = self.__getUnreservedManialinkId()
 		self.usedManialinkIds[mlid] = manialink
