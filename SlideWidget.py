@@ -111,9 +111,10 @@ class SlideWidget(Widget):
         
         
         for c in self.__commandButtons.values():
+            c.setWindowManager(self)
             buttonSize = c.getSize()
-            
-            buttonFrame = Frame()
+            #buttonFrame = Frame()
+            buttonFrame = c.getManialink()
             buttonFrame['posn'] = '{:d} {:d}'.format(x + buttonSize[0] // 2, 
                                                      y + buttonSize[1] // 2)
             
@@ -122,10 +123,9 @@ class SlideWidget(Widget):
                 y = 0
                 x += buttonSize[0] 
             
-            c.setWindowManager(self)
-            ml = c.getManialink()
-            buttonFrame.addChild(ml)
-            print(ml.getXML())
+            #ml = c.getManialink()
+            #buttonFrame.addChild(ml)
+            #print(ml.getXML())
             
             contentFrame.addChild(buttonFrame)
             
