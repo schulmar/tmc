@@ -22,6 +22,7 @@ class ChatCommandButton(Widget):
         self.__image = None #The image on the button
         self.__text = None #The text of the button
         self.__manialink = None #The manialink of the button
+        self.setSize((6, 10))
         
     def setIcon(self, style):
         """
@@ -59,7 +60,6 @@ class ChatCommandButton(Widget):
         """
         \brief Get the manialink hierarchie
         """
-        self.setSize((6, 10))
         pos = self.getPos()
         frame = Frame()
         frame['posn'] = '{:d} {:d} {:d}'.format(*pos)
