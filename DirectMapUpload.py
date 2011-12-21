@@ -311,14 +311,16 @@ class DirectMapUpload(PluginInterface):
         
         self.callMethod(('WindowManager', 'closeWindow'), {}, login, 'DirectMapUpload.deleteConfirm')
         if yes == True:
-            myPath = (os.path.dirname(self.callFunction(
+            mapPath = os.path.dirname(self.callFunction(
                                     ('TmConnector', 'GetMapsDirectory')))
+            myPath = (mapPath
                         + os.path.sep + self.__directUploadPath + os.path.sep
                         + login + os.path.sep)
-            if os.path.samefile(myPath, os.path.dirname(filePath)):
+            if os.path.samefile(myPath, 
+                        os.path.dirname(mapPath + os.path.sep + filePath)):
                 self.cb_unpublishMap(entries, login, True, filePath)
                 try:
-                    os.remove(myPath + os.path.basename(filePath))
+                    os.remove(mapPath + os.path.sep + filePath)
                     self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
                                     'Successfully deleted file ' + 
                                     os.path.basename(filePath),
