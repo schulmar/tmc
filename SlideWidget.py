@@ -144,11 +144,13 @@ class SlideWidget(Widget):
             #print(ml.getXML())
             
             contentFrame.addChild(buttonFrame)
+        
+        size[0] = x + 10
             
         mainFrame.addChild(contentFrame)
         
         bgQuad = Quad()
-        bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, x + 5)
+        bgQuad['sizen'] = '{:d} {:d}'.format(size[0], size[1] + 5)
         bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, size[1] // 2, 0)
         bgQuad['style'] = 'Bgs1InRace'
         bgQuad['substyle'] = 'BgCardList'
