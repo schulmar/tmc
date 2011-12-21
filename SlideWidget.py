@@ -184,7 +184,7 @@ main()
         }
         if(mouseOver)
         {
-            if(mainFrame.PosnX > 155 - windowWidth)
+            if(mainFrame.PosnX > 150 - windowWidth)
                     mainFrame.PosnX -= 1;
         }
         else
@@ -193,7 +193,7 @@ main()
                 mainFrame.PosnX += 1;
         }
         yield;
-        sleep(20);
+        //sleep(20);
     }
 }
 '''
