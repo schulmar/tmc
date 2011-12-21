@@ -1007,3 +1007,4 @@ class RightsWindow(TableWindow):
                       ('Enabled', 'Right-name', 'Description'))
         
 from ChatCommandButton import ChatCommandButton
+from SlideWidget import SlideWidget
