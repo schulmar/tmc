@@ -1,0 +1,136 @@
+from WindowElements import *
+from ChatCommandButton import *
+
+"""
+\file SlideWidget.py
+\brief Contains the SlideWidget plugin
+"""
+
+class SlideWidget(Widget):
+    """
+    \class SlideWidget
+    \brief The SlideWidgetPlugin
+    
+    This plugin holds severall ChatCommandButtons and displays them on demand
+    """
+    def __init__(self):
+        """
+        \brief Construct the widget
+        \param pipes The communication pipes to the PluginManager
+        \param args Additional startup arguments
+        """
+        super(SlideWidget, self).__init__()
+        
+    def initialize(self, buttonList):
+        """
+        \brief Initialize the widget
+        \param buttonList A list of dictionaries that define buttons
+        """
+        if isinstance(buttonList, list):
+            for i in buttonList:
+                try:
+                    commandLine = i['command']
+                except KeyError:
+                    commandLine = None
+                    
+                newButton = ChatCommandButton(commandLine)
+                
+                try:
+                    newButton.setIcon(i['icon'])
+                except KeyError:
+                    pass
+                
+                try:
+                    newButton.setText(i['text'])
+                except KeyError:
+                    pass
+                
+                try:
+                    newButton.setImage(i['image'], i.get('imagefocus', i['image']))
+                except KeyError:
+                    pass
+                
+                try:
+                    newButton.setManialink(i['manialink'])
+                except KeyError:
+                    pass
+                
+                self.__commandButtons.append(newButton)
+            
+    def addButton(self, button):
+        """
+        \brief Add a new button to the SlideWidget
+        \param button The new button
+        """
+        self.__commandButtons.append(button)
+         
+    def getManialink(self):
+        """
+        \brief Return the manialink hierarchie of this widget
+        """
+        size = self.getSize()
+        mainFrame = Frame()
+        mainFrame['id'] = 'mainFrame'
+        
+        mainFrame['posn'] = '60 0 1'
+        
+        bgQuad = Quad()
+        bgQuad['sizen'] = '{:d} {:d}'.format(size[0] + 2, size[1])
+        bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, size[1] // 2, 0)
+        mainFrame.addChild(bgQuad)
+        
+        ms = ManiaScript()
+        ms.setContent(self.getManiaScript())
+        mainFrame.addChild(ms.format(
+                windowWidth = size[0]
+        ))
+        
+        return mainFrame
+    
+    def getManiaScript(self):
+        return '''
+declare Integer windowWidth = {windowWidth}
+        
+main() 
+{
+    declare Boolean mouseWasOver; 
+    while(True)
+    {
+        mouseWasOver = False;
+        foreach(Event in PendingEvents)
+        {
+            switch(Event.Type)
+            {
+                case CGameManialinkScriptEvent::Type::MouseOver:
+                {
+                    if(Event.ControlId == "mainFrame")
+                    {
+                        mouseOver();
+                        mouseWasOver = True;
+                    }                    
+                }
+            }
+        }
+        if(!mouseWasOver)
+            mouseNotOver();
+        yield;
+        sleep(20);
+    }
+}
+
+Void mouseOver()
+{
+    declare CGameManialinkFrame mainFrame;
+    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    if(mainFrame.PosnX > 64 - windowWidth)
+        mainFrame.PosnX -= 1; 
+}
+
+Void mouseNotOver()
+{
+    declare CGameManialinkFrame mainFrame;
+    mainFrame = (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame);
+    if(mainFrame.PosnX < 62)
+        mainFrame.PosnX += 1;
+}
+        '''
