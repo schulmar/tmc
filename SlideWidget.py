@@ -154,9 +154,9 @@ class SlideWidget(Widget):
         
         bgQuad = Quad()
         bgQuad['sizen'] = '{:d} {:d}'.format(size[0], size[1] + 5)
-        bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, oldSize[1] // 2, 0)
-        bgQuad['style'] = 'Bgs1InRace'
-        bgQuad['substyle'] = 'BgCardList'
+        bgQuad['posn'] = '{:d} {:d} {:d}'.format(2, 2 + oldSize[1] // 2, 0)
+        bgQuad['style'] = 'BgsPlayerCard'
+        bgQuad['substyle'] = 'BgPlayerCardSmall'
         bgQuad['ScriptEvents'] = '1'
         mainFrame.addChild(bgQuad)
         
