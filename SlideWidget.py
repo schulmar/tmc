@@ -134,11 +134,11 @@ class SlideWidget(Widget):
             buttonSize = c.getSize()
             #buttonFrame = Frame()
             buttonFrame = c.getManialink()
-            buttonFrame['posn'] = '{:d} {:d}'.format(x + buttonSize[0] // 2, 
-                                                     y + buttonSize[1] // 2)
+            buttonFrame['posn'] = '{:d} {:d} 1'.format(x + buttonSize[0] // 2, 
+                                                     y - buttonSize[1] // 2)
             
-            y += buttonSize[1]
-            if -y > size[1]:
+            y -= buttonSize[1]
+            if -y > size[1] + buttonSize[1]:
                 y = 0
                 x += buttonSize[0] 
             
@@ -181,7 +181,7 @@ main()
 { 
     ''' +  globalVariables + '''
 
-    declare Boolean mouseOver;
+    declare Boolean moveOut;
     declare CGameManialinkFrame mainFrame <=> (Page.MainFrame.Controls["mainFrame"] as CGameManialinkFrame); 
     while(True)
     {
@@ -189,13 +189,9 @@ main()
         {
             switch(Event.Type)
             {
-                case CGameManialinkScriptEvent::Type::MouseOver:
+                case CGameManialinkScriptEvent::Type::MouseClick:
                 { 
-                    mouseOver = True;                    
-                }
-                case CGameManialinkScriptEvent::Type::MouseOut:
-                {
-                    mouseOver = False;
+                    moveOut = !moveOut;                    
                 }
                 default: 
                 {
@@ -204,7 +200,7 @@ main()
                 }
             }
         }
-        if(mouseOver)
+        if(moveOut)
         {
             if(mainFrame.PosnX > 160 - windowWidth)
                     mainFrame.PosnX -= 1;
