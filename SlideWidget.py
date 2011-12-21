@@ -80,10 +80,10 @@ class SlideWidget(Widget):
         mainFrame.addChild(bgQuad)
         
         ms = ManiaScript()
-        ms.setContent(self.getManiaScript())
-        mainFrame.addChild(ms.format(
+        ms.setContent(self.getManiaScript().format(
                 windowWidth = size[0]
         ))
+        mainFrame.addChild(ms)
         
         return mainFrame
     
