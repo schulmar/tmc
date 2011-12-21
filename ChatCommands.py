@@ -680,6 +680,8 @@ class ChatCommands(PluginInterface):
 		UploadButton.setIcon(('Icons128x128_1', 'Upload'))
 		UploadButton.setText('Upload')
 		UploadButton.setPos((44, -40))
+		address = self.callFunction(('Http', 'getAddress'))
+		UploadButton.setManialink(address + '/map/upload/')
 		self.callMethod(('WindowManager', 'displayWindow'),
 					login, 'ChatCommands.UploadButton', UploadButton)
 		
