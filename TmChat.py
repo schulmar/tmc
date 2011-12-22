@@ -38,8 +38,8 @@ class TmChat(PluginInterface):
 		\param text The text the player wrote
 		\param isRegisteredCmd Is this a registered command (leading /)
 		"""
+		text = text.strip()
 		if len(text) > 0:
-			text = text.strip()
 			if text[0] == '/':
 				self.processCommand(login, text[1:])
 
