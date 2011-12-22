@@ -109,7 +109,7 @@ class Karma(PluginInterface):
         try:
             self.__connection.ping()
         except MySQLdb.OperationalError:
-            self.connection = MySQLdb.connect(user = self.__args['user'], 
+            self.__connection = MySQLdb.connect(user = self.__args['user'], 
                                             passwd = self.__args['password'], 
                                             db = self.__args['db'])
         return self.__connection.cursor(MySQLdb.cursors.DictCursor)
