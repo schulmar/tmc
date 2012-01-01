@@ -178,7 +178,7 @@ class DirectMapUpload(PluginInterface):
                     
             if self.callFunction(('TmConnector', 'AddMap'), relPath + fileName):
                 info = self.callFunction(('TmConnector', 'GetMapInfo'), relPath + fileName)
-                self.callMethod(('TmConnector', 'RemoveMap'), relPath + fileName)
+                self.callFunction(('TmConnector', 'RemoveMap'), relPath + fileName)
                 if info['Author'] != login:
                     os.remove(mapPath + relPath + fileName)
                     return """
