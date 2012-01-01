@@ -32,7 +32,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 		
 	def do_GET(self):
 		try:
-			sessionId = BaseCookie(self.headers.getparam('Cookie'))['session']
+			sessionId = BaseCookie(self.headers['Cookie'])['session'].value
 		except KeyError:
 			sessionId = None 
 		content, session = self.server.plugin.handleGet(
