@@ -100,7 +100,7 @@ class GBXChallengeFetcher:
         fileHandle = open(self.fileName, 'rb')
         fileHandle.seek(0, os.SEEK_SET)
         magicGBXHeader = fileHandle.read(5)
-        if magicGBXHeader != 'GBX\x6\x0':
+        if magicGBXHeader != 'GBX\x06\x00':
             fileHandle.close()
             return False
         
