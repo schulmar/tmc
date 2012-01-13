@@ -1,11 +1,11 @@
+import struct
+import os
+import xml
+
 """
 \file GBXChallengeFetcher.py
 \brief Contains a class for reading gbx files
 """
-
-import struct
-import os
-import xml
 
 class GBXChallengeFetcher:
     """
