@@ -1,6 +1,6 @@
 import struct
 import os
-import xml
+import xml.parsers.expat
 
 """
 \file GBXChallengeFetcher.py
