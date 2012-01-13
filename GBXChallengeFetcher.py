@@ -56,7 +56,8 @@ class GBXChallengeFetcher:
         self.thumbnail = None
         self.comment = ''
         
-    def GBXChallengeFetcher(self, fileName, parseXML, tnimage = False):
+    @staticmethod
+    def FetchChallenge(fileName, parseXML, tnimage = False):
         """
         \brief Fetches the data about the GBX Challenge
         \param fileName The (full) path to the GBX file
@@ -64,10 +65,12 @@ class GBXChallengeFetcher:
         \param tnimage Should a thumbnail be extracted from the file
         \return Save the data in the fetcher
         """
-        self.fileName = fileName
-        self.parseXML = parseXML
-        self.tnimage = tnimage
-        self.getData()
+        fetcher = GBXChallengeFetcher()
+        fetcher.fileName = fileName
+        fetcher.parseXML = parseXML
+        fetcher.tnimage = tnimage
+        fetcher.getData()
+        return fetcher
         
     def ReadGBXString(self, fileHandle):
         """
@@ -235,6 +238,9 @@ class GBXChallengeFetcher:
             except Exception as e:
                 self.parsedXML = str(e)
                 return False
+            
+            try:
+                self.azone = self.parsedXML['HEADER']['']
             
             try:
                 self.xmlver = self.parsedXML['HEADER']['VERSION']
