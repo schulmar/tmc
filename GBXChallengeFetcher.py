@@ -101,7 +101,7 @@ class GBXChallengeFetcher:
         newNode['CHIL'] = {}
         
         node[name].append(newNode);
-        self.xmlTreeRoute.append(weakref.ref(node[name][-1]))
+        self.xmlTreeRoute.append(node[name][-1]['CHIL'])
             
             
     def endTag(self, name):
@@ -109,7 +109,7 @@ class GBXChallengeFetcher:
         \brief Handle the end of an xml tag
         \param Name the name of the tag
         """
-        self.xmlTreeRoute.pop()
+        self.parsedXML = self.xmlTreeRoute.pop()
     
     def getData(self):
         """
