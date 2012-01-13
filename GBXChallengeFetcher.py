@@ -100,7 +100,7 @@ class GBXChallengeFetcher:
         newNode['CHIL'] = {}
         
         node[name].append(newNode);
-        self.xmlTreeRoute.append(newNode)
+        self.xmlTreeRoute.append(node[name][-1])
             
             
     def endTag(self, name):
