@@ -42,7 +42,7 @@ class GBXChallengeFetcher:
         self.editor = 0
         self.password = 0
         self.xml = False
-        self.parsedXML = None
+        self.parsedXML = {}
         self.xmlver = None
         self.exever = 0
         self.exebld = 0
@@ -55,7 +55,7 @@ class GBXChallengeFetcher:
         self.modurl = ''
         self.thumbnail = None
         self.comment = ''
-        self.xmlTreeRoute = []
+        self.xmlTreeRoute = [self.parsedXML] 
         
     @staticmethod
     def FetchChallenge(fileName, parseXML, tnimage = False):
@@ -90,9 +90,7 @@ class GBXChallengeFetcher:
         \param name The name of the tag
         \param attrs The attributes of the tag
         """
-        node = self.parsedXML 
-        for step in self.xmlTreeRoute:
-            node = node[step]['CHIL']
+        node = self.xmlTreeRoute[-1]
         
         if not node.has_key(name): 
             node[name] = []
@@ -102,6 +100,7 @@ class GBXChallengeFetcher:
         newNode['CHIL'] = {}
         
         node[name].append(newNode);
+        self.xmlTreeRoute.append(newNode)
             
             
     def endTag(self, name):
