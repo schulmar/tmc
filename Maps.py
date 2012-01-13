@@ -851,6 +851,11 @@ class Maps(PluginInterface):
 			
 		mapDict = self.getMap(mapId)
 		
+		if mapDict == None:
+			self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'Unknown map: ' + str(mapId), login)
+			return
+		
 		if params[0] == 'write':
 			commentWindow = CommentInput(('Maps', 'cb_comment'), (),
 										'Comment on ' + mapDict['Name'])
