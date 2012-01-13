@@ -1,6 +1,7 @@
 import struct
 import os
 import xml.parsers.expat
+import weakref
 
 """
 \file GBXChallengeFetcher.py
@@ -100,7 +101,7 @@ class GBXChallengeFetcher:
         newNode['CHIL'] = {}
         
         node[name].append(newNode);
-        self.xmlTreeRoute.append(node[name][-1])
+        self.xmlTreeRoute.append(weakref.ref(node[name][-1]))
             
             
     def endTag(self, name):
