@@ -241,9 +241,9 @@ class DirectMapUpload(PluginInterface):
         mapRotationFileNames = [i
                                 for i in self.callFunction(('TmConnector', 'GetMapList'), 100000, 0)]
         
-        myMapsInRotation = filter(lambda i: os.path.relpath(personalMapPath + i['FileName'] , mapPath) 
+        myMapsInRotation = filter(lambda i: os.path.relpath(personalMapPath + i , mapPath) 
                                             in mapRotationFileNames, files)
-        myMapsOutRotation = filter(lambda i: os.path.relpath(personalMapPath + i['FileName'] , mapPath) 
+        myMapsOutRotation = filter(lambda i: os.path.relpath(personalMapPath + i , mapPath) 
                                             not in mapRotationFileNames, files)
         
         lines = []
@@ -252,23 +252,23 @@ class DirectMapUpload(PluginInterface):
             nameLabel = Label()
             nameLabel['text'] = m
             line.append(nameLabel)
-            
+            """
             commentsLabel = Label()
             commentsLabel['text'] = 'read'
             commentsLabel.setCallback(('DirectMapUpload', 'cb_readComments'), 
                         self.callFunction(('Maps', 'getMapIdFromUid'), m['UId']))
             line.append(commentsLabel)
-            
+            """
             publishLabel = Label()
             publishLabel['text'] = 'publish'
             publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, 
-                                     relativePersonalMapPath + m['FileName'] )
+                                     relativePersonalMapPath + m )
             line.append(publishLabel)
             
             deleteLabel = Label()
             deleteLabel['text'] = 'delete'
             deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, 
-                                    relativePersonalMapPath + m['FileName'] )
+                                    relativePersonalMapPath + m )
             line.append(deleteLabel)
             
             lines.append(line)
@@ -276,25 +276,25 @@ class DirectMapUpload(PluginInterface):
         for m in myMapsInRotation:
             line = []
             nameLabel = Label()
-            nameLabel['text'] = os.path.basename(m['FileName'] )
+            nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
-            
+            """
             commentsLabel = Label()
             commentsLabel['text'] = 'read'
             commentsLabel.setCallback(('DirectMapUpload', 'cb_readComments'), 
                         self.callFunction(('Maps', 'getMapIdFromUid'), m['UId']))
             line.append(commentsLabel)
-            
+            """
             unpublishLabel = Label()
             unpublishLabel['text'] = 'unpublish'
             unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublishMap'), None, 
-                                        relativePersonalMapPath + m['FileName']) 
+                                        relativePersonalMapPath + m) 
             line.append(unpublishLabel)
             
             deleteLabel = Label()
             deleteLabel['text'] = 'delete'
             deleteLabel.setCallback(('DirectMapUpload', 'cb_deleteMap'), None, 
-                                        relativePersonalMapPath + m['FileName'] )
+                                        relativePersonalMapPath + m)
             line.append(deleteLabel)    
             
             lines.append(line)
@@ -303,7 +303,7 @@ class DirectMapUpload(PluginInterface):
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 10, (50, 15, 10, 5), ('Filename', 'Maprotation', 'Comments', 'File'))
+        window.setTable(lines, 10, (50, 20, 10), ('Filename', 'Maprotation', 'File'))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
