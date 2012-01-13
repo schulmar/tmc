@@ -301,7 +301,7 @@ class GBXChallengeFetcher:
                 
             try:
                 self.cpscur = self.parsedXML['header'][0]['CHIL']['checkpoints'][0]['ATTR']['cur']
-                self.cpslap = self.parsedXML['header']Λ0]['CHIL']['checkpoints'][0]['ATTR']['onelap']
+                self.cpslap = self.parsedXML['header'][0]['CHIL']['checkpoints'][0]['ATTR']['onelap']
             except KeyError:
                 self.cpscur = ''
                 self.cpslap = ''
