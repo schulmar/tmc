@@ -94,7 +94,7 @@ class GBXChallengeFetcher:
         for step in self.xmlTreeRoute:
             node = node[step]['CHIL']
         
-        if !node.has_key(name): 
+        if not node.has_key(name): 
             node[name] = []
             
         newNode = {}
