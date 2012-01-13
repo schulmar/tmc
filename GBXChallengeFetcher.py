@@ -55,6 +55,7 @@ class GBXChallengeFetcher:
         self.modurl = ''
         self.thumbnail = None
         self.comment = ''
+        self.xmlTreeRoute = []
         
     @staticmethod
     def FetchChallenge(fileName, parseXML, tnimage = False):
@@ -89,12 +90,26 @@ class GBXChallengeFetcher:
         \param name The name of the tag
         \param attrs The attributes of the tag
         """
-        if name == 'DEPS':
-            self.parsedXML['DEPS'] = {}
-        elif name == 'DEP':
-            self.parsedXML['DEPS'][0] = attrs
-        else:
-            self.parsedXML['DEPS'][name] = attrs 
+        node = self.parsedXML 
+        for step in self.xmlTreeRoute:
+            node = node[step]['CHIL']
+        
+        if !node.has_key(name): 
+            node[name] = []
+            
+        newNode = {}
+        newNode['ATTR'] = attrs
+        newNode['CHIL'] = {}
+        
+        node[name].append(newNode);
+            
+            
+    def endTag(self, name):
+        """
+        \brief Handle the end of an xml tag
+        \param Name the name of the tag
+        """
+        self.xmlTreeRoute.pop()
     
     def getData(self):
         """
@@ -231,50 +246,62 @@ class GBXChallengeFetcher:
         if self.parseXML and isinstance(self.xml, str):
             parser = xml.parsers.expat.ParserCreate()
             parser.StartElementHandler = self.startTag
-            parser.EndElementHandler = lambda name: None
+            parser.EndElementHandler = self.endTag
             parser.CharacterDataHandler = lambda data: None
             try:
-                parser.parse(self.xml.encode('UTF-8'))
+                parser.Parse(self.xml.encode('UTF-8'))
             except Exception as e:
-                self.parsedXML = str(e)
+                self.parsedXML = e
                 return False
             
             try:
-                self.azone = self.parsedXML['HEADER']['']
-            
-            try:
-                self.xmlver = self.parsedXML['HEADER']['VERSION']
+                self.azone = self.parsedXML['header'][0]['CHIL']['ident'][0]['ATTR']['authorzone']
             except KeyError:
-                self.xmlver = ''
+                self.azone = ''
                 
             try:
-                self.exever = self.parsedXML['HEADER']['EXEVER']
+                self.envir = self.parsedXML['header'][0]['CHIL']['desc'][0]['ATTR']['envir']
+            except KeyError:
+                self.envir = ''
+                
+            try:
+                self.mood = self.parsedXML['header'][0]['CHIL']['desc'][0]['ATTR']['mood']
+            except KeyError:
+                self.mood = ''
+            """
+            try:
+                self.xmlver = self.parsedXML['HEADER']['ATTR']['VERSION']
+            except KeyError:
+                self.xmlver = ''
+            """ 
+            try:
+                self.exever = self.parsedXML['header'][0]['ATTR']['exever']
             except KeyError:
                 self.exever = ''
                 
             try:
-                self.exebld = self.parsedXML['HEADER']['EXEBUILD']
+                self.exebld = self.parsedXML['header'][0]['ATTR']['exebuild']
             except KeyError:
                 self.exebld = ''
                 
             try:
-                self.respawns = self.parsedXML['TIMES']['RESPAWNS']
+                self.respawns = self.parsedXML['header'][0]['CHIL']['times'][0]['ATTR']['respawns']
             except KeyError:
                 self.respawns = ''
                 
             try:
-                self.stuntscore = self.parsedXML['TIMES']['STUNTSCORE']
+                self.stuntscore = self.parsedXML['header'][0]['CHIL']['times'][0]['ATTR']['stuntscore']
             except KeyError:
                 self.stuntscore = ''
                 
             try:
-                self.validable = self.parsedXML['TIMES']['VALIDABLE']
+                self.validable = self.parsedXML['header'][0]['CHIL']['times'][0]['ATTR']['validable']
             except:
                 self.validable = ''
                 
             try:
-                self.cpscur = self.parsedXML['CHECKPOINTS']['CUR']
-                self.cpslap = self.parsedXML['CHECKPOINTS']['ONELAP']
+                self.cpscur = self.parsedXML['header'][0]['CHIL']['checkpoints'][0]['ATTR']['cur']
+                self.cpslap = self.parsedXML['header']Λ0]['CHIL']['checkpoints'][0]['ATTR']['onelap']
             except KeyError:
                 self.cpscur = ''
                 self.cpslap = ''
