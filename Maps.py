@@ -199,6 +199,21 @@ class Maps(PluginInterface):
 			path += os.path.sep
 			
 		return path
+	
+	def getMap(self, mapId):
+		"""
+		\brief Get the database information of the map with the given id
+		\param mapId The id of the map to fetch
+		\return The database row or none if invalid id
+		"""
+		cursor = self.__getCursor()
+		cursor.execute(
+		'''
+		SELECT *
+		FROM maps
+		WHERE Id = %s
+		''',(mapId,))
+		return cursor.fetchone()
 		
 	def	getCurrentMap(self):
 		"""
@@ -826,9 +841,19 @@ class Maps(PluginInterface):
 			
 		params = params.split()
 		
+		mapId = self.getMapIdFromUid(self.getCurrentMap()['UId'])
+		if len(params) > 1:
+			try:
+				mapId = int(params[1])
+			except:
+				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
+								'A mapId is an integer!', login)
+			
+		mapDict = self.getMap(mapId)
+		
 		if params[0] == 'write':
 			commentWindow = CommentInput(('Maps', 'cb_comment'), (),
-										'Comment on ' + self.getCurrentMap()['Name'])
+										'Comment on ' + mapDict['Name'])
 			commentWindow.setSize((70, 50))
 			commentWindow.setPos((-30, 25))
 			self.callMethod(('WindowManager', 'displayWindow'), 
@@ -837,14 +862,14 @@ class Maps(PluginInterface):
 		elif params[0] == 'display':
 			comments = self.callFunction(('Karma', 'getComments'), 
 										self.__MapObjectType, 
-										self.getMapIdFromUid(self.getCurrentMap()['UId']))
+										mapId)
 			if len(comments) == 0:
 				self.callMethod(('TmConnector', 'ChatSendServerMessageToLogin'),
 							'There are no comments on this map.', login)
 				return
 			comments = self.__prepareComments(comments, login)
 			commentsWindow = CommentOutput(str(len(comments)) + ' Comments on '
-										 + self.getCurrentMap()['Name'])
+										 + mapDict['Name'])
 			commentsWindow.setSize((80, 70))
 			commentsWindow.setPos((-40, 35))
 			commentsWindow.setCommentAnswerCallback(('Maps', 'cb_commentAnswer'))
