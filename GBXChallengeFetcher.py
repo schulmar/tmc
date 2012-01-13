@@ -109,7 +109,7 @@ class GBXChallengeFetcher:
         \brief Handle the end of an xml tag
         \param Name the name of the tag
         """
-        self.parsedXML = self.xmlTreeRoute.pop()
+        self.xmlTreeRoute.pop()
     
     def getData(self):
         """
@@ -241,8 +241,6 @@ class GBXChallengeFetcher:
         
         fileHandle.close()
         
-        
-        self.parsedXML = {}
         if self.parseXML and isinstance(self.xml, str):
             parser = xml.parsers.expat.ParserCreate()
             parser.StartElementHandler = self.startTag
