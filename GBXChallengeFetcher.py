@@ -116,7 +116,7 @@ class GBXChallengeFetcher:
             fileHandle.close()
             return False
         
-        lengths = [0]
+        lengths = range(self.version + 1)
         for i in range(1, self.version + 1, 1):
             fileHandle.seek(4, os.SEEK_CUR)
             lengths[i] = struct.unpack('<L', fileHandle.read(4))[0]
