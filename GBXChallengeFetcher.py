@@ -266,6 +266,11 @@ class GBXChallengeFetcher:
                 self.mood = self.parsedXML['header'][0]['CHIL']['desc'][0]['ATTR']['mood']
             except KeyError:
                 self.mood = ''
+                
+            try:
+                self.modname = self.parsedXML['header'][0]['CHIL']['desc'][0]['ATTR']['mod']
+            except KeyError:
+                self.modname = ''
             """
             try:
                 self.xmlver = self.parsedXML['HEADER']['ATTR']['VERSION']
