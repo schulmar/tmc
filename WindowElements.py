@@ -1,4 +1,5 @@
 from Manialink import *
+import math
 
 """
 \file WindowElements.py
@@ -800,7 +801,7 @@ class CommentOutput(PagedWindow):
         if deleted:
             height = 0
         else:
-            height = 3 * max([len(comment['commentTuple'][1]) // width, 1])
+            height = 4 * max([math.ceil(len(comment['commentTuple'][1]) / width), 1])
         
         consumedHeight = 0
         
