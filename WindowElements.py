@@ -801,7 +801,7 @@ class CommentOutput(PagedWindow):
         if deleted:
             height = 0
         else:
-            height = 4 * max([math.ceil(len(comment['commentTuple'][1]) / width), 1])
+            height = 4 * max([int(math.ceil(len(comment['commentTuple'][1]) / width)), 1])
         
         consumedHeight = 0
         
