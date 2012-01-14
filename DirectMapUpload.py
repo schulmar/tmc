@@ -1,6 +1,7 @@
 from PluginInterface import *
 from Manialink import *
 from WindowElements import *
+from GBXChallengeFetcher import GBXChallengeFetcher
 
 """
 \file DirectUpload.py
@@ -252,13 +253,15 @@ class DirectMapUpload(PluginInterface):
             nameLabel = Label()
             nameLabel['text'] = m
             line.append(nameLabel)
-            """
+            
             commentsLabel = Label()
             commentsLabel['text'] = 'read'
             commentsLabel.setCallback(('DirectMapUpload', 'cb_readComments'), 
-                        self.callFunction(('Maps', 'getMapIdFromUid'), m['UId']))
+                        self.callFunction(('Maps', 'getMapIdFromUid'), 
+                        GBXChallengeFetcher.FetchChallenge(personalMapPath + m,
+                                                    True).uid))
             line.append(commentsLabel)
-            """
+            
             publishLabel = Label()
             publishLabel['text'] = 'publish'
             publishLabel.setCallback(('DirectMapUpload', 'cb_publishMap'), None, 
@@ -278,13 +281,15 @@ class DirectMapUpload(PluginInterface):
             nameLabel = Label()
             nameLabel['text'] = os.path.basename(m)
             line.append(nameLabel)
-            """
+            
             commentsLabel = Label()
             commentsLabel['text'] = 'read'
             commentsLabel.setCallback(('DirectMapUpload', 'cb_readComments'), 
-                        self.callFunction(('Maps', 'getMapIdFromUid'), m['UId']))
+                        self.callFunction(('Maps', 'getMapIdFromUid'), 
+                          GBXChallengeFetcher.FetchChallenge(personalMapPath + m,
+                                                                    True).uid))
             line.append(commentsLabel)
-            """
+            
             unpublishLabel = Label()
             unpublishLabel['text'] = 'unpublish'
             unpublishLabel.setCallback(('DirectMapUpload', 'cb_unpublishMap'), None, 
@@ -303,7 +308,7 @@ class DirectMapUpload(PluginInterface):
         window = TableWindow(nick + '$z$g\'s uploaded maps')
         window.setSize((80, 60))
         window.setPos((-40, 30))
-        window.setTable(lines, 10, (50, 20, 10), ('Filename', 'Maprotation', 'File'))
+        window.setTable(lines, 10, (50, 15, 10, 5), ('Filename', 'Maprotation', 'Comments', 'File'))
         
         self.callMethod(('WindowManager', 'displayWindow'), login, 'DirectMapUpload.browse', window, True)
         
