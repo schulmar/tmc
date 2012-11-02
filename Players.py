@@ -91,8 +91,7 @@ class Players(PluginInterface):
 		self.callFunction(('Acl', 'userAdd'), login)
 		if not self.callFunction(('Acl', 'userHasRight'), login, 'Players.stayOnServer'):
 			self.callMethod(('TmConnector', 'Kick'),  login, 
-						'This server is in closed mode. ' + 
-						'To be able to join it, apply at $ltestdrive@bynobody.dyndns.org$l')
+						'Insufficient permissions to stay on this server!')
 			return		
 		self.__gatherPlayerInformation(login)
 		info = self.playerList[login]
